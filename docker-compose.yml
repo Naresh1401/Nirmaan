@@ -1,0 +1,75 @@
+version: "3.9"
+
+services:
+  # ── PostgreSQL Database ────────────────────────────────
+  db:
+    image: postgres:15-alpine
+    container_name: nirmaan-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: nirmaan
+      POSTGRES_USER: nirmaan
+      POSTGRES_PASSWORD: nirmaan
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nirmaan"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ── Redis Cache ────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: nirmaan-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ── FastAPI Backend ────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: nirmaan-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://nirmaan:nirmaan@db:5432/nirmaan
+      REDIS_URL: redis://redis:6379/0
+      SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
+      DEBUG: ${DEBUG:-false}
+      CORS_ORIGINS: '["http://localhost:3000","http://frontend:3000"]'
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app  # Hot reload in development
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # ── Next.js Frontend ───────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: nirmaan-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
