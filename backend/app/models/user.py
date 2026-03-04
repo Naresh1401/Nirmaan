@@ -14,7 +14,7 @@ from app.core.database import Base
 class UserRole(str, enum.Enum):
     CUSTOMER = "customer"
     SUPPLIER = "supplier"
-    DRIVER = "driver"
+    DELIVERY_PARTNER = "delivery_partner"
     ADMIN = "admin"
 
 
