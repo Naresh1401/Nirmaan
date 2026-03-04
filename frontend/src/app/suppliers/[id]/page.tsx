@@ -1,129 +1,76 @@
 'use client';
 
+import AuthGuard from '@/components/AuthGuard';
 import Link from 'next/link';
+import { Star, MapPin, Truck, Package, CheckCircle2, Phone, Clock, ArrowLeft, Shield, Factory, IndianRupee } from 'lucide-react';
 
-export default function SupplierDetailPage() {
-  const supplier = {
-    name: 'Sri Ganesh Traders',
-    city: 'Peddapalli, Telangana',
-    rating: 4.5,
-    orders: 1240,
-    since: '2018',
-    verified: true,
-    phone: '+91 98765 43210',
-    address: 'Shop No. 42, Main Road, Peddapalli 504195',
-    gst: '36AABCS1429B1Z7',
-    speciality: 'Cement & Aggregates',
-    description: 'Leading supplier of construction materials in Peddapalli district. Authorized dealer for UltraTech, ACC, and Ambuja cements. Bulk orders welcome with competitive pricing.',
-  };
-
+export default function SupplierDetailPage({ params }: { params: { id: string } }) {
   const products = [
-    { name: 'UltraTech OPC 53 Grade', price: '₹380/bag', stock: 'In Stock', rating: 4.6 },
-    { name: 'ACC Gold Cement', price: '₹375/bag', stock: 'Low Stock', rating: 4.3 },
-    { name: 'Ambuja Plus Cement', price: '₹370/bag', stock: 'In Stock', rating: 4.4 },
-    { name: 'River Sand (Fine)', price: '₹55/cft', stock: 'In Stock', rating: 4.2 },
-    { name: 'Gravel 20mm', price: '₹48/cft', stock: 'In Stock', rating: 4.0 },
-    { name: 'M-Sand', price: '₹42/cft', stock: 'In Stock', rating: 4.1 },
-  ];
-
-  const reviews = [
-    { name: 'Ravi Kumar', rating: 5, date: '2 weeks ago', text: 'Excellent quality cement. Delivery was on time. Will order again!' },
-    { name: 'Srinivas Reddy', rating: 4, date: '1 month ago', text: 'Good prices and reliable service. Sand quality was great.' },
-    { name: 'Anil Builders', rating: 5, date: '1 month ago', text: 'Best supplier in Peddapalli for bulk orders. Very cooperative.' },
+    { name: 'UltraTech Cement PPC (50kg)', price: 385, mrp: 420, stock: 250, rating: 4.5, image: '🏗️' },
+    { name: 'ACC Cement OPC 53 (50kg)', price: 375, mrp: 410, stock: 180, rating: 4.3, image: '🏗️' },
+    { name: 'JSW TMT Steel Bar 8mm', price: 58000, mrp: 63000, stock: 45, rating: 4.7, image: '🔩' },
+    { name: 'River Sand Fine Grade', price: 2800, mrp: 3200, stock: 500, rating: 4.2, image: '⏳' },
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b">
-        <div className="max-w-5xl mx-auto px-4 py-8">
-          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-3">
-                <h1 className="text-3xl font-bold text-gray-900">{supplier.name}</h1>
-                {supplier.verified && <span className="bg-green-100 text-green-700 text-xs font-medium px-2.5 py-1 rounded-full">✓ Verified</span>}
+    <AuthGuard>
+      <div className="min-h-screen bg-gray-50">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 py-10">
+          <div className="max-w-5xl mx-auto px-4">
+            <Link href="/suppliers" className="text-blue-200 hover:text-white flex items-center gap-1 text-sm mb-4"><ArrowLeft className="w-4 h-4" /> All Suppliers</Link>
+            <div className="flex items-start gap-4">
+              <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center text-4xl">🏪</div>
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <h1 className="text-3xl font-bold text-white">Peddapalli Traders</h1>
+                  <CheckCircle2 className="w-6 h-6 text-green-300" />
+                </div>
+                <div className="flex items-center gap-4 text-blue-100 text-sm">
+                  <span className="flex items-center gap-1"><MapPin className="w-4 h-4" /> Peddapalli, Telangana</span>
+                  <span className="flex items-center gap-1"><Star className="w-4 h-4 fill-yellow-300 text-yellow-300" /> 4.5 (128 reviews)</span>
+                  <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> Since 2020</span>
+                </div>
               </div>
-              <p className="text-gray-500 mt-1">{supplier.city} · Since {supplier.since}</p>
-              <p className="text-gray-600 mt-3 max-w-xl">{supplier.description}</p>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div className="bg-orange-50 rounded-xl p-4 text-center">
-                <p className="text-3xl font-bold text-orange-600">⭐ {supplier.rating}</p>
-                <p className="text-sm text-gray-500">{supplier.orders.toLocaleString()} orders</p>
-              </div>
-              <a href={`tel:${supplier.phone}`} className="bg-green-600 text-white text-center py-2 rounded-lg font-medium hover:bg-green-700 text-sm">
-                📞 Call Supplier
-              </a>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="max-w-5xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Products */}
-        <div className="lg:col-span-2 space-y-6">
-          <h2 className="text-xl font-bold text-gray-900">Products ({products.length})</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {products.map((p) => (
-              <div key={p.name} className="bg-white rounded-xl border p-4 hover:shadow-md transition">
-                <div className="h-24 bg-gray-100 rounded-lg mb-3 flex items-center justify-center text-4xl">📦</div>
-                <h3 className="font-medium text-gray-900">{p.name}</h3>
-                <div className="flex items-center justify-between mt-2">
-                  <span className="text-lg font-bold text-orange-600">{p.price}</span>
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${p.stock === 'In Stock' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                    {p.stock}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between mt-3">
-                  <span className="text-sm text-gray-500">⭐ {p.rating}</span>
-                  <Link href="/cart" className="text-sm bg-orange-600 text-white px-3 py-1 rounded-lg hover:bg-orange-700">
-                    Add to Cart
-                  </Link>
-                </div>
+        <div className="max-w-5xl mx-auto px-4 py-6">
+          <div className="grid md:grid-cols-4 gap-4 mb-8">
+            {[
+              { label: 'Products', value: '45', icon: Package },
+              { label: 'Orders Completed', value: '890', icon: CheckCircle2 },
+              { label: 'Delivery', value: 'Same Day', icon: Truck },
+              { label: 'Rating', value: '4.5/5', icon: Star },
+            ].map(s => (
+              <div key={s.label} className="bg-white rounded-xl p-4 border border-gray-100 flex items-center gap-3">
+                <div className="bg-blue-50 rounded-lg p-2"><s.icon className="w-5 h-5 text-blue-600" /></div>
+                <div><p className="font-bold text-gray-900">{s.value}</p><p className="text-xs text-gray-500">{s.label}</p></div>
               </div>
             ))}
           </div>
 
-          {/* Reviews */}
-          <h2 className="text-xl font-bold text-gray-900 pt-4">Customer Reviews</h2>
-          <div className="space-y-4">
-            {reviews.map((r, i) => (
-              <div key={i} className="bg-white rounded-xl border p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <div>
-                    <span className="font-medium text-gray-900">{r.name}</span>
-                    <span className="text-sm text-gray-400 ml-2">{r.date}</span>
+          <h2 className="text-xl font-bold text-gray-900 mb-4">Products from this Supplier</h2>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {products.map((p, i) => (
+              <Link key={i} href={`/products/${i + 1}`} className="bg-white rounded-xl p-4 border border-gray-100 hover:shadow-lg transition-all flex items-center gap-4">
+                <div className="w-16 h-16 bg-gray-50 rounded-xl flex items-center justify-center text-3xl">{p.image}</div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900 text-sm">{p.name}</h3>
+                  <div className="flex items-baseline gap-2 mt-1">
+                    <span className="font-extrabold text-gray-900">₹{p.price.toLocaleString('en-IN')}</span>
+                    <span className="text-xs text-gray-400 line-through">₹{p.mrp.toLocaleString('en-IN')}</span>
                   </div>
-                  <span className="text-sm">{'⭐'.repeat(r.rating)}</span>
+                  <div className="flex items-center gap-3 mt-1 text-xs text-gray-500">
+                    <span className="flex items-center gap-1"><Star className="w-3 h-3 fill-orange-400 text-orange-400" /> {p.rating}</span>
+                    <span>{p.stock} in stock</span>
+                  </div>
                 </div>
-                <p className="text-gray-600 text-sm">{r.text}</p>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
-
-        {/* Sidebar */}
-        <div className="space-y-4">
-          <div className="bg-white rounded-xl border p-5">
-            <h3 className="font-semibold text-gray-900 mb-3">Business Info</h3>
-            <dl className="space-y-3 text-sm">
-              <div><dt className="text-gray-500">Speciality</dt><dd className="font-medium">{supplier.speciality}</dd></div>
-              <div><dt className="text-gray-500">Address</dt><dd className="font-medium">{supplier.address}</dd></div>
-              <div><dt className="text-gray-500">GST</dt><dd className="font-medium font-mono text-xs">{supplier.gst}</dd></div>
-              <div><dt className="text-gray-500">Phone</dt><dd className="font-medium">{supplier.phone}</dd></div>
-            </dl>
-          </div>
-
-          <div className="bg-orange-50 rounded-xl p-5">
-            <h3 className="font-semibold text-gray-900 mb-2">🚚 Delivery</h3>
-            <ul className="text-sm text-gray-700 space-y-1">
-              <li>Free delivery on orders above ₹5,000</li>
-              <li>Same-day dispatch for in-stock items</li>
-              <li>Serves: Peddapalli, Sultanabad, Manthani</li>
-            </ul>
-          </div>
-        </div>
       </div>
-    </div>
+    </AuthGuard>
   );
 }

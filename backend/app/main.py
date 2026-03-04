@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.database import engine, Base
 from app.routers import auth, suppliers, products, orders, delivery, search, admin
-from app.routers import estimator, reviews, prices
+from app.routers import estimator, reviews, prices, credit, inventory
 
 # Import all models so tables are created
 import app.models  # noqa: F401
@@ -58,6 +58,8 @@ app.include_router(admin.router, prefix="/api/v1/admin", tags=["Admin"])
 app.include_router(estimator.router, prefix="/api/v1/estimator", tags=["AI Estimator"])
 app.include_router(reviews.router, prefix="/api/v1/reviews", tags=["Reviews"])
 app.include_router(prices.router, prefix="/api/v1/prices", tags=["Price Transparency"])
+app.include_router(credit.router)  # prefix in router
+app.include_router(inventory.router)  # prefix in router
 
 
 @app.get("/", tags=["Health"])

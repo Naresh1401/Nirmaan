@@ -2,151 +2,174 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import AuthGuard from '@/components/AuthGuard';
+import { Search, SlidersHorizontal, Star, Truck, MapPin, ShoppingCart, Heart, IndianRupee, Factory, ChevronDown, X, Package, ArrowUpDown } from 'lucide-react';
 
-const categories = [
-  { name: 'Cement', slug: 'cement', icon: '🏗️', count: 48, desc: 'OPC, PPC, PSC grades' },
-  { name: 'Sand', slug: 'sand', icon: '⏳', count: 24, desc: 'River sand, M-sand, P-sand' },
-  { name: 'Bricks', slug: 'bricks', icon: '🧱', count: 36, desc: 'Red, fly ash, AAC blocks' },
-  { name: 'Steel', slug: 'steel', icon: '⚙️', count: 32, desc: 'TMT bars, rods, sheets' },
-  { name: 'Gravel', slug: 'gravel', icon: '🪨', count: 18, desc: '20mm, 40mm aggregate' },
-  { name: 'Tiles', slug: 'tiles', icon: '🔲', count: 56, desc: 'Vitrified, ceramic, marble' },
-  { name: 'Electrical', slug: 'electrical', icon: '⚡', count: 72, desc: 'Wires, switches, MCBs' },
-  { name: 'Plumbing', slug: 'plumbing', icon: '🔧', count: 44, desc: 'Pipes, fittings, tanks' },
-  { name: 'Tools', slug: 'tools', icon: '🛠️', count: 60, desc: 'Power & hand tools' },
+const allProducts = [
+  { id: '1', name: 'UltraTech Cement PPC (50kg)', price: 385, mrp: 420, supplier: 'Peddapalli Traders', supplierId: 's1', rating: 4.5, reviews: 128, discount: 8, unit: 'bag', category: 'cement', brand: 'UltraTech', stock: 250, delivery: 'Same Day', image: '🏗️' },
+  { id: '2', name: 'ACC Cement OPC 53 (50kg)', price: 375, mrp: 410, supplier: 'Karimnagar Hardware', supplierId: 's2', rating: 4.4, reviews: 95, discount: 9, unit: 'bag', category: 'cement', brand: 'ACC', stock: 180, delivery: 'Same Day', image: '🏗️' },
+  { id: '3', name: 'Ambuja Cement PPC (50kg)', price: 390, mrp: 425, supplier: 'Sri Ganesh Traders', supplierId: 's3', rating: 4.3, reviews: 72, discount: 8, unit: 'bag', category: 'cement', brand: 'Ambuja', stock: 320, delivery: 'Next Day', image: '🏗️' },
+  { id: '4', name: 'JSW TMT Steel Bar 8mm', price: 58000, mrp: 63000, supplier: 'Sri Steel Works', supplierId: 's4', rating: 4.7, reviews: 89, discount: 8, unit: 'ton', category: 'steel', brand: 'JSW', stock: 45, delivery: 'Next Day', image: '🔩' },
+  { id: '5', name: 'TATA Tiscon TMT 12mm', price: 62500, mrp: 68000, supplier: 'Peddapalli Steel', supplierId: 's5', rating: 4.8, reviews: 156, discount: 8, unit: 'ton', category: 'steel', brand: 'TATA', stock: 30, delivery: '2-3 Days', image: '🔩' },
+  { id: '6', name: 'River Sand Fine Grade', price: 2800, mrp: 3200, supplier: 'Godavari Sand Depot', supplierId: 's6', rating: 4.3, reviews: 234, discount: 12, unit: 'ton', category: 'sand', brand: 'Natural', stock: 500, delivery: 'Same Day', image: '⏳' },
+  { id: '7', name: 'M-Sand (Manufactured)', price: 2200, mrp: 2600, supplier: 'Crusher Works', supplierId: 's7', rating: 4.1, reviews: 67, discount: 15, unit: 'ton', category: 'sand', brand: 'M-Sand', stock: 800, delivery: 'Same Day', image: '⏳' },
+  { id: '8', name: 'Red Clay Bricks (1st Class)', price: 6500, mrp: 7500, supplier: 'Kalyan Brick Works', supplierId: 's8', rating: 4.6, reviews: 167, discount: 13, unit: '1000 pcs', category: 'bricks', brand: '1st Class', stock: 50, delivery: 'Same Day', image: '🧱' },
+  { id: '9', name: 'Fly Ash Bricks', price: 4500, mrp: 5200, supplier: 'Green Bricks Co', supplierId: 's9', rating: 4.4, reviews: 98, discount: 13, unit: '1000 pcs', category: 'bricks', brand: 'Fly Ash', stock: 100, delivery: 'Next Day', image: '🧱' },
+  { id: '10', name: 'Ceramic Floor Tiles 2x2', price: 35, mrp: 45, supplier: 'Tile Palace', supplierId: 's10', rating: 4.5, reviews: 203, discount: 22, unit: 'sqft', category: 'tiles', brand: 'Kajaria', stock: 5000, delivery: '2-3 Days', image: '🔲' },
+  { id: '11', name: 'Asian Paints Ace (20L)', price: 2850, mrp: 3200, supplier: 'Color World', supplierId: 's11', rating: 4.6, reviews: 145, discount: 11, unit: 'bucket', category: 'paint', brand: 'Asian Paints', stock: 60, delivery: 'Next Day', image: '🎨' },
+  { id: '12', name: 'CPVC Pipes 1 inch (3m)', price: 280, mrp: 350, supplier: 'Pipe House', supplierId: 's12', rating: 4.2, reviews: 78, discount: 20, unit: 'piece', category: 'plumbing', brand: 'Astral', stock: 300, delivery: 'Same Day', image: '🔧' },
+  { id: '13', name: 'Havells Wire 1.5mm (90m)', price: 1850, mrp: 2100, supplier: 'Electric Point', supplierId: 's13', rating: 4.7, reviews: 112, discount: 12, unit: 'coil', category: 'electrical', brand: 'Havells', stock: 75, delivery: 'Same Day', image: '⚡' },
+  { id: '14', name: 'Crushed Stone 20mm', price: 1800, mrp: 2100, supplier: 'Rock Aggregates', supplierId: 's14', rating: 4.2, reviews: 56, discount: 14, unit: 'ton', category: 'gravel', brand: 'Crushed', stock: 200, delivery: 'Same Day', image: '🪨' },
+  { id: '15', name: 'Bosch Drill Machine', price: 3200, mrp: 3800, supplier: 'Tools Mart', supplierId: 's15', rating: 4.8, reviews: 189, discount: 16, unit: 'piece', category: 'tools', brand: 'Bosch', stock: 25, delivery: 'Next Day', image: '🛠️' },
 ];
 
-const sortOptions = [
-  { label: 'Price: Low to High', value: 'price_asc' },
-  { label: 'Price: High to Low', value: 'price_desc' },
-  { label: 'Rating', value: 'rating' },
-  { label: 'Newest', value: 'newest' },
-];
-
-// Sample products for demo
-const sampleProducts = [
-  { id: '1', name: 'UltraTech Cement OPC 53', brand: 'UltraTech', price: 380, mrp: 420, unit: 'bag', stock: 250, rating: 4.5, supplier: 'Sri Ganesh Traders', city: 'Peddapalli', image: null, category: 'cement' },
-  { id: '2', name: 'ACC Gold Cement PPC', brand: 'ACC', price: 370, mrp: 410, unit: 'bag', stock: 180, rating: 4.3, supplier: 'Lakshmi Hardware', city: 'Peddapalli', image: null, category: 'cement' },
-  { id: '3', name: 'Ambuja Cement PPC', brand: 'Ambuja', price: 365, mrp: 400, unit: 'bag', stock: 320, rating: 4.4, supplier: 'Balaji Materials', city: 'Peddapalli', image: null, category: 'cement' },
-  { id: '4', name: 'River Sand (Fine)', brand: 'Local', price: 55, mrp: 55, unit: 'cft', stock: 5000, rating: 4.0, supplier: 'Peddapalli Sand Depot', city: 'Peddapalli', image: null, category: 'sand' },
-  { id: '5', name: 'M-Sand (Manufactured)', brand: 'Local', price: 42, mrp: 42, unit: 'cft', stock: 8000, rating: 4.2, supplier: 'RK Crushers', city: 'Ramagundam', image: null, category: 'sand' },
-  { id: '6', name: 'Red Bricks (Standard)', brand: 'Local', price: 8, mrp: 10, unit: 'piece', stock: 50000, rating: 4.1, supplier: 'Venkat Brick Works', city: 'Sultanabad', image: null, category: 'bricks' },
-  { id: '7', name: 'Fly Ash Bricks', brand: 'GreenBuild', price: 6, mrp: 7, unit: 'piece', stock: 30000, rating: 4.3, supplier: 'Eco Bricks Ltd', city: 'Peddapalli', image: null, category: 'bricks' },
-  { id: '8', name: 'TATA Tiscon TMT Fe 500D 12mm', brand: 'TATA', price: 68, mrp: 75, unit: 'kg', stock: 5000, rating: 4.7, supplier: 'Sri Sai Steel', city: 'Peddapalli', image: null, category: 'steel' },
-  { id: '9', name: 'JSW NeoSteel TMT 10mm', brand: 'JSW', price: 65, mrp: 72, unit: 'kg', stock: 3000, rating: 4.5, supplier: 'Modern Steel Traders', city: 'Karimnagar', image: null, category: 'steel' },
-  { id: '10', name: 'Kajaria Floor Tiles 2x2', brand: 'Kajaria', price: 45, mrp: 55, unit: 'sqft', stock: 10000, rating: 4.6, supplier: 'Tile World', city: 'Peddapalli', image: null, category: 'tiles' },
-  { id: '11', name: 'Somany Wall Tiles', brand: 'Somany', price: 38, mrp: 48, unit: 'sqft', stock: 8000, rating: 4.4, supplier: 'Tile World', city: 'Peddapalli', image: null, category: 'tiles' },
-  { id: '12', name: 'Havells Wire 1.5mm', brand: 'Havells', price: 1250, mrp: 1400, unit: 'bundle', stock: 200, rating: 4.8, supplier: 'Power Electronics', city: 'Peddapalli', image: null, category: 'electrical' },
+const categoryOptions = [
+  { value: '', label: 'All Categories' },
+  { value: 'cement', label: 'Cement' },
+  { value: 'sand', label: 'Sand' },
+  { value: 'steel', label: 'Steel & TMT' },
+  { value: 'bricks', label: 'Bricks' },
+  { value: 'tiles', label: 'Tiles' },
+  { value: 'paint', label: 'Paint' },
+  { value: 'plumbing', label: 'Plumbing' },
+  { value: 'electrical', label: 'Electrical' },
+  { value: 'gravel', label: 'Gravel' },
+  { value: 'tools', label: 'Tools' },
 ];
 
 export default function ProductsPage() {
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [sortBy, setSortBy] = useState('price_asc');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQ, setSearchQ] = useState('');
+  const [category, setCategory] = useState('');
+  const [sortBy, setSortBy] = useState('relevance');
+  const [showFilters, setShowFilters] = useState(false);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
+  const [ratingFilter, setRatingFilter] = useState(0);
 
-  const filtered = sampleProducts
-    .filter((p) => !selectedCategory || p.category === selectedCategory)
-    .filter((p) => !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.brand.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filtered = allProducts
+    .filter(p => {
+      if (category && p.category !== category) return false;
+      if (searchQ && !p.name.toLowerCase().includes(searchQ.toLowerCase()) && !p.brand.toLowerCase().includes(searchQ.toLowerCase())) return false;
+      if (p.price < priceRange[0] || p.price > priceRange[1]) return false;
+      if (ratingFilter > 0 && p.rating < ratingFilter) return false;
+      return true;
+    })
     .sort((a, b) => {
       if (sortBy === 'price_asc') return a.price - b.price;
       if (sortBy === 'price_desc') return b.price - a.price;
       if (sortBy === 'rating') return b.rating - a.rating;
+      if (sortBy === 'discount') return b.discount - a.discount;
       return 0;
     });
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <h1 className="text-3xl font-bold text-gray-900">Construction Materials</h1>
-          <p className="mt-1 text-gray-500">Browse and compare prices from verified suppliers</p>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Sidebar Filters */}
-          <div className="lg:w-64 flex-shrink-0">
-            <div className="bg-white rounded-xl p-4 shadow-sm sticky top-20">
-              <h3 className="font-semibold text-gray-900 mb-3">Categories</h3>
-              <button onClick={() => setSelectedCategory('')} className={`w-full text-left px-3 py-2 rounded-lg text-sm mb-1 ${!selectedCategory ? 'bg-orange-50 text-orange-700 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}>
-                All Materials
-              </button>
-              {categories.map((cat) => (
-                <button key={cat.slug} onClick={() => setSelectedCategory(cat.slug)} className={`w-full text-left px-3 py-2 rounded-lg text-sm mb-1 flex items-center gap-2 ${selectedCategory === cat.slug ? 'bg-orange-50 text-orange-700 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}>
-                  <span>{cat.icon}</span>
-                  <span>{cat.name}</span>
-                  <span className="ml-auto text-xs text-gray-400">{cat.count}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Main Content */}
-          <div className="flex-1">
-            {/* Search & Sort Bar */}
-            <div className="flex flex-col sm:flex-row gap-3 mb-6">
-              <div className="flex-1 relative">
-                <input
-                  type="text"
-                  placeholder="Search materials, brands..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none"
-                />
-                <svg className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+    <AuthGuard>
+      <div className="min-h-screen bg-gray-50">
+        {/* Search & Filter Bar */}
+        <div className="bg-white border-b border-gray-200 sticky top-16 z-30">
+          <div className="max-w-7xl mx-auto px-4 py-3">
+            <div className="flex items-center gap-3">
+              <div className="flex-1 flex items-center gap-2 bg-gray-50 rounded-xl px-4 py-2.5 border border-gray-200">
+                <Search className="w-5 h-5 text-gray-400" />
+                <input type="text" value={searchQ} onChange={e => setSearchQ(e.target.value)} placeholder="Search products, brands..." className="flex-1 bg-transparent outline-none text-gray-700" />
+                {searchQ && <button onClick={() => setSearchQ('')}><X className="w-4 h-4 text-gray-400" /></button>}
               </div>
-              <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm">
-                {sortOptions.map((opt) => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
+              <select value={category} onChange={e => setCategory(e.target.value)} className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-700 outline-none hidden sm:block">
+                {categoryOptions.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
               </select>
+              <select value={sortBy} onChange={e => setSortBy(e.target.value)} className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-gray-700 outline-none hidden sm:block">
+                <option value="relevance">Relevance</option>
+                <option value="price_asc">Price: Low to High</option>
+                <option value="price_desc">Price: High to Low</option>
+                <option value="rating">Top Rated</option>
+                <option value="discount">Best Discount</option>
+              </select>
+              <button onClick={() => setShowFilters(!showFilters)} className="sm:hidden bg-orange-50 text-orange-600 p-2.5 rounded-xl border border-orange-200">
+                <SlidersHorizontal className="w-5 h-5" />
+              </button>
             </div>
-
-            {/* Results count */}
-            <p className="text-sm text-gray-500 mb-4">{filtered.length} products found {selectedCategory && `in "${selectedCategory}"`}</p>
-
-            {/* Product Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-              {filtered.map((product) => (
-                <Link href={`/products/${product.id}`} key={product.id} className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-4 border border-gray-100">
-                  {/* Image placeholder */}
-                  <div className="h-40 bg-gradient-to-br from-orange-50 to-amber-50 rounded-lg mb-3 flex items-center justify-center">
-                    <span className="text-5xl">{categories.find(c => c.slug === product.category)?.icon || '📦'}</span>
-                  </div>
-
-                  {/* Discount badge */}
-                  {product.mrp > product.price && (
-                    <span className="inline-block bg-green-100 text-green-700 text-xs font-medium px-2 py-0.5 rounded-full mb-2">
-                      {Math.round(((product.mrp - product.price) / product.mrp) * 100)}% OFF
-                    </span>
-                  )}
-
-                  <h3 className="font-medium text-gray-900 text-sm line-clamp-2">{product.name}</h3>
-                  <p className="text-xs text-gray-500 mt-1">{product.brand}</p>
-
-                  <div className="flex items-baseline gap-2 mt-2">
-                    <span className="text-lg font-bold text-gray-900">₹{product.price}</span>
-                    <span className="text-xs text-gray-400">/{product.unit}</span>
-                    {product.mrp > product.price && (
-                      <span className="text-xs text-gray-400 line-through">₹{product.mrp}</span>
-                    )}
-                  </div>
-
-                  <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
-                    <div className="text-xs text-gray-500">
-                      <span className="text-yellow-500">★</span> {product.rating} · {product.supplier}
-                    </div>
-                    <span className={`text-xs font-medium ${product.stock > 0 ? 'text-green-600' : 'text-red-500'}`}>
-                      {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
-                    </span>
-                  </div>
-                </Link>
-              ))}
+            {/* Mobile Filters */}
+            {showFilters && (
+              <div className="sm:hidden mt-3 flex gap-2 flex-wrap">
+                <select value={category} onChange={e => setCategory(e.target.value)} className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700">
+                  {categoryOptions.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+                </select>
+                <select value={sortBy} onChange={e => setSortBy(e.target.value)} className="bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700">
+                  <option value="relevance">Relevance</option>
+                  <option value="price_asc">Price ↑</option>
+                  <option value="price_desc">Price ↓</option>
+                  <option value="rating">Rating</option>
+                </select>
+              </div>
+            )}
+            {/* Active Filters */}
+            <div className="flex items-center gap-2 mt-2 flex-wrap">
+              <span className="text-sm text-gray-500">{filtered.length} products found</span>
+              {category && (
+                <span className="bg-orange-50 text-orange-700 text-xs px-3 py-1 rounded-full flex items-center gap-1">
+                  {categoryOptions.find(c => c.value === category)?.label} <button onClick={() => setCategory('')}><X className="w-3 h-3" /></button>
+                </span>
+              )}
             </div>
           </div>
         </div>
+
+        {/* Product Grid */}
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {filtered.map(p => (
+              <Link key={p.id} href={`/products/${p.id}`} className="bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 overflow-hidden group">
+                <div className="relative">
+                  <div className="bg-gradient-to-br from-gray-100 to-gray-50 h-40 flex items-center justify-center">
+                    <span className="text-6xl group-hover:scale-110 transition-transform">{p.image}</span>
+                  </div>
+                  <div className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-lg">{p.discount}% OFF</div>
+                  <button className="absolute top-3 right-3 bg-white/90 rounded-full p-2 text-gray-400 hover:text-red-500 transition-colors shadow-sm">
+                    <Heart className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="p-4">
+                  <div className="text-xs text-orange-600 font-semibold mb-1">{p.brand}</div>
+                  <h3 className="font-bold text-gray-900 group-hover:text-orange-600 transition-colors line-clamp-2 min-h-[2.5rem]">{p.name}</h3>
+                  <p className="text-gray-500 text-xs mt-1 flex items-center gap-1"><Factory className="w-3 h-3" /> {p.supplier}</p>
+                  <div className="flex items-baseline gap-2 mt-2">
+                    <span className="text-xl font-extrabold text-gray-900 flex items-center"><IndianRupee className="w-4 h-4" />{p.price.toLocaleString('en-IN')}</span>
+                    <span className="text-gray-400 line-through text-xs">₹{p.mrp.toLocaleString('en-IN')}</span>
+                    <span className="text-xs text-gray-500">/{p.unit}</span>
+                  </div>
+                  <div className="flex items-center justify-between mt-3">
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-0.5 bg-green-50 px-2 py-0.5 rounded-md">
+                        <Star className="w-3 h-3 fill-green-600 text-green-600" />
+                        <span className="text-xs font-bold text-green-700">{p.rating}</span>
+                      </div>
+                      <span className="text-xs text-gray-400">({p.reviews})</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-xs text-blue-600 font-medium">
+                      <Truck className="w-3 h-3" /> {p.delivery}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 mt-2 text-xs text-gray-500">
+                    <Package className="w-3 h-3" /> {p.stock} in stock
+                  </div>
+                </div>
+                <div className="border-t border-gray-50 px-4 py-3 bg-orange-50/50">
+                  <button className="w-full text-orange-600 font-semibold text-sm flex items-center justify-center gap-2 hover:gap-3 transition-all">
+                    View & Compare Prices <ShoppingCart className="w-4 h-4" />
+                  </button>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          {filtered.length === 0 && (
+            <div className="text-center py-20">
+              <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-gray-700 mb-2">No products found</h3>
+              <p className="text-gray-500">Try adjusting your search or filters</p>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </AuthGuard>
   );
 }

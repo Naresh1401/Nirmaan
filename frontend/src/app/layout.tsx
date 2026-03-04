@@ -3,23 +3,26 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { AuthProvider } from "@/context/AuthContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Nirmaan — Construction Materials Marketplace",
+  title: "Nirmaan — India's #1 Construction Materials Marketplace",
   description:
-    "Digital infrastructure for construction material supply. Compare prices, order materials, and get reliable delivery.",
+    "Buy construction materials online at best prices. Compare suppliers, get business credit, AI estimation, and reliable delivery. Cement, Steel, Sand, Bricks & more.",
   keywords: [
     "construction materials",
     "building materials",
-    "cement",
-    "sand",
-    "steel",
+    "cement online",
+    "steel bars",
+    "sand delivery",
     "bricks",
-    "construction supply",
-    "Peddapalli",
+    "construction supply chain",
+    "business credit",
+    "Hyderabad",
     "Telangana",
+    "India",
   ],
 };
 
@@ -31,11 +34,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="flex min-h-screen flex-col">
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </div>
+        <AuthProvider>
+          <div className="flex min-h-screen flex-col">
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );

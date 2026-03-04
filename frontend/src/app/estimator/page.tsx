@@ -1,419 +1,271 @@
 'use client';
 
+import AuthGuard from '@/components/AuthGuard';
+import { useAuth } from '@/context/AuthContext';
+import { Bot, Send, Calculator, Package, Info, RotateCcw, Sparkles, ChevronDown, Building2 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 
 interface Message {
   id: number;
-  role: 'user' | 'assistant';
+  role: 'user' | 'bot';
   content: string;
-  timestamp: Date;
-  estimation?: EstimationResult;
-}
-
-interface MaterialItem {
-  material: string;
-  quantity: number;
-  unit: string;
-  unit_cost: number;
-  total_cost: number;
-  notes: string;
-}
-
-interface EstimationResult {
-  materials: MaterialItem[];
-  total_cost: number;
-  cost_per_sqft: number;
-  area_sqft: number;
-  structure_type: string;
-  quality: string;
+  products?: { name: string; qty: string; unit: string; rate: number; total: number }[];
+  totalCost?: number;
 }
 
 const quickPrompts = [
-  '2BHK house 1200 sqft cost estimate',
-  'How much cement for 1000 sqft house?',
-  'Steel required for 2 floor building',
-  'Compare cement prices in Peddapalli',
-  'Foundation materials for 30x40 plot',
-  'Tiles needed for 3 bathrooms',
+  { label: '🏠 2BHK House', prompt: 'Estimate materials for building a 2BHK house, 1200 sq ft' },
+  { label: '🏢 Commercial 3000sqft', prompt: 'Estimate materials for a commercial building, 3000 sq ft, 2 floors' },
+  { label: '🧱 Compound Wall', prompt: 'Estimate materials for a compound wall, 100 feet long, 6 feet high' },
+  { label: '🏗️ Slab 500sqft', prompt: 'Estimate materials for an RCC slab, 500 sq ft area' },
+  { label: '🪨 Foundation', prompt: 'Estimate materials for house foundation, 1000 sq ft plot' },
+  { label: '🏘️ 3BHK Villa', prompt: 'Estimate all materials for a 3BHK villa, 2000 sq ft, G+1' },
 ];
 
-const structureTypes = [
-  { label: 'Residential House', value: 'residential', icon: '🏠' },
-  { label: 'Commercial Building', value: 'commercial', icon: '🏢' },
-  { label: 'Apartment Complex', value: 'apartment', icon: '🏬' },
-  { label: 'Warehouse/Godown', value: 'warehouse', icon: '🏭' },
-  { label: 'Compound Wall', value: 'compound_wall', icon: '🧱' },
-  { label: 'Farm House', value: 'farm_house', icon: '🏡' },
-];
-
-const materialRates: Record<string, { economy: number; standard: number; premium: number; unit: string }> = {
-  'Cement (OPC 53)': { economy: 340, standard: 380, premium: 420, unit: 'bag' },
-  'TMT Steel': { economy: 58000, standard: 65000, premium: 72000, unit: 'ton' },
-  'River Sand': { economy: 45, standard: 55, premium: 70, unit: 'cft' },
-  'M-Sand': { economy: 35, standard: 42, premium: 50, unit: 'cft' },
-  'Bricks': { economy: 6, standard: 8, premium: 12, unit: 'piece' },
-  'Gravel (20mm)': { economy: 38, standard: 48, premium: 58, unit: 'cft' },
-  'Water (tanker)': { economy: 600, standard: 800, premium: 800, unit: 'load' },
+const materialRates: Record<string, { unit: string; rate: number }> = {
+  'Cement (OPC 53 Grade)': { unit: 'bags', rate: 385 },
+  'River Sand (Fine)': { unit: 'cu.ft', rate: 55 },
+  'M-Sand (Manufactured)': { unit: 'cu.ft', rate: 42 },
+  'Crushed Stone Aggregate 20mm': { unit: 'cu.ft', rate: 38 },
+  'TMT Steel Bar 8mm': { unit: 'kg', rate: 62 },
+  'TMT Steel Bar 12mm': { unit: 'kg', rate: 60 },
+  'TMT Steel Bar 16mm': { unit: 'kg', rate: 58 },
+  'Red Clay Bricks (1st Class)': { unit: 'nos', rate: 8 },
+  'AAC Blocks 600x200x150mm': { unit: 'nos', rate: 52 },
+  'Fly Ash Bricks': { unit: 'nos', rate: 6 },
+  'Water': { unit: 'liters', rate: 0.15 },
 };
 
-function estimateMaterials(areaSqft: number, structureType: string, quality: string): EstimationResult {
-  const multipliers: Record<string, number> = {
-    residential: 1.0,
-    commercial: 1.3,
-    apartment: 1.15,
-    warehouse: 0.75,
-    compound_wall: 0.3,
-    farm_house: 0.9,
-  };
-  const mult = multipliers[structureType] || 1.0;
-  const q = quality as 'economy' | 'standard' | 'premium';
+function estimateMaterials(prompt: string): { products: { name: string; qty: string; unit: string; rate: number; total: number }[], totalCost: number, summary: string } {
+  const lower = prompt.toLowerCase();
+  let sqft = 1200;
+  const sqftMatch = lower.match(/(\d+)\s*(?:sq\s*ft|sqft|square\s*feet)/);
+  if (sqftMatch) sqft = parseInt(sqftMatch[1]);
 
-  const materials: MaterialItem[] = [
-    { material: 'Cement (OPC 53 Grade)', quantity: Math.ceil(areaSqft * 0.4 * mult), unit: 'bags', unit_cost: materialRates['Cement (OPC 53)'][q], total_cost: 0, notes: 'UltraTech / ACC / Ambuja' },
-    { material: 'TMT Steel (Fe500D)', quantity: parseFloat((areaSqft * 4 * mult / 1000).toFixed(2)), unit: 'tons', unit_cost: materialRates['TMT Steel'][q], total_cost: 0, notes: 'Tata Tiscon / JSW / SAIL' },
-    { material: 'River Sand', quantity: Math.ceil(areaSqft * 1.25 * mult), unit: 'cft', unit_cost: materialRates['River Sand'][q], total_cost: 0, notes: 'Fine grade for plastering' },
-    { material: 'M-Sand', quantity: Math.ceil(areaSqft * 0.8 * mult), unit: 'cft', unit_cost: materialRates['M-Sand'][q], total_cost: 0, notes: 'Manufactured sand for concrete' },
-    { material: 'Bricks', quantity: Math.ceil(areaSqft * 8 * mult), unit: 'pieces', unit_cost: materialRates['Bricks'][q], total_cost: 0, notes: 'Standard red clay bricks' },
-    { material: 'Gravel (20mm)', quantity: Math.ceil(areaSqft * 0.6 * mult), unit: 'cft', unit_cost: materialRates['Gravel (20mm)'][q], total_cost: 0, notes: 'Crushed stone aggregate' },
-    { material: 'Water', quantity: Math.ceil(areaSqft * mult / 100), unit: 'tanker loads', unit_cost: materialRates['Water (tanker)'][q], total_cost: 0, notes: 'Construction water supply' },
-  ];
+  let multiplier = 1;
+  if (lower.includes('2 floor') || lower.includes('g+1') || lower.includes('duplex')) multiplier = 1.8;
+  if (lower.includes('3 floor') || lower.includes('g+2')) multiplier = 2.6;
+  if (lower.includes('commercial')) multiplier *= 1.3;
 
-  materials.forEach((m) => (m.total_cost = Math.round(m.quantity * m.unit_cost)));
-  const total_cost = materials.reduce((s, m) => s + m.total_cost, 0);
+  const isWall = lower.includes('wall') || lower.includes('compound');
+  const isSlab = lower.includes('slab');
+  const isFoundation = lower.includes('foundation');
 
-  return {
-    materials,
-    total_cost,
-    cost_per_sqft: Math.round(total_cost / areaSqft),
-    area_sqft: areaSqft,
-    structure_type: structureType,
-    quality: q,
-  };
+  let products: { name: string; qty: string; unit: string; rate: number; total: number }[] = [];
+
+  if (isWall) {
+    const lengthMatch = lower.match(/(\d+)\s*(?:feet|ft|foot)/);
+    const len = lengthMatch ? parseInt(lengthMatch[1]) : 100;
+    products = [
+      { name: 'Cement (OPC 53 Grade)', qty: `${Math.ceil(len * 0.8)}`, unit: 'bags', rate: 385, total: Math.ceil(len * 0.8) * 385 },
+      { name: 'River Sand (Fine)', qty: `${Math.ceil(len * 3)}`, unit: 'cu.ft', rate: 55, total: Math.ceil(len * 3) * 55 },
+      { name: 'Red Clay Bricks (1st Class)', qty: `${Math.ceil(len * 50)}`, unit: 'nos', rate: 8, total: Math.ceil(len * 50) * 8 },
+      { name: 'Crushed Stone Aggregate 20mm', qty: `${Math.ceil(len * 1.5)}`, unit: 'cu.ft', rate: 38, total: Math.ceil(len * 1.5) * 38 },
+      { name: 'TMT Steel Bar 8mm', qty: `${Math.ceil(len * 2)}`, unit: 'kg', rate: 62, total: Math.ceil(len * 2) * 62 },
+    ];
+  } else if (isSlab) {
+    products = [
+      { name: 'Cement (OPC 53 Grade)', qty: `${Math.ceil(sqft * 0.4)}`, unit: 'bags', rate: 385, total: Math.ceil(sqft * 0.4) * 385 },
+      { name: 'River Sand (Fine)', qty: `${Math.ceil(sqft * 1.25)}`, unit: 'cu.ft', rate: 55, total: Math.ceil(sqft * 1.25) * 55 },
+      { name: 'Crushed Stone Aggregate 20mm', qty: `${Math.ceil(sqft * 1.8)}`, unit: 'cu.ft', rate: 38, total: Math.ceil(sqft * 1.8) * 38 },
+      { name: 'TMT Steel Bar 12mm', qty: `${Math.ceil(sqft * 4)}`, unit: 'kg', rate: 60, total: Math.ceil(sqft * 4) * 60 },
+      { name: 'TMT Steel Bar 8mm', qty: `${Math.ceil(sqft * 1.5)}`, unit: 'kg', rate: 62, total: Math.ceil(sqft * 1.5) * 62 },
+    ];
+  } else if (isFoundation) {
+    products = [
+      { name: 'Cement (OPC 53 Grade)', qty: `${Math.ceil(sqft * 0.5)}`, unit: 'bags', rate: 385, total: Math.ceil(sqft * 0.5) * 385 },
+      { name: 'River Sand (Fine)', qty: `${Math.ceil(sqft * 2)}`, unit: 'cu.ft', rate: 55, total: Math.ceil(sqft * 2) * 55 },
+      { name: 'Crushed Stone Aggregate 20mm', qty: `${Math.ceil(sqft * 3)}`, unit: 'cu.ft', rate: 38, total: Math.ceil(sqft * 3) * 38 },
+      { name: 'TMT Steel Bar 12mm', qty: `${Math.ceil(sqft * 3)}`, unit: 'kg', rate: 60, total: Math.ceil(sqft * 3) * 60 },
+      { name: 'TMT Steel Bar 16mm', qty: `${Math.ceil(sqft * 1.5)}`, unit: 'kg', rate: 58, total: Math.ceil(sqft * 1.5) * 58 },
+    ];
+  } else {
+    // Full house
+    const adj = sqft * multiplier;
+    products = [
+      { name: 'Cement (OPC 53 Grade)', qty: `${Math.ceil(adj * 0.4)}`, unit: 'bags', rate: 385, total: Math.ceil(adj * 0.4) * 385 },
+      { name: 'River Sand (Fine)', qty: `${Math.ceil(adj * 1.5)}`, unit: 'cu.ft', rate: 55, total: Math.ceil(adj * 1.5) * 55 },
+      { name: 'M-Sand (Manufactured)', qty: `${Math.ceil(adj * 1)}`, unit: 'cu.ft', rate: 42, total: Math.ceil(adj * 1) * 42 },
+      { name: 'Crushed Stone Aggregate 20mm', qty: `${Math.ceil(adj * 2)}`, unit: 'cu.ft', rate: 38, total: Math.ceil(adj * 2) * 38 },
+      { name: 'TMT Steel Bar 8mm', qty: `${Math.ceil(adj * 2.5)}`, unit: 'kg', rate: 62, total: Math.ceil(adj * 2.5) * 62 },
+      { name: 'TMT Steel Bar 12mm', qty: `${Math.ceil(adj * 2)}`, unit: 'kg', rate: 60, total: Math.ceil(adj * 2) * 60 },
+      { name: 'TMT Steel Bar 16mm', qty: `${Math.ceil(adj * 0.8)}`, unit: 'kg', rate: 58, total: Math.ceil(adj * 0.8) * 58 },
+      { name: 'Red Clay Bricks (1st Class)', qty: `${Math.ceil(adj * 8)}`, unit: 'nos', rate: 8, total: Math.ceil(adj * 8) * 8 },
+      { name: 'Water', qty: `${Math.ceil(adj * 20)}`, unit: 'liters', rate: 0.15, total: Math.ceil(adj * 20) * 0.15 },
+    ];
+  }
+
+  const totalCost = products.reduce((sum, p) => sum + p.total, 0);
+  const summary = isWall
+    ? `Here's the estimated materials for your compound wall. Prices are based on current Telangana market rates.`
+    : isSlab
+    ? `Here's the estimated materials for your ${sqft} sq.ft RCC slab. Using M20 grade concrete mix design.`
+    : isFoundation
+    ? `Here's the estimated materials for foundation of a ${sqft} sq.ft plot. Based on standard strip foundation design.`
+    : `Here's the estimated materials for your ${sqft} sq.ft construction${multiplier > 1 ? ' (multi-floor)' : ''}. Based on standard construction practices and current Telangana rates.`;
+
+  return { products, totalCost, summary };
 }
 
 export default function EstimatorPage() {
+  const { user } = useAuth();
   const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 1,
-      role: 'assistant',
-      content:
-        "Namaste! 🙏 I'm the Nirmaan AI Estimator. I can help you estimate construction materials, calculate costs, and find the best prices in your area.\n\nTry asking me:\n• \"Estimate materials for 1200 sqft house\"\n• \"How much cement for 2BHK?\"\n• \"Compare material prices\"\n\nOr use the calculator below for a quick estimate!",
-      timestamp: new Date(),
-    },
+    { id: 0, role: 'bot', content: `Hello${user?.full_name ? `, ${user.full_name}` : ''}! 👋 I'm your AI Construction Material Estimator.\n\nTell me about your construction project and I'll estimate the materials you need with current market prices. You can describe:\n\n• A house (e.g., "2BHK, 1200 sq ft")\n• A slab or foundation\n• A compound wall\n• Any other structure\n\nOr try one of the quick prompts below!` }
   ]);
   const [input, setInput] = useState('');
-  const [showCalculator, setShowCalculator] = useState(true);
-  const [calcArea, setCalcArea] = useState('1200');
-  const [calcType, setCalcType] = useState('residential');
-  const [calcQuality, setCalcQuality] = useState('standard');
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [isTyping, setIsTyping] = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
 
-  const processMessage = (text: string) => {
-    const userMsg: Message = { id: Date.now(), role: 'user', content: text, timestamp: new Date() };
-    setMessages((prev) => [...prev, userMsg]);
+  const handleSend = (text?: string) => {
+    const msg = text || input.trim();
+    if (!msg) return;
     setInput('');
 
-    // Simple NLP
-    const areaMatch = text.match(/(\d{3,5})\s*(sqft|sq\s*ft|square\s*feet|sft)/i);
-    const dimMatch = text.match(/(\d+)\s*[xX×]\s*(\d+)/);
-    let area = 0;
-    if (areaMatch) area = parseInt(areaMatch[1]);
-    else if (dimMatch) area = parseInt(dimMatch[1]) * parseInt(dimMatch[2]);
-
-    let sType = 'residential';
-    if (/commercial|shop|office/i.test(text)) sType = 'commercial';
-    else if (/apartment|flat/i.test(text)) sType = 'apartment';
-    else if (/warehouse|godown/i.test(text)) sType = 'warehouse';
-    else if (/compound|wall|boundary/i.test(text)) sType = 'compound_wall';
+    const userMsg: Message = { id: messages.length, role: 'user', content: msg };
+    setMessages(prev => [...prev, userMsg]);
+    setIsTyping(true);
 
     setTimeout(() => {
-      if (area > 0) {
-        const est = estimateMaterials(area, sType, calcQuality);
-        const botMsg: Message = {
-          id: Date.now() + 1,
-          role: 'assistant',
-          content: `Here's the material estimate for your ${area} sqft ${sType.replace('_', ' ')} project:`,
-          timestamp: new Date(),
-          estimation: est,
-        };
-        setMessages((prev) => [...prev, botMsg]);
-      } else if (/price|rate|cost/i.test(text) && /cement/i.test(text)) {
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: Date.now() + 1,
-            role: 'assistant',
-            content:
-              '**Current Cement Prices in Peddapalli:**\n\n| Brand | Price/Bag | Rating |\n|-------|-----------|--------|\n| UltraTech OPC 53 | ₹380 | ⭐ 4.5 |\n| ACC Gold | ₹375 | ⭐ 4.3 |\n| Ambuja Plus | ₹370 | ⭐ 4.4 |\n| Zuari Star | ₹355 | ⭐ 4.1 |\n| Dalmia DSP | ₹365 | ⭐ 4.2 |\n\n💡 Tip: Buying 100+ bags? Nirmaan gets you bulk discounts of up to 8%!',
-            timestamp: new Date(),
-          },
-        ]);
-      } else if (/price|rate|cost/i.test(text) && /steel/i.test(text)) {
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: Date.now() + 1,
-            role: 'assistant',
-            content:
-              '**Current Steel Prices (TMT Fe500D):**\n\n| Brand | Price/Ton | |\n|-------|-----------|--|\n| Tata Tiscon | ₹65,000 | Best Quality |\n| JSW NeoSteel | ₹63,500 | Popular |\n| SAIL TMT | ₹61,000 | Value |\n| Vizag Steel | ₹62,000 | Regional |\n\n📉 Steel prices have dropped ~3% this month. Good time to buy!',
-            timestamp: new Date(),
-          },
-        ]);
-      } else if (/2\s*bhk/i.test(text)) {
-        const est = estimateMaterials(1100, 'residential', calcQuality);
-        const botMsg: Message = {
-          id: Date.now() + 1,
-          role: 'assistant',
-          content: 'A typical 2BHK house is around 1,000-1,200 sqft. Here\'s the estimate for 1,100 sqft:',
-          timestamp: new Date(),
-          estimation: est,
-        };
-        setMessages((prev) => [...prev, botMsg]);
-      } else if (/3\s*bhk/i.test(text)) {
-        const est = estimateMaterials(1600, 'residential', calcQuality);
-        const botMsg: Message = {
-          id: Date.now() + 1,
-          role: 'assistant',
-          content: 'A typical 3BHK house is around 1,400-1,800 sqft. Here\'s the estimate for 1,600 sqft:',
-          timestamp: new Date(),
-          estimation: est,
-        };
-        setMessages((prev) => [...prev, botMsg]);
-      } else {
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: Date.now() + 1,
-            role: 'assistant',
-            content:
-              "I can help you with:\n\n🧮 **Material Estimation** — Tell me the area (e.g., \"1200 sqft house\")\n💰 **Price Comparison** — Ask about specific materials (e.g., \"cement prices\")\n📊 **Cost Prediction** — Full project cost breakdowns\n🏗️ **Construction Tips** — Best practices and material selection\n\nTry: \"Estimate materials for 1500 sqft residential house\"",
-            timestamp: new Date(),
-          },
-        ]);
-      }
-    }, 800);
+      const { products, totalCost, summary } = estimateMaterials(msg);
+      const botMsg: Message = {
+        id: messages.length + 1,
+        role: 'bot',
+        content: summary,
+        products,
+        totalCost,
+      };
+      setMessages(prev => [...prev, botMsg]);
+      setIsTyping(false);
+    }, 1500);
   };
 
-  const handleCalculate = () => {
-    const area = parseInt(calcArea);
-    if (!area || area < 100) return;
-    const est = estimateMaterials(area, calcType, calcQuality);
-    const msg: Message = {
-      id: Date.now(),
-      role: 'assistant',
-      content: `📊 **Quick Estimate** for ${area} sqft ${calcType.replace('_', ' ')} (${calcQuality} quality):`,
-      timestamp: new Date(),
-      estimation: est,
-    };
-    setMessages((prev) => [...prev, msg]);
-    setShowCalculator(false);
+  const handleReset = () => {
+    setMessages([{ id: 0, role: 'bot', content: `Let's start fresh! Tell me about your construction project and I'll estimate the materials needed.` }]);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header */}
-      <div className="bg-white border-b sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-xl">🤖</div>
-            <div>
-              <h1 className="font-bold text-gray-900">Nirmaan AI Estimator</h1>
-              <p className="text-xs text-green-600">● Online — Powered by local market data</p>
+    <AuthGuard>
+      <div className="min-h-screen bg-gray-50 flex flex-col">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-violet-600 to-purple-700 py-6 px-4">
+          <div className="max-w-4xl mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="bg-white/20 rounded-xl p-2.5"><Bot className="w-6 h-6 text-white" /></div>
+              <div>
+                <h1 className="text-xl font-bold text-white">AI Material Estimator</h1>
+                <p className="text-violet-200 text-sm">Powered by Nirmaan AI · Telangana Market Rates</p>
+              </div>
             </div>
+            <button onClick={handleReset} className="bg-white/20 hover:bg-white/30 text-white rounded-xl px-3 py-2 text-sm font-semibold flex items-center gap-1"><RotateCcw className="w-4 h-4" /> Reset</button>
           </div>
-          <button
-            onClick={() => setShowCalculator(!showCalculator)}
-            className="px-4 py-2 bg-orange-100 text-orange-700 rounded-lg text-sm font-medium hover:bg-orange-200 transition"
-          >
-            {showCalculator ? 'Hide' : 'Show'} Calculator
-          </button>
         </div>
-      </div>
 
-      <div className="flex-1 max-w-4xl mx-auto w-full flex flex-col">
-        {/* Quick Calculator */}
-        {showCalculator && (
-          <div className="bg-white mx-4 mt-4 rounded-xl shadow-sm border p-5">
-            <h3 className="font-semibold text-gray-900 mb-4">⚡ Quick Material Calculator</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-              <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">Area (sqft)</label>
-                <input
-                  type="number"
-                  value={calcArea}
-                  onChange={(e) => setCalcArea(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
-                  placeholder="1200"
-                />
+        {/* Chat area */}
+        <div className="flex-1 max-w-4xl w-full mx-auto px-4 py-6 overflow-y-auto">
+          <div className="space-y-4">
+            {messages.map(msg => (
+              <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-[85%] ${msg.role === 'user'
+                  ? 'bg-violet-600 text-white rounded-2xl rounded-br-md px-5 py-3'
+                  : 'bg-white border border-gray-100 shadow-sm rounded-2xl rounded-bl-md px-5 py-4'}`}>
+                  {msg.role === 'bot' && (
+                    <div className="flex items-center gap-2 mb-2">
+                      <Sparkles className="w-4 h-4 text-violet-500" />
+                      <span className="text-xs font-bold text-violet-600">Nirmaan AI</span>
+                    </div>
+                  )}
+                  <p className={`text-sm whitespace-pre-line ${msg.role === 'user' ? 'text-white' : 'text-gray-700'}`}>{msg.content}</p>
+
+                  {msg.products && msg.products.length > 0 && (
+                    <div className="mt-4">
+                      <div className="bg-gray-50 rounded-xl overflow-hidden border border-gray-100">
+                        <table className="w-full text-sm">
+                          <thead><tr className="bg-gray-100 text-gray-600">
+                            <th className="text-left px-3 py-2 font-semibold">Material</th>
+                            <th className="text-right px-3 py-2 font-semibold">Qty</th>
+                            <th className="text-right px-3 py-2 font-semibold">Rate</th>
+                            <th className="text-right px-3 py-2 font-semibold">Total</th>
+                          </tr></thead>
+                          <tbody className="divide-y divide-gray-100">
+                            {msg.products.map((p, i) => (
+                              <tr key={i} className="hover:bg-gray-50">
+                                <td className="px-3 py-2 font-medium text-gray-900">{p.name}</td>
+                                <td className="px-3 py-2 text-right text-gray-600">{p.qty} {p.unit}</td>
+                                <td className="px-3 py-2 text-right text-gray-600">₹{p.rate}</td>
+                                <td className="px-3 py-2 text-right font-bold text-gray-900">₹{p.total.toLocaleString('en-IN')}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                        <div className="bg-violet-50 px-3 py-3 flex items-center justify-between">
+                          <span className="font-bold text-violet-700">Estimated Total Cost</span>
+                          <span className="text-lg font-extrabold text-violet-700">₹{msg.totalCost!.toLocaleString('en-IN')}</span>
+                        </div>
+                      </div>
+                      <div className="mt-3 flex gap-2">
+                        <button className="bg-violet-500 hover:bg-violet-600 text-white text-xs font-bold px-4 py-2 rounded-lg transition-all">🛒 Add All to Cart</button>
+                        <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold px-4 py-2 rounded-lg transition-all">📄 Download PDF</button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">Structure Type</label>
-                <select
-                  value={calcType}
-                  onChange={(e) => setCalcType(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
-                >
-                  {structureTypes.map((st) => (
-                    <option key={st.value} value={st.value}>
-                      {st.icon} {st.label}
-                    </option>
-                  ))}
-                </select>
+            ))}
+
+            {isTyping && (
+              <div className="flex justify-start">
+                <div className="bg-white border border-gray-100 shadow-sm rounded-2xl rounded-bl-md px-5 py-4">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-violet-500" />
+                    <span className="text-xs font-bold text-violet-600">Nirmaan AI</span>
+                  </div>
+                  <div className="flex gap-1 mt-2">
+                    <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <div className="w-2 h-2 bg-violet-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                  </div>
+                </div>
               </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-500 mb-1">Quality</label>
-                <select
-                  value={calcQuality}
-                  onChange={(e) => setCalcQuality(e.target.value)}
-                  className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
-                >
-                  <option value="economy">Economy</option>
-                  <option value="standard">Standard</option>
-                  <option value="premium">Premium</option>
-                </select>
-              </div>
-              <div className="flex items-end">
-                <button
-                  onClick={handleCalculate}
-                  className="w-full bg-orange-600 text-white py-2 rounded-lg font-semibold hover:bg-orange-700 transition"
-                >
-                  Calculate
-                </button>
-              </div>
+            )}
+            <div ref={bottomRef} />
+          </div>
+        </div>
+
+        {/* Quick Prompts */}
+        {messages.length <= 1 && (
+          <div className="max-w-4xl w-full mx-auto px-4 pb-4">
+            <p className="text-xs text-gray-500 font-semibold mb-2">Quick Estimates:</p>
+            <div className="flex flex-wrap gap-2">
+              {quickPrompts.map((qp, i) => (
+                <button key={i} onClick={() => handleSend(qp.prompt)} className="bg-white border border-gray-200 hover:border-violet-300 hover:bg-violet-50 text-gray-700 text-sm px-4 py-2 rounded-full transition-all font-medium">{qp.label}</button>
+              ))}
             </div>
           </div>
         )}
 
-        {/* Chat Messages */}
-        <div className="flex-1 px-4 py-4 space-y-4 overflow-y-auto">
-          {messages.map((msg) => (
-            <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div
-                className={`max-w-[85%] rounded-2xl px-4 py-3 ${
-                  msg.role === 'user' ? 'bg-orange-600 text-white' : 'bg-white shadow-sm border'
-                }`}
-              >
-                <div className="whitespace-pre-wrap text-sm">{msg.content}</div>
-
-                {msg.estimation && (
-                  <div className="mt-3 bg-gray-50 rounded-xl p-4 border">
-                    <div className="grid grid-cols-3 gap-3 mb-4">
-                      <div className="text-center bg-white p-2 rounded-lg">
-                        <p className="text-xs text-gray-500">Total Cost</p>
-                        <p className="font-bold text-orange-600">₹{msg.estimation.total_cost.toLocaleString()}</p>
-                      </div>
-                      <div className="text-center bg-white p-2 rounded-lg">
-                        <p className="text-xs text-gray-500">Cost/sqft</p>
-                        <p className="font-bold text-gray-900">₹{msg.estimation.cost_per_sqft}</p>
-                      </div>
-                      <div className="text-center bg-white p-2 rounded-lg">
-                        <p className="text-xs text-gray-500">Area</p>
-                        <p className="font-bold text-gray-900">{msg.estimation.area_sqft} sqft</p>
-                      </div>
-                    </div>
-
-                    <table className="w-full text-xs">
-                      <thead>
-                        <tr className="border-b">
-                          <th className="text-left py-1.5 text-gray-500 font-medium">Material</th>
-                          <th className="text-right py-1.5 text-gray-500 font-medium">Qty</th>
-                          <th className="text-right py-1.5 text-gray-500 font-medium">Rate</th>
-                          <th className="text-right py-1.5 text-gray-500 font-medium">Cost</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {msg.estimation.materials.map((m, i) => (
-                          <tr key={i} className="border-b border-gray-100">
-                            <td className="py-1.5 text-gray-800">{m.material}</td>
-                            <td className="py-1.5 text-right text-gray-600">
-                              {m.quantity} {m.unit}
-                            </td>
-                            <td className="py-1.5 text-right text-gray-600">₹{m.unit_cost.toLocaleString()}</td>
-                            <td className="py-1.5 text-right font-medium text-gray-900">
-                              ₹{m.total_cost.toLocaleString()}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-
-                    <div className="mt-3 flex gap-2">
-                      <button className="flex-1 text-xs bg-orange-600 text-white py-2 rounded-lg font-medium hover:bg-orange-700">
-                        🛒 Add All to Cart
-                      </button>
-                      <button className="flex-1 text-xs border border-gray-300 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-50">
-                        📥 Download PDF
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                <p className={`text-[10px] mt-1 ${msg.role === 'user' ? 'text-orange-200' : 'text-gray-400'}`}>
-                  {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </p>
-              </div>
-            </div>
-          ))}
-          <div ref={messagesEndRef} />
-        </div>
-
-        {/* Quick prompts */}
-        <div className="px-4 pb-2">
-          <div className="flex gap-2 overflow-x-auto pb-2">
-            {quickPrompts.map((prompt, i) => (
-              <button
-                key={i}
-                onClick={() => processMessage(prompt)}
-                className="flex-shrink-0 px-3 py-1.5 bg-white border border-gray-200 rounded-full text-xs text-gray-600 hover:border-orange-500 hover:text-orange-600 transition"
-              >
-                {prompt}
-              </button>
-            ))}
-          </div>
-        </div>
-
         {/* Input */}
-        <div className="px-4 pb-4">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (input.trim()) processMessage(input.trim());
-            }}
-            className="flex gap-2"
-          >
+        <div className="border-t border-gray-200 bg-white p-4">
+          <div className="max-w-4xl mx-auto flex gap-3">
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask about materials, prices, or estimates..."
-              className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
+              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+              placeholder="Describe your construction project (e.g., 2BHK house, 1500 sq ft)..."
+              className="flex-1 border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none text-sm"
+              disabled={isTyping}
             />
             <button
-              type="submit"
-              disabled={!input.trim()}
-              className="px-6 py-3 bg-orange-600 text-white rounded-xl font-semibold hover:bg-orange-700 disabled:bg-gray-300 transition"
+              onClick={() => handleSend()}
+              disabled={!input.trim() || isTyping}
+              className="bg-violet-500 hover:bg-violet-600 disabled:bg-gray-300 text-white rounded-xl px-5 py-3 transition-all"
             >
-              Send
+              <Send className="w-5 h-5" />
             </button>
-          </form>
-        </div>
-
-        {/* Market Rates Bar */}
-        <div className="bg-white border-t px-4 py-3">
-          <p className="text-xs font-medium text-gray-500 mb-2">📊 Today&apos;s Market Rates (Peddapalli)</p>
-          <div className="flex gap-4 overflow-x-auto text-xs">
-            {Object.entries(materialRates).map(([name, rates]) => (
-              <div key={name} className="flex-shrink-0 flex items-center gap-1.5">
-                <span className="text-gray-700 font-medium">{name}:</span>
-                <span className="text-gray-900">₹{rates.standard}/{rates.unit}</span>
-              </div>
-            ))}
           </div>
         </div>
       </div>
-    </div>
+    </AuthGuard>
   );
 }
