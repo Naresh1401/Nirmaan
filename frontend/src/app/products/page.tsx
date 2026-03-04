@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import AuthGuard from '@/components/AuthGuard';
 import { Search, SlidersHorizontal, Star, Truck, MapPin, ShoppingCart, Heart, IndianRupee, Factory, ChevronDown, X, Package, ArrowUpDown } from 'lucide-react';
@@ -38,12 +39,21 @@ const categoryOptions = [
 ];
 
 export default function ProductsPage() {
+  const searchParams = useSearchParams();
   const [searchQ, setSearchQ] = useState('');
   const [category, setCategory] = useState('');
   const [sortBy, setSortBy] = useState('relevance');
   const [showFilters, setShowFilters] = useState(false);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
   const [ratingFilter, setRatingFilter] = useState(0);
+
+  // Read URL params on mount
+  useEffect(() => {
+    const q = searchParams.get('q');
+    const cat = searchParams.get('category');
+    if (q) setSearchQ(q);
+    if (cat) setCategory(cat);
+  }, [searchParams]);
 
   const filtered = allProducts
     .filter(p => {

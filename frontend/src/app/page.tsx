@@ -25,19 +25,19 @@ const categories = [
 ];
 
 const trendingProducts = [
-  { name: 'UltraTech Cement (50kg)', price: 385, mrp: 420, supplier: 'Peddapalli Traders', rating: 4.5, reviews: 128, discount: 8, unit: 'bag' },
-  { name: 'JSW TMT Steel Bar (12mm)', price: 62500, mrp: 68000, supplier: 'Sri Steel Works', rating: 4.7, reviews: 89, discount: 8, unit: 'ton' },
-  { name: 'River Sand (Fine)', price: 2800, mrp: 3200, supplier: 'Godavari Sand Depot', rating: 4.3, reviews: 234, discount: 12, unit: 'ton' },
-  { name: 'Red Clay Bricks (1000pcs)', price: 6500, mrp: 7500, supplier: 'Kalyan Brick Works', rating: 4.6, reviews: 167, discount: 13, unit: 'lot' },
-  { name: 'ACC Cement (50kg)', price: 375, mrp: 410, supplier: 'Karimnagar Hardware', rating: 4.4, reviews: 95, discount: 9, unit: 'bag' },
-  { name: 'Crushed Stone 20mm', price: 1800, mrp: 2100, supplier: 'Rock Aggregates', rating: 4.2, reviews: 56, discount: 14, unit: 'ton' },
+  { id: '1', name: 'UltraTech Cement (50kg)', price: 385, mrp: 420, supplier: 'Peddapalli Traders', rating: 4.5, reviews: 128, discount: 8, unit: 'bag' },
+  { id: '4', name: 'JSW TMT Steel Bar (12mm)', price: 62500, mrp: 68000, supplier: 'Sri Steel Works', rating: 4.7, reviews: 89, discount: 8, unit: 'ton' },
+  { id: '6', name: 'River Sand (Fine)', price: 2800, mrp: 3200, supplier: 'Godavari Sand Depot', rating: 4.3, reviews: 234, discount: 12, unit: 'ton' },
+  { id: '8', name: 'Red Clay Bricks (1000pcs)', price: 6500, mrp: 7500, supplier: 'Kalyan Brick Works', rating: 4.6, reviews: 167, discount: 13, unit: 'lot' },
+  { id: '2', name: 'ACC Cement (50kg)', price: 375, mrp: 410, supplier: 'Karimnagar Hardware', rating: 4.4, reviews: 95, discount: 9, unit: 'bag' },
+  { id: '14', name: 'Crushed Stone 20mm', price: 1800, mrp: 2100, supplier: 'Rock Aggregates', rating: 4.2, reviews: 56, discount: 14, unit: 'ton' },
 ];
 
 const deals = [
-  { title: 'Bulk Cement Deal', desc: 'Order 100+ bags & save ₹15/bag', bg: 'from-orange-500 to-red-600', icon: '🏗️', savings: '₹1,500' },
-  { title: 'Steel Season Sale', desc: 'TMT bars at factory-direct prices', bg: 'from-blue-500 to-indigo-600', icon: '🔩', savings: '₹5,500/ton' },
-  { title: 'Sand + Gravel Combo', desc: 'Order together & save on delivery', bg: 'from-amber-500 to-orange-600', icon: '⏳', savings: '₹800' },
-  { title: 'First Order Bonus', desc: 'Flat ₹500 off on your first order', bg: 'from-green-500 to-emerald-600', icon: '🎁', savings: '₹500' },
+  { title: 'Bulk Cement Deal', desc: 'Order 100+ bags & save ₹15/bag', bg: 'from-orange-500 to-red-600', icon: '🏗️', savings: '₹1,500', category: 'cement' },
+  { title: 'Steel Season Sale', desc: 'TMT bars at factory-direct prices', bg: 'from-blue-500 to-indigo-600', icon: '🔩', savings: '₹5,500/ton', category: 'steel' },
+  { title: 'Sand + Gravel Combo', desc: 'Order together & save on delivery', bg: 'from-amber-500 to-orange-600', icon: '⏳', savings: '₹800', category: 'sand' },
+  { title: 'First Order Bonus', desc: 'Flat ₹500 off on your first order', bg: 'from-green-500 to-emerald-600', icon: '🎁', savings: '₹500', category: '' },
 ];
 
 const testimonials = [
@@ -106,16 +106,16 @@ export default function HomePage() {
             </div>
             <div className="hidden lg:grid grid-cols-2 gap-4">
               {[
-                { icon: TrendingDown, title: 'Best Prices', desc: 'Compare across suppliers' },
-                { icon: Truck, title: 'Fast Delivery', desc: 'Same-day to your site' },
-                { icon: ShieldCheck, title: 'Quality Verified', desc: 'Certified materials' },
-                { icon: CreditCard, title: 'Business Credit', desc: 'Buy now, pay later' },
+                { icon: TrendingDown, title: 'Best Prices', desc: 'Compare across suppliers', href: '/products' },
+                { icon: Truck, title: 'Fast Delivery', desc: 'Same-day to your site', href: '/orders' },
+                { icon: ShieldCheck, title: 'Quality Verified', desc: 'Certified materials', href: '/suppliers' },
+                { icon: CreditCard, title: 'Business Credit', desc: 'Buy now, pay later', href: '/credit' },
               ].map(f => (
-                <div key={f.title} className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all">
+                <Link key={f.title} href={isAuthenticated ? f.href : '/login'} className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all cursor-pointer">
                   <f.icon className="w-10 h-10 text-yellow-200 mb-3" />
                   <h3 className="text-white font-bold text-lg">{f.title}</h3>
                   <p className="text-orange-100 text-sm mt-1">{f.desc}</p>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
@@ -164,7 +164,7 @@ export default function HomePage() {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {deals.map((d, i) => (
-              <Link key={i} href={isAuthenticated ? '/products' : '/login'} className={`bg-gradient-to-br ${d.bg} rounded-2xl p-6 text-white hover:scale-[1.02] transition-transform shadow-lg`}>
+              <Link key={i} href={isAuthenticated ? `/products${d.category ? `?category=${d.category}` : ''}` : '/login'} className={`bg-gradient-to-br ${d.bg} rounded-2xl p-6 text-white hover:scale-[1.02] transition-transform shadow-lg`}>
                 <span className="text-4xl mb-3 block">{d.icon}</span>
                 <h3 className="font-bold text-lg">{d.title}</h3>
                 <p className="text-white/80 text-sm mt-1">{d.desc}</p>
@@ -189,7 +189,7 @@ export default function HomePage() {
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {trendingProducts.map((p, i) => (
-            <Link key={i} href={isAuthenticated ? '/products' : '/login'} className="bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 overflow-hidden group">
+            <Link key={i} href={isAuthenticated ? `/products/${p.id}` : '/login'} className="bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 overflow-hidden group">
               <div className="p-5">
                 <div className="flex items-start justify-between mb-3">
                   <div className="bg-red-50 text-red-600 text-xs font-bold px-2 py-1 rounded-lg">{p.discount}% OFF</div>
@@ -211,7 +211,7 @@ export default function HomePage() {
               <div className="border-t border-gray-50 px-5 py-3 bg-gray-50/50 flex items-center justify-between">
                 <span className="text-xs text-gray-500 flex items-center gap-1"><MapPin className="w-3 h-3" /> {selectedCity}</span>
                 <span className="text-orange-600 text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
-                  {isAuthenticated ? 'Add to Cart' : 'Login to Order'} <ShoppingCart className="w-4 h-4" />
+                  {isAuthenticated ? 'View Details' : 'Login to Order'} <ShoppingCart className="w-4 h-4" />
                 </span>
               </div>
             </Link>
@@ -228,18 +228,19 @@ export default function HomePage() {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { icon: BarChart3, title: 'Price Transparency', desc: 'Compare real-time prices from multiple suppliers. View 30-day price history & trends. Never overpay again.', color: 'text-blue-400', bg: 'bg-blue-400/10' },
-              { icon: Package, title: 'Inventory Visibility', desc: 'See real-time stock levels across all suppliers. No more wasted trips to out-of-stock dealers.', color: 'text-green-400', bg: 'bg-green-400/10' },
-              { icon: Truck, title: 'Reliable Delivery', desc: 'GPS-tracked deliveries with exact ETAs. Combined delivery for multiple materials to save cost.', color: 'text-orange-400', bg: 'bg-orange-400/10' },
-              { icon: Calculator, title: 'Smart Estimator', desc: 'AI-powered material calculator. Enter your project size, get exact material requirements instantly.', color: 'text-purple-400', bg: 'bg-purple-400/10' },
-              { icon: CreditCard, title: 'Business Credit', desc: 'Get up to ₹5L credit line. Buy now, pay in 30/60/90 days. Digital invoices & payment tracking.', color: 'text-yellow-400', bg: 'bg-yellow-400/10' },
-              { icon: Shield, title: 'Quality Assured', desc: 'All suppliers verified. Material certifications verified. Weight verification at pickup & delivery.', color: 'text-red-400', bg: 'bg-red-400/10' },
+              { icon: BarChart3, title: 'Price Transparency', desc: 'Compare real-time prices from multiple suppliers. View 30-day price history & trends. Never overpay again.', color: 'text-blue-400', bg: 'bg-blue-400/10', href: '/products' },
+              { icon: Package, title: 'Inventory Visibility', desc: 'See real-time stock levels across all suppliers. No more wasted trips to out-of-stock dealers.', color: 'text-green-400', bg: 'bg-green-400/10', href: '/products' },
+              { icon: Truck, title: 'Reliable Delivery', desc: 'GPS-tracked deliveries with exact ETAs. Combined delivery for multiple materials to save cost.', color: 'text-orange-400', bg: 'bg-orange-400/10', href: '/delivery/register' },
+              { icon: Calculator, title: 'Smart Estimator', desc: 'AI-powered material calculator. Enter your project size, get exact material requirements instantly.', color: 'text-purple-400', bg: 'bg-purple-400/10', href: '/estimator' },
+              { icon: CreditCard, title: 'Business Credit', desc: 'Get up to ₹5L credit line. Buy now, pay in 30/60/90 days. Digital invoices & payment tracking.', color: 'text-yellow-400', bg: 'bg-yellow-400/10', href: '/credit' },
+              { icon: Shield, title: 'Quality Assured', desc: 'All suppliers verified. Material certifications verified. Weight verification at pickup & delivery.', color: 'text-red-400', bg: 'bg-red-400/10', href: '/suppliers' },
             ].map(f => (
-              <div key={f.title} className={`${f.bg} border border-white/5 rounded-2xl p-6 hover:border-white/20 transition-all`}>
+              <Link key={f.title} href={isAuthenticated ? f.href : '/login'} className={`${f.bg} border border-white/5 rounded-2xl p-6 hover:border-white/20 transition-all cursor-pointer group`}>
                 <f.icon className={`w-10 h-10 ${f.color} mb-4`} />
-                <h3 className="text-white font-bold text-lg mb-2">{f.title}</h3>
+                <h3 className="text-white font-bold text-lg mb-2 group-hover:text-orange-300 transition-colors">{f.title}</h3>
                 <p className="text-slate-400 text-sm leading-relaxed">{f.desc}</p>
-              </div>
+                <span className="inline-flex items-center gap-1 text-xs font-semibold mt-3 text-slate-500 group-hover:text-orange-400 transition-colors">Learn more <ArrowRight className="w-3 h-3" /></span>
+              </Link>
             ))}
           </div>
         </div>
@@ -253,21 +254,21 @@ export default function HomePage() {
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
-            { step: '01', title: 'Search & Compare', desc: 'Browse materials, compare prices across suppliers, check ratings & reviews', icon: Search, color: 'bg-orange-500' },
-            { step: '02', title: 'Add to Cart & Order', desc: 'Select quantity, choose delivery slot, apply bulk discounts automatically', icon: ShoppingCart, color: 'bg-blue-500' },
-            { step: '03', title: 'Track in Real-Time', desc: 'GPS-tracked delivery from warehouse to your construction site', icon: MapPin, color: 'bg-green-500' },
-            { step: '04', title: 'Verify & Accept', desc: 'Check weight, quality verification, rate your experience', icon: CheckCircle2, color: 'bg-purple-500' },
+            { step: '01', title: 'Search & Compare', desc: 'Browse materials, compare prices across suppliers, check ratings & reviews', icon: Search, color: 'bg-orange-500', href: '/products' },
+            { step: '02', title: 'Add to Cart & Order', desc: 'Select quantity, choose delivery slot, apply bulk discounts automatically', icon: ShoppingCart, color: 'bg-blue-500', href: '/cart' },
+            { step: '03', title: 'Track in Real-Time', desc: 'GPS-tracked delivery from warehouse to your construction site', icon: MapPin, color: 'bg-green-500', href: '/orders' },
+            { step: '04', title: 'Verify & Accept', desc: 'Check weight, quality verification, rate your experience', icon: CheckCircle2, color: 'bg-purple-500', href: '/orders' },
           ].map(s => (
-            <div key={s.step} className="relative group">
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-lg transition-all h-full">
+            <Link key={s.step} href={isAuthenticated ? s.href : '/login'} className="relative group">
+              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-lg hover:border-orange-200 transition-all h-full">
                 <div className={`${s.color} w-14 h-14 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                   <s.icon className="w-7 h-7 text-white" />
                 </div>
                 <div className="text-xs font-bold text-gray-300 mb-2">STEP {s.step}</div>
-                <h3 className="font-bold text-gray-900 text-lg mb-2">{s.title}</h3>
+                <h3 className="font-bold text-gray-900 text-lg mb-2 group-hover:text-orange-600 transition-colors">{s.title}</h3>
                 <p className="text-gray-500 text-sm">{s.desc}</p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
