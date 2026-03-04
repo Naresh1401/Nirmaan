@@ -7,8 +7,9 @@ import { Menu, X, ShoppingCart, User, Building2 } from "lucide-react";
 const NAV_LINKS = [
   { label: "Materials", href: "/products" },
   { label: "Suppliers", href: "/suppliers" },
+  { label: "AI Estimator", href: "/estimator" },
   { label: "Track Order", href: "/orders" },
-  { label: "For Suppliers", href: "/suppliers/register" },
+  { label: "About", href: "/about" },
 ];
 
 export function Navbar() {

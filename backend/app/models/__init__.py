@@ -6,6 +6,9 @@ from app.models.product import Product, Category
 from app.models.order import Order, OrderItem
 from app.models.delivery import DeliveryPartner, Delivery
 from app.models.review import Review
+from app.models.inventory import PriceHistory, InventoryLog
+from app.models.payment import Payment, CreditAccount, CreditTransaction
+from app.models.quality import QualityCheck
 
 __all__ = [
     "User",
@@ -17,4 +20,10 @@ __all__ = [
     "DeliveryPartner",
     "Delivery",
     "Review",
+    "PriceHistory",
+    "InventoryLog",
+    "Payment",
+    "CreditAccount",
+    "CreditTransaction",
+    "QualityCheck",
 ]

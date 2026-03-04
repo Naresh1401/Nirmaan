@@ -42,7 +42,7 @@ class Settings(BaseSettings):
     AWS_ACCESS_KEY_ID: str = ""
     AWS_SECRET_ACCESS_KEY: str = ""
 
-    model_config = {"env_file": ".env", "case_sensitive": True}
+    model_config = {"env_file": "../.env", "case_sensitive": True, "extra": "ignore"}
 
 
 settings = Settings()
