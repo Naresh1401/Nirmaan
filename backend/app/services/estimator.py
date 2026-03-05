@@ -13,7 +13,7 @@ from pydantic import BaseModel, Field
 
 
 # ── Material Rate Database (INR) ─────────────────────────
-# Based on Telangana/AP market rates (2024-2025)
+# Based on Telangana/AP market rates (2025-2026)
 MATERIAL_RATES = {
     "cement_bag_50kg": {"economy": 340, "standard": 380, "premium": 420},
     "sand_cubic_ft": {"economy": 45, "standard": 55, "premium": 65},

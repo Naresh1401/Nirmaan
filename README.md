@@ -98,11 +98,12 @@ NIRMAN/
 │       │   ├── supplier.py       # Supplier profiles
 │       │   ├── order.py          # Order, OrderItem, SubOrder
 │       │   ├── delivery.py       # DeliveryPartner, Delivery
+│       │   ├── admin.py          # AdminProfile, TOTPDevice, BackupCode, AdminSession, AuditLog, Dispute, SystemAlert, ForecastResult
 │       │   ├── review.py         # Product/Supplier reviews
 │       │   ├── payment.py        # Payment records
 │       │   ├── inventory.py      # Inventory & price change logs
 │       │   └── quality.py        # Quality checks
-│       ├── schemas/              # Pydantic request/response schemas
+│       ├── schemas/              # Pydantic request/response schemas (incl. admin.py for RBAC)
 │       ├── routers/
 │       │   ├── auth.py           # Register, login, OTP, forgot password
 │       │   ├── products.py       # CRUD products & categories
@@ -111,6 +112,8 @@ NIRMAN/
 │       │   ├── delivery.py       # Delivery partner ops & tracking
 │       │   ├── search.py         # Full-text search
 │       │   ├── admin.py          # Admin dashboard & management
+│       │   ├── admin_auth.py     # Admin 2FA auth (TOTP, sessions, backup codes)
+│       │   ├── admin_dashboard.py # Admin v2 RBAC dashboard (40+ endpoints)
 │       │   ├── estimator.py      # AI material estimator & chat
 │       │   ├── reviews.py        # Review system
 │       │   ├── prices.py         # Price history & trends
@@ -121,7 +124,9 @@ NIRMAN/
 │           ├── estimator.py      # Construction material calculations
 │           ├── logistics.py      # Delivery logistics
 │           ├── matching.py       # Supplier matching
-│           └── notifications.py  # Notification service
+│           ├── notifications.py  # Notification service
+│           ├── admin_security.py # Brute force, TOTP, sessions, audit, IP allowlist
+│           └── analytics.py      # Forecasting, predictions, recommendations
 │
 ├── frontend/
 │   ├── package.json
@@ -152,7 +157,21 @@ NIRMAN/
 │           ├── delivery/         # Delivery partner dashboard
 │           ├── estimator/        # AI material estimator
 │           ├── credit/           # Business credit dashboard
-│           ├── admin/            # Admin panel (6-tab dashboard)
+│           ├── admin/            # Admin Dashboard 2.0 (13 sub-pages, 2FA, RBAC)
+│           │   ├── login/        # Admin-specific login with 2FA
+│           │   ├── dashboard/    # KPIs, charts, system alerts
+│           │   ├── users/        # User management & roles
+│           │   ├── orders/       # Order oversight & overrides
+│           │   ├── suppliers/    # Supplier verification & metrics
+│           │   ├── products/     # Product & stock management
+│           │   ├── inventory/    # Inventory monitoring & alerts
+│           │   ├── deliveries/   # Delivery tracking & ops
+│           │   ├── payments/     # Payment records & refunds
+│           │   ├── disputes/     # Dispute resolution center
+│           │   ├── reviews/      # Review moderation
+│           │   ├── analytics/    # Forecasts, predictions, trends
+│           │   ├── security/     # Audit logs, sessions, IP rules
+│           │   └── settings/     # Admin profile & 2FA setup
 │           ├── about/            # About Nirmaan
 │           ├── contact/          # Contact us
 │           ├── blog/             # Construction blog
@@ -399,26 +418,40 @@ Register ──▶ Go Online ──▶ Accept Deliveries ──▶ Update Status
 3. **Update Location** — Send GPS coordinates for real-time tracking.
 4. **Manage Deliveries** — Update status: Picked Up → In Transit → Delivered. Record photos, weigh materials.
 
-### 5. Admin Dashboard
+### 5. Admin Dashboard 2.0 (2FA + RBAC)
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    ADMIN DASHBOARD                          │
-├──────────┬──────────┬──────────┬──────────┬────────┬────────┤
-│Dashboard │  Users   │  Orders  │Suppliers │Products│Security│
-│          │          │          │          │        │        │
-│ KPIs     │ List all │ Filter   │ Pending  │ Stock  │ Rate   │
-│ Revenue  │ Activate │ Status   │ Verify   │ OOS    │ Limits │
-│ Charts   │ Roles    │ Override │ Revenue  │ Search │ Logs   │
-└──────────┴──────────┴──────────┴──────────┴────────┴────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                          ADMIN DASHBOARD 2.0                                │
+├───────────┬───────┬────────┬──────────┬─────────┬───────────┬───────────────┤
+│ Dashboard │ Users │ Orders │Suppliers │Products │ Analytics │   Security    │
+│           │       │        │          │         │           │               │
+│ KPIs      │ CRUD  │ Filter │ Verify   │ Stock   │ Forecasts │ Audit logs    │
+│ Revenue   │ Roles │ Status │ Metrics  │ Alerts  │ Predict   │ Sessions      │
+│ Alerts    │ RBAC  │ Refund │ Revenue  │ OOS     │ Trends    │ IP allowlist  │
+├───────────┼───────┼────────┼──────────┼─────────┼───────────┼───────────────┤
+│ Inventory │Deliver│Payment │ Disputes │ Reviews │ Settings  │   2FA/TOTP    │
+│           │       │        │          │         │           │               │
+│ Low stock │ Track │ Logs   │ Resolve  │Moderate │ Profile   │ Backup codes  │
+│ History   │ Ops   │ Refund │ Escalate │ Flag    │ Config    │ Step-up auth  │
+└───────────┴───────┴────────┴──────────┴─────────┴───────────┴───────────────┘
 ```
 
-- **Dashboard Tab** — Total users, suppliers, products, orders, GMV, revenue (24h/7d/30d).
-- **Users Tab** — Search, filter by role, activate/deactivate accounts, change roles.
-- **Orders Tab** — All orders, filter by status/date, override status, update payment.
-- **Suppliers Tab** — Verify pending suppliers, view revenue per supplier.
-- **Products Tab** — Monitor stock levels, find out-of-stock items.
-- **Security Tab** — Rate limiting stats, active OTP count.
+**RBAC Roles** — `super_admin`, `admin`, `operations_manager`, `support_agent`, `viewer` (30+ permission scopes).
+
+- **Dashboard** — KPIs, revenue charts, system alerts, user growth metrics.
+- **Users** — CRUD, role assignment, activate/deactivate, search & filter.
+- **Orders** — All orders with status filters, override status, payment updates, refunds.
+- **Suppliers** — Verify pending suppliers, revenue per supplier, performance metrics.
+- **Products** — Stock monitoring, out-of-stock alerts, bulk management.
+- **Inventory** — Low stock warnings, inventory history, price change logs.
+- **Deliveries** — Real-time tracking, delivery ops, partner management.
+- **Payments** — Payment records, refund processing, financial reports.
+- **Disputes** — Customer dispute resolution, escalation, admin notes, status tracking.
+- **Reviews** — Content moderation, flag/unflag, respond to reviews.
+- **Analytics** — Revenue forecasts, demand predictions, supplier performance, market trends.
+- **Security** — Audit logs (all admin actions), active sessions, IP allowlisting, brute-force stats.
+- **Settings** — Admin profile, TOTP 2FA enrollment, backup codes, password change.
 
 ### 6. Credit System Flow
 
@@ -585,7 +618,75 @@ Apply ──▶ Auto-Approved ──▶ Use for Orders ──▶ Repay ──▶
 | GET | `/deliveries` | Delivery operations overview |
 | POST | `/create-admin` | Create a new admin user |
 
-**Total: 57 API endpoints** across 12 resource routers.
+### Admin Auth — `/api/v1/admin/auth` (Admin 2FA)
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| POST | `/login` | — | Admin login (username + password) |
+| POST | `/verify-2fa` | Token | Verify TOTP code for 2FA |
+| POST | `/setup-totp` | ✅ Admin | Generate TOTP secret & QR URI |
+| POST | `/confirm-totp` | ✅ Admin | Confirm TOTP setup with code |
+| DELETE | `/disable-totp` | ✅ Admin | Disable 2FA |
+| POST | `/backup-codes` | ✅ Admin | Generate backup codes |
+| POST | `/verify-backup-code` | ✅ Admin | Use a backup code |
+| GET | `/sessions` | ✅ Admin | List active admin sessions |
+| DELETE | `/sessions/{id}` | ✅ Admin | Revoke a specific session |
+| POST | `/step-up` | ✅ Admin | Step-up auth for sensitive ops |
+| POST | `/refresh` | ✅ Admin | Refresh admin token |
+| POST | `/logout` | ✅ Admin | Logout & invalidate session |
+| GET | `/me` | ✅ Admin | Get current admin profile |
+| PUT | `/profile` | ✅ Admin | Update admin profile |
+| PUT | `/change-password` | ✅ Admin | Change admin password |
+
+### Admin Dashboard v2 — `/api/v1/admin/v2` (RBAC protected)
+
+| Method | Endpoint | Scope | Description |
+|---|---|---|---|
+| GET | `/dashboard` | `dashboard:read` | Dashboard KPIs & metrics |
+| GET | `/users` | `users:read` | List users (paginated, filterable) |
+| GET | `/users/{id}` | `users:read` | Get user details |
+| PUT | `/users/{id}` | `users:write` | Update user |
+| DELETE | `/users/{id}` | `users:delete` | Delete user |
+| GET | `/orders` | `orders:read` | List orders with filters |
+| GET | `/orders/{id}` | `orders:read` | Get order details |
+| PUT | `/orders/{id}/status` | `orders:write` | Update order status |
+| POST | `/orders/{id}/refund` | `orders:write` | Process refund |
+| GET | `/suppliers` | `suppliers:read` | List suppliers with metrics |
+| GET | `/suppliers/{id}` | `suppliers:read` | Supplier details |
+| PUT | `/suppliers/{id}/verify` | `suppliers:write` | Verify/reject supplier |
+| GET | `/products` | `products:read` | List products |
+| GET | `/products/{id}` | `products:read` | Product details |
+| PUT | `/products/{id}` | `products:write` | Update product |
+| DELETE | `/products/{id}` | `products:delete` | Delete product |
+| GET | `/inventory` | `inventory:read` | Inventory overview |
+| GET | `/inventory/low-stock` | `inventory:read` | Low stock alerts |
+| PUT | `/inventory/{id}` | `inventory:write` | Update stock level |
+| GET | `/deliveries` | `deliveries:read` | Delivery overview |
+| GET | `/deliveries/{id}` | `deliveries:read` | Delivery details |
+| PUT | `/deliveries/{id}` | `deliveries:write` | Update delivery |
+| GET | `/payments` | `payments:read` | Payment records |
+| GET | `/payments/{id}` | `payments:read` | Payment details |
+| POST | `/payments/{id}/refund` | `payments:write` | Refund payment |
+| GET | `/disputes` | `disputes:read` | List disputes |
+| GET | `/disputes/{id}` | `disputes:read` | Dispute details |
+| PUT | `/disputes/{id}` | `disputes:write` | Update dispute status |
+| POST | `/disputes/{id}/notes` | `disputes:write` | Add dispute note |
+| GET | `/reviews` | `reviews:read` | List reviews |
+| PUT | `/reviews/{id}` | `reviews:write` | Moderate review |
+| DELETE | `/reviews/{id}` | `reviews:delete` | Delete review |
+| GET | `/analytics/revenue` | `analytics:read` | Revenue forecast |
+| GET | `/analytics/demand` | `analytics:read` | Demand prediction |
+| GET | `/analytics/suppliers` | `analytics:read` | Supplier performance |
+| GET | `/analytics/recommendations` | `analytics:read` | AI recommendations |
+| GET | `/security/audit-logs` | `security:read` | Audit log history |
+| GET | `/security/sessions` | `security:read` | Active admin sessions |
+| POST | `/security/ip-allowlist` | `security:write` | Add IP to allowlist |
+| DELETE | `/security/ip-allowlist` | `security:write` | Remove IP from allowlist |
+| GET | `/security/brute-force` | `security:read` | Brute-force attempt stats |
+| GET | `/alerts` | `dashboard:read` | System alerts |
+| PUT | `/alerts/{id}` | `dashboard:write` | Dismiss/acknowledge alert |
+
+**Total: 125+ API endpoints** across 14 resource routers.
 
 ---
 
@@ -606,10 +707,21 @@ Apply ──▶ Auto-Approved ──▶ Use for Orders ──▶ Repay ──▶
 - **JWT Tokens** — 30-minute access token, 7-day refresh token
 - **Password Hashing** — bcrypt with salt
 - **Password Strength** — Minimum 8 characters, 1 uppercase, 1 lowercase, 1 digit
-- **Brute Force Protection** — 1-second delay on failed login attempts
+- **Brute Force Protection** — 1-second delay on failed login attempts; admin lockout after 5 failures (15-min lock)
 - **OTP Security** — 6-digit codes, 5-minute expiry, max 3 attempts, 60-second cooldown between sends
 - **Admin Protection** — Admin role cannot be self-assigned during registration
 - **Anti-Enumeration** — Login/OTP/forgot-password return generic messages to prevent user enumeration
+
+### Admin Security (2FA + RBAC)
+
+- **TOTP Two-Factor Authentication** — Time-based one-time passwords via pyotp; QR code enrollment
+- **Backup Codes** — 10 single-use recovery codes per admin (bcrypt-hashed)
+- **Step-Up Authentication** — Re-verify TOTP for sensitive operations (role changes, deletions)
+- **RBAC** — 5 roles (`super_admin`, `admin`, `operations_manager`, `support_agent`, `viewer`) with 30+ granular permission scopes
+- **Admin Sessions** — Tracked in database; revocable; auto-expire after 24 hours
+- **Audit Logging** — Every admin action logged with user, IP, timestamp, action type, and details
+- **IP Allowlisting** — Optional allowlist restricts admin panel access by IP
+- **Brute-Force Tracking** — Failed admin login attempts tracked with automatic account lockout
 
 ---
 
@@ -631,7 +743,21 @@ Apply ──▶ Auto-Approved ──▶ Use for Orders ──▶ Repay ──▶
 | `/delivery` | Delivery partner dashboard | ✅ Delivery Partner |
 | `/estimator` | AI material estimator | — |
 | `/credit` | Business credit dashboard | ✅ |
-| `/admin` | Admin panel (6-tab dashboard) | ✅ Admin |
+| `/admin` | Admin Dashboard 2.0 (13 sub-pages, 2FA, RBAC) | ✅ Admin |
+| `/admin/login` | Admin login with 2FA | — |
+| `/admin/dashboard` | KPIs, revenue charts, system alerts | ✅ Admin |
+| `/admin/users` | User management & role assignment | ✅ Admin |
+| `/admin/orders` | Order oversight & status overrides | ✅ Admin |
+| `/admin/suppliers` | Supplier verification & metrics | ✅ Admin |
+| `/admin/products` | Product & stock management | ✅ Admin |
+| `/admin/inventory` | Inventory monitoring & low-stock alerts | ✅ Admin |
+| `/admin/deliveries` | Delivery tracking & partner ops | ✅ Admin |
+| `/admin/payments` | Payment records & refund processing | ✅ Admin |
+| `/admin/disputes` | Dispute resolution center | ✅ Admin |
+| `/admin/reviews` | Review moderation | ✅ Admin |
+| `/admin/analytics` | Forecasts, predictions, market trends | ✅ Admin |
+| `/admin/security` | Audit logs, sessions, IP rules | ✅ Admin |
+| `/admin/settings` | Admin profile & 2FA setup | ✅ Admin |
 | `/about` | About Nirmaan | — |
 | `/contact` | Contact form | — |
 | `/blog` | Construction blog | — |

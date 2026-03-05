@@ -39,7 +39,7 @@ const posts = [
   {
     slug: 'tmt-steel-bar-grades-explained',
     title: 'TMT Steel Bar Grades: Fe415, Fe500, Fe550 — What\'s the Difference?',
-    date: 'Dec 20, 2025',
+    date: 'Feb 15, 2026',
     readTime: '4 min',
     excerpt: 'Fe500 is the most commonly used grade for residential construction in our area. Fe550 is stronger but less ductile — usually overkill for houses. Here\'s when to use what.',
     category: 'Guide',

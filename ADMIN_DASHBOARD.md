@@ -1,6 +1,6 @@
 # Nirmaan Admin Dashboard — Complete Technical Documentation
 
-> **Version:** 2.0 &nbsp;|&nbsp; **Last Updated:** June 2025 &nbsp;|&nbsp; **Status:** Production-Ready
+> **Version:** 2.0 &nbsp;|&nbsp; **Last Updated:** March 2026 &nbsp;|&nbsp; **Status:** Production-Ready
 
 ---
 
@@ -545,7 +545,7 @@ server {
 pg_dump -U nirmaan -h localhost -p 5433 nirmaan | gzip > backup_$(date +%F).sql.gz
 
 # Restore
-gunzip -c backup_2025-06-01.sql.gz | psql -U nirmaan -h localhost -p 5433 nirmaan
+gunzip -c backup_2026-03-04.sql.gz | psql -U nirmaan -h localhost -p 5433 nirmaan
 ```
 
 ---

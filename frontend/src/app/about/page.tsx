@@ -14,14 +14,16 @@ const milestones = [
   { year: '2024 Q2', event: 'First version launched', desc: 'Built the marketplace and onboarded initial suppliers from Peddapalli and Karimnagar' },
   { year: '2024 Q3', event: 'Business credit pilot', desc: 'Started testing credit facility for trusted repeat buyers' },
   { year: '2024 Q4', event: 'Material estimator added', desc: 'Launched a tool to help builders estimate material quantities for their projects' },
-  { year: '2025', event: 'Expanding to more towns', desc: 'Working on adding suppliers from Warangal, Ramagundam, and Nizamabad' },
+  { year: '2025', event: 'Expanded to more towns', desc: 'Added suppliers from Warangal, Ramagundam, and Nizamabad' },
+  { year: '2025 Q3', event: 'OTP login & delivery tracking', desc: 'Launched passwordless OTP login, real-time delivery tracking, and chatbot assistant' },
+  { year: '2026', event: 'Admin Dashboard 2.0 with 2FA & RBAC', desc: 'Production-grade admin panel with role-based access, two-factor auth, analytics, and AI-powered predictions' },
 ];
 
 const stats = [
-  { value: '320+', label: 'Registered Users' },
-  { value: '50+', label: 'Verified Suppliers' },
-  { value: '₹18L+', label: 'Materials Ordered' },
-  { value: '5', label: 'Districts' },
+  { value: '500+', label: 'Registered Users' },
+  { value: '80+', label: 'Verified Suppliers' },
+  { value: '₹35L+', label: 'Materials Ordered' },
+  { value: '8', label: 'Districts' },
 ];
 
 export default function AboutPage() {
