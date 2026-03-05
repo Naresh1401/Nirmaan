@@ -22,6 +22,21 @@ const allProducts = [
   { id: '13', name: 'Havells Wire 1.5mm (90m)', price: 1850, mrp: 2100, supplier: 'Electric Point', supplierId: 's13', rating: 4.7, reviews: 112, discount: 12, unit: 'coil', category: 'electrical', brand: 'Havells', stock: 75, delivery: 'Same Day', image: '⚡' },
   { id: '14', name: 'Crushed Stone 20mm', price: 1800, mrp: 2100, supplier: 'Rock Aggregates', supplierId: 's14', rating: 4.2, reviews: 56, discount: 14, unit: 'ton', category: 'gravel', brand: 'Crushed', stock: 200, delivery: 'Same Day', image: '🪨' },
   { id: '15', name: 'Bosch Drill Machine', price: 3200, mrp: 3800, supplier: 'Tools Mart', supplierId: 's15', rating: 4.8, reviews: 189, discount: 16, unit: 'piece', category: 'tools', brand: 'Bosch', stock: 25, delivery: 'Next Day', image: '🛠️' },
+  // Granite Blocks
+  { id: '16', name: 'Black Granite Block (Polished)', price: 85, mrp: 110, supplier: 'Telangana Granite Works', supplierId: 's16', rating: 4.6, reviews: 74, discount: 23, unit: 'sqft', category: 'granite', brand: 'Black Galaxy', stock: 1200, delivery: 'Next Day', image: '⬛' },
+  { id: '17', name: 'Tan Brown Granite Slab', price: 75, mrp: 95, supplier: 'Sri Lakshmi Stones', supplierId: 's17', rating: 4.5, reviews: 63, discount: 21, unit: 'sqft', category: 'granite', brand: 'Tan Brown', stock: 800, delivery: '2-3 Days', image: '⬛' },
+  { id: '18', name: 'Steel Grey Granite (Flamed)', price: 65, mrp: 85, supplier: 'Deccan Stone Exports', supplierId: 's18', rating: 4.3, reviews: 48, discount: 24, unit: 'sqft', category: 'granite', brand: 'Steel Grey', stock: 600, delivery: '2-3 Days', image: '⬛' },
+  { id: '19', name: 'Absolute Black Granite (Mirror)', price: 120, mrp: 150, supplier: 'Telangana Granite Works', supplierId: 's16', rating: 4.8, reviews: 91, discount: 20, unit: 'sqft', category: 'granite', brand: 'Absolute Black', stock: 500, delivery: 'Next Day', image: '⬛' },
+  { id: '20', name: 'Rajashree Red Granite', price: 55, mrp: 70, supplier: 'Sri Lakshmi Stones', supplierId: 's17', rating: 4.2, reviews: 37, discount: 21, unit: 'sqft', category: 'granite', brand: 'Rajashree Red', stock: 900, delivery: '2-3 Days', image: '⬛' },
+  { id: '21', name: 'Kashmir White Granite', price: 95, mrp: 125, supplier: 'Deccan Stone Exports', supplierId: 's18', rating: 4.7, reviews: 82, discount: 24, unit: 'sqft', category: 'granite', brand: 'Kashmir White', stock: 350, delivery: '3-5 Days', image: '⬛' },
+  { id: '22', name: 'Viscon White Granite Block', price: 70, mrp: 90, supplier: 'Rock Hill Granites', supplierId: 's19', rating: 4.4, reviews: 55, discount: 22, unit: 'sqft', category: 'granite', brand: 'Viscon White', stock: 450, delivery: '2-3 Days', image: '⬛' },
+  // Gravel Grades
+  { id: '23', name: 'Gravel 10mm (Fine Grade)', price: 1500, mrp: 1800, supplier: 'Rock Aggregates', supplierId: 's14', rating: 4.3, reviews: 68, discount: 17, unit: 'ton', category: 'gravel', brand: 'Fine', stock: 300, delivery: 'Same Day', image: '🪨' },
+  { id: '24', name: 'Gravel 12mm (Standard)', price: 1600, mrp: 1900, supplier: 'Crusher Works', supplierId: 's7', rating: 4.2, reviews: 45, discount: 16, unit: 'ton', category: 'gravel', brand: 'Standard', stock: 400, delivery: 'Same Day', image: '🪨' },
+  { id: '25', name: 'Gravel 20mm (Medium Grade)', price: 1800, mrp: 2100, supplier: 'Rock Aggregates', supplierId: 's14', rating: 4.4, reviews: 92, discount: 14, unit: 'ton', category: 'gravel', brand: 'Medium', stock: 500, delivery: 'Same Day', image: '🪨' },
+  { id: '26', name: 'Gravel 40mm (Coarse Grade)', price: 1650, mrp: 1950, supplier: 'Karimnagar Stone Crushers', supplierId: 's20', rating: 4.1, reviews: 34, discount: 15, unit: 'ton', category: 'gravel', brand: 'Coarse', stock: 600, delivery: 'Same Day', image: '🪨' },
+  { id: '27', name: 'Blue Metal 6mm (Chips)', price: 1400, mrp: 1700, supplier: 'Rock Aggregates', supplierId: 's14', rating: 4.0, reviews: 29, discount: 18, unit: 'ton', category: 'gravel', brand: 'Blue Metal', stock: 250, delivery: 'Same Day', image: '🪨' },
+  { id: '28', name: 'Pea Gravel (Rounded)', price: 2200, mrp: 2600, supplier: 'Crusher Works', supplierId: 's7', rating: 4.5, reviews: 41, discount: 15, unit: 'ton', category: 'gravel', brand: 'Pea Gravel', stock: 180, delivery: 'Next Day', image: '🪨' },
 ];
 
 const categoryOptions = [
@@ -34,6 +49,7 @@ const categoryOptions = [
   { value: 'paint', label: 'Paint' },
   { value: 'plumbing', label: 'Plumbing' },
   { value: 'electrical', label: 'Electrical' },
+  { value: 'granite', label: 'Granite' },
   { value: 'gravel', label: 'Gravel' },
   { value: 'tools', label: 'Tools' },
 ];

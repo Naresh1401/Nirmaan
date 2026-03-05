@@ -9,6 +9,10 @@ from app.models.review import Review
 from app.models.inventory import PriceHistory, InventoryLog
 from app.models.payment import Payment, CreditAccount, CreditTransaction
 from app.models.quality import QualityCheck
+from app.models.admin import (
+    AdminProfile, TOTPDevice, BackupCode, AdminSession,
+    AuditLog, Dispute, SystemAlert, ForecastResult,
+)
 
 __all__ = [
     "User",
@@ -26,4 +30,12 @@ __all__ = [
     "CreditAccount",
     "CreditTransaction",
     "QualityCheck",
+    "AdminProfile",
+    "TOTPDevice",
+    "BackupCode",
+    "AdminSession",
+    "AuditLog",
+    "Dispute",
+    "SystemAlert",
+    "ForecastResult",
 ]

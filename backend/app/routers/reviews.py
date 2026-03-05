@@ -40,36 +40,41 @@ class ReviewResponse(BaseModel):
 @router.post("/", response_model=ReviewResponse)
 async def create_review(
     review_data: ReviewCreate,
-    current_user: User = Depends(get_current_user),
+    current_user: dict = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
     """Submit a review for an order."""
+    user_id = current_user["user_id"]
+
     # Verify order belongs to user
     order = await db.get(Order, review_data.order_id)
-    if not order or order.customer_id != current_user.id:
+    if not order or str(order.customer_id) != user_id:
         raise HTTPException(status_code=404, detail="Order not found")
 
     # Check for duplicate review
     existing = await db.execute(
         select(Review).where(
             Review.order_id == review_data.order_id,
-            Review.reviewer_id == current_user.id,
+            Review.reviewer_id == user_id,
         )
     )
     if existing.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="Already reviewed this order")
 
+    # Fetch user for reviewer name
+    user_result = await db.execute(select(User).where(User.id == user_id))
+    user = user_result.scalar_one_or_none()
+
     review = Review(
         order_id=review_data.order_id,
-        reviewer_id=current_user.id,
+        reviewer_id=user_id,
         supplier_id=review_data.supplier_id,
         delivery_partner_id=review_data.delivery_partner_id,
         rating=review_data.rating,
         comment=review_data.comment,
     )
     db.add(review)
-    await db.commit()
-    await db.refresh(review)
+    await db.flush()
 
     return ReviewResponse(
         id=review.id,
@@ -79,7 +84,7 @@ async def create_review(
         delivery_partner_id=review.delivery_partner_id,
         rating=review.rating,
         comment=review.comment,
-        reviewer_name=current_user.full_name,
+        reviewer_name=user.full_name if user else None,
     )
 
 

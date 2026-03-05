@@ -12,6 +12,10 @@ export const metadata: Metadata = {
   title: "Nirmaan — India's #1 Construction Materials Marketplace",
   description:
     "Buy construction materials online at best prices. Compare suppliers, get business credit, AI estimation, and reliable delivery. Cement, Steel, Sand, Bricks & more.",
+  icons: {
+    icon: '/favicon.svg',
+    apple: '/logo-icon.svg',
+  },
   keywords: [
     "construction materials",
     "building materials",

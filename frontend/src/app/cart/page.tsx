@@ -4,29 +4,15 @@ import { useState } from 'react';
 import Link from 'next/link';
 import AuthGuard from '@/components/AuthGuard';
 import { Trash2, Minus, Plus, ShoppingCart, IndianRupee, ArrowRight, Package, Truck, Tag, ArrowLeft } from 'lucide-react';
-
-interface CartItem {
-  id: string; name: string; brand: string; supplier: string; price: number; mrp: number; quantity: number; unit: string; image: string; stock: number;
-}
-
-const initialCart: CartItem[] = [
-  { id: '1', name: 'UltraTech Cement PPC (50kg)', brand: 'UltraTech', supplier: 'Peddapalli Traders', price: 385, mrp: 420, quantity: 10, unit: 'bag', image: '🏗️', stock: 250 },
-  { id: '4', name: 'JSW TMT Steel Bar 8mm', brand: 'JSW', supplier: 'Sri Steel Works', price: 58000, mrp: 63000, quantity: 1, unit: 'ton', image: '🔩', stock: 45 },
-  { id: '6', name: 'River Sand Fine Grade', brand: 'Natural', supplier: 'Godavari Sand Depot', price: 2800, mrp: 3200, quantity: 3, unit: 'ton', image: '⏳', stock: 500 },
-];
+import { useCartStore } from '@/hooks/useCart';
 
 export default function CartPage() {
-  const [cart, setCart] = useState<CartItem[]>(initialCart);
+  const { items: cartItems, removeItem, updateQuantity, getTotal, getItemCount } = useCartStore();
 
-  const updateQty = (id: string, delta: number) => {
-    setCart(cart.map(item => item.id === id ? { ...item, quantity: Math.max(1, Math.min(item.stock, item.quantity + delta)) } : item));
-  };
-  const removeItem = (id: string) => setCart(cart.filter(item => item.id !== id));
-
-  const subtotal = cart.reduce((s, i) => s + i.price * i.quantity, 0);
-  const savings = cart.reduce((s, i) => s + (i.mrp - i.price) * i.quantity, 0);
-  const deliveryFee = subtotal > 5000 ? 0 : 300;
+  const subtotal = getTotal();
+  const deliveryFee = subtotal > 5000 ? 0 : subtotal > 0 ? 300 : 0;
   const platformFee = Math.round(subtotal * 0.035);
+  const savings = cartItems.reduce((s, i) => s + ((i.product.mrp || i.product.price) - i.product.price) * i.quantity, 0);
   const total = subtotal + deliveryFee + platformFee;
 
   return (
@@ -36,10 +22,10 @@ export default function CartPage() {
           <div className="flex items-center gap-3 mb-6">
             <Link href="/products" className="text-gray-500 hover:text-orange-600"><ArrowLeft className="w-5 h-5" /></Link>
             <h1 className="text-2xl font-bold text-gray-900">Shopping Cart</h1>
-            <span className="bg-orange-100 text-orange-700 text-sm font-bold px-3 py-1 rounded-full">{cart.length} items</span>
+            <span className="bg-orange-100 text-orange-700 text-sm font-bold px-3 py-1 rounded-full">{getItemCount()} items</span>
           </div>
 
-          {cart.length === 0 ? (
+          {cartItems.length === 0 ? (
             <div className="text-center py-20 bg-white rounded-2xl border border-gray-100">
               <ShoppingCart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-xl font-bold text-gray-700 mb-2">Your cart is empty</h3>
@@ -49,31 +35,31 @@ export default function CartPage() {
           ) : (
             <div className="grid lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2 space-y-4">
-                {cart.map(item => (
-                  <div key={item.id} className="bg-white rounded-2xl p-5 border border-gray-100 flex gap-4">
+                {cartItems.map(({ product, quantity }) => (
+                  <div key={product.id} className="bg-white rounded-2xl p-5 border border-gray-100 flex gap-4">
                     <div className="bg-gray-50 rounded-xl w-24 h-24 flex items-center justify-center flex-shrink-0">
-                      <span className="text-4xl">{item.image}</span>
+                      <span className="text-4xl">📦</span>
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between">
                         <div>
-                          <p className="text-xs text-orange-600 font-semibold">{item.brand}</p>
-                          <h3 className="font-bold text-gray-900">{item.name}</h3>
-                          <p className="text-xs text-gray-500 mt-0.5">Sold by: {item.supplier}</p>
+                          <p className="text-xs text-orange-600 font-semibold">{product.brand || 'Material'}</p>
+                          <h3 className="font-bold text-gray-900">{product.name}</h3>
+                          <p className="text-xs text-gray-500 mt-0.5">Unit: {product.unit}</p>
                         </div>
-                        <button onClick={() => removeItem(item.id)} className="text-gray-400 hover:text-red-500 transition-colors p-1">
+                        <button onClick={() => removeItem(product.id)} className="text-gray-400 hover:text-red-500 transition-colors p-1">
                           <Trash2 className="w-5 h-5" />
                         </button>
                       </div>
                       <div className="flex items-center justify-between mt-3">
                         <div className="flex items-center border border-gray-200 rounded-lg">
-                          <button onClick={() => updateQty(item.id, -1)} className="p-2 hover:bg-gray-50"><Minus className="w-4 h-4" /></button>
-                          <span className="px-4 font-bold">{item.quantity}</span>
-                          <button onClick={() => updateQty(item.id, 1)} className="p-2 hover:bg-gray-50"><Plus className="w-4 h-4" /></button>
+                          <button onClick={() => updateQuantity(product.id, quantity - 1)} className="p-2 hover:bg-gray-50"><Minus className="w-4 h-4" /></button>
+                          <span className="px-4 font-bold">{quantity}</span>
+                          <button onClick={() => updateQuantity(product.id, quantity + 1)} className="p-2 hover:bg-gray-50"><Plus className="w-4 h-4" /></button>
                         </div>
                         <div className="text-right">
-                          <div className="font-extrabold text-lg text-gray-900">₹{(item.price * item.quantity).toLocaleString('en-IN')}</div>
-                          <div className="text-xs text-gray-400">₹{item.price.toLocaleString('en-IN')}/{item.unit}</div>
+                          <div className="font-extrabold text-lg text-gray-900">₹{(product.price * quantity).toLocaleString('en-IN')}</div>
+                          <div className="text-xs text-gray-400">₹{product.price.toLocaleString('en-IN')}/{product.unit}</div>
                         </div>
                       </div>
                     </div>
@@ -86,7 +72,7 @@ export default function CartPage() {
                 <div className="bg-white rounded-2xl p-5 border border-gray-100 sticky top-24">
                   <h3 className="font-bold text-gray-900 text-lg mb-4">Order Summary</h3>
                   <div className="space-y-3 text-sm">
-                    <div className="flex justify-between"><span className="text-gray-500">Subtotal ({cart.length} items)</span><span className="font-medium">₹{subtotal.toLocaleString('en-IN')}</span></div>
+                    <div className="flex justify-between"><span className="text-gray-500">Subtotal ({getItemCount()} items)</span><span className="font-medium">₹{subtotal.toLocaleString('en-IN')}</span></div>
                     <div className="flex justify-between"><span className="text-gray-500">Delivery Fee</span><span className={deliveryFee === 0 ? 'text-green-600 font-medium' : ''}>{deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`}</span></div>
                     <div className="flex justify-between"><span className="text-gray-500">Platform Fee (3.5%)</span><span>₹{platformFee.toLocaleString('en-IN')}</span></div>
                     <div className="flex justify-between text-green-600">

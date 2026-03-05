@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Rounded background -->
+  <rect width="64" height="64" rx="14" fill="url(#grad)"/>
+  <!-- Building blocks -->
+  <rect x="10" y="36" width="14" height="20" rx="2.5" fill="white" opacity="0.95"/>
+  <rect x="26" y="24" width="14" height="32" rx="2.5" fill="white" opacity="0.85"/>
+  <rect x="42" y="10" width="14" height="46" rx="2.5" fill="white" opacity="0.75"/>
+  <!-- Roof accent -->
+  <polygon points="49,6 56,10 42,10" fill="white" opacity="0.95"/>
+  <!-- Window details -->
+  <rect x="14" y="40" width="6" height="5" rx="1.2" fill="#F97316" opacity="0.6"/>
+  <rect x="30" y="29" width="6" height="5" rx="1.2" fill="#EA580C" opacity="0.5"/>
+  <rect x="30" y="38" width="6" height="5" rx="1.2" fill="#EA580C" opacity="0.5"/>
+  <rect x="46" y="16" width="6" height="5" rx="1.2" fill="#C2410C" opacity="0.45"/>
+  <rect x="46" y="25" width="6" height="5" rx="1.2" fill="#C2410C" opacity="0.45"/>
+  <rect x="46" y="34" width="6" height="5" rx="1.2" fill="#C2410C" opacity="0.45"/>
+  <!-- Gradient definition -->
+  <defs>
+    <linearGradient id="grad" x1="0" y1="0" x2="64" y2="64">
+      <stop offset="0%" stop-color="#F97316"/>
+      <stop offset="100%" stop-color="#C2410C"/>
+    </linearGradient>
+  </defs>
+</svg>

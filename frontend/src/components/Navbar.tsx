@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X, ShoppingCart, User, Building2, LogOut, CreditCard, LayoutDashboard, ChevronDown, Bot } from "lucide-react";
+import { Menu, X, ShoppingCart, User, LogOut, CreditCard, LayoutDashboard, ChevronDown, Bot } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useCartStore } from "@/hooks/useCart";
+import NirmaanLogo from "@/components/NirmaanLogo";
 
 const NAV_LINKS = [
   { label: "Materials", href: "/products" },
@@ -18,24 +20,24 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
+  const cartCount = useCartStore((s) => s.getItemCount());
 
   return (
     <header className="sticky top-0 z-50 border-b bg-white/95 backdrop-blur shadow-sm">
       {/* Top bar */}
-      <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs text-center py-1 font-medium">
-        🚀 India's #1 Construction Materials Marketplace — Business Credit up to ₹5 Lakhs!
+      <div className="bg-gradient-to-r from-orange-600 via-orange-500 to-red-500 text-white text-[11px] sm:text-xs text-center py-1.5 font-medium tracking-wide">
+        <span className="inline-flex items-center gap-2">
+          <span className="hidden sm:inline">🏗️</span>
+          <span>Telangana&apos;s Trusted Construction Materials Platform</span>
+          <span className="mx-1 opacity-50">•</span>
+          <span className="font-semibold">🚚 FREE Delivery on orders above ₹10,000</span>
+        </span>
       </div>
 
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 lg:px-8">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <div className="bg-gradient-to-br from-orange-500 to-red-600 rounded-xl p-1.5">
-            <Building2 className="h-6 w-6 text-white" />
-          </div>
-          <div>
-            <span className="text-xl font-extrabold text-gray-900">Nirmaan</span>
-            <span className="hidden sm:block text-[10px] text-gray-400 -mt-1 leading-none">BUILD SMARTER</span>
-          </div>
+        <Link href="/" className="flex items-center">
+          <NirmaanLogo className="h-10 w-auto" />
         </Link>
 
         {/* Desktop Navigation */}
@@ -60,9 +62,11 @@ export function Navbar() {
               className="relative rounded-xl p-2.5 text-gray-600 transition hover:bg-orange-50 hover:text-orange-600"
             >
               <ShoppingCart className="h-5 w-5" />
-              <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-orange-500 text-[10px] font-bold text-white">
-                3
-              </span>
+              {cartCount > 0 && (
+                <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-orange-500 text-[10px] font-bold text-white">
+                  {cartCount > 9 ? '9+' : cartCount}
+                </span>
+              )}
             </Link>
           )}
 

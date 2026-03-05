@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Building2, Phone, Lock, Eye, EyeOff, ArrowRight, User, Mail, MapPin, ChevronDown } from 'lucide-react';
+import { Phone, Lock, Eye, EyeOff, ArrowRight, User, Mail, MapPin, ChevronDown, AtSign } from 'lucide-react';
+import NirmaanLogo from '@/components/NirmaanLogo';
 
 const roles = [
   { value: 'customer', label: 'Home Builder / Contractor', desc: 'Buy construction materials' },
@@ -17,7 +18,7 @@ const cities = ['Peddapalli', 'Karimnagar', 'Ramagundam', 'Warangal', 'Hyderabad
 export default function RegisterPage() {
   const { register, isAuthenticated } = useAuth();
   const router = useRouter();
-  const [form, setForm] = useState({ full_name: '', phone: '', email: '', password: '', confirmPassword: '', role: 'customer', city: 'Peddapalli', state: 'Telangana' });
+  const [form, setForm] = useState({ full_name: '', username: '', phone: '', email: '', password: '', confirmPassword: '', role: 'customer', city: 'Peddapalli', state: 'Telangana' });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -29,11 +30,11 @@ export default function RegisterPage() {
     e.preventDefault();
     if (step === 1) { setStep(2); return; }
     if (form.password !== form.confirmPassword) { setError('Passwords do not match'); return; }
-    if (form.password.length < 6) { setError('Password must be at least 6 characters'); return; }
+    if (form.password.length < 8) { setError('Password must be at least 8 characters'); return; }
     setError('');
     setLoading(true);
     try {
-      await register({ full_name: form.full_name, phone: form.phone, email: form.email || undefined, password: form.password, role: form.role, city: form.city, state: form.state });
+      await register({ full_name: form.full_name, username: form.username || undefined, phone: form.phone, email: form.email || undefined, password: form.password, role: form.role, city: form.city, state: form.state });
       router.push('/');
     } catch (err: any) {
       setError(err.message || 'Registration failed');
@@ -48,8 +49,7 @@ export default function RegisterPage() {
         <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-yellow-400/20 rounded-full blur-3xl"></div>
         <div className="relative">
           <div className="flex items-center gap-3 mb-12">
-            <Building2 className="w-10 h-10 text-white" />
-            <span className="text-3xl font-extrabold text-white">Nirmaan</span>
+            <NirmaanLogo className="h-11 w-auto" white />
           </div>
           <h1 className="text-4xl font-bold text-white leading-tight mb-4">Join India&apos;s Largest<br />Construction Marketplace</h1>
           <p className="text-orange-100 text-lg max-w-md">Create your free account and start ordering construction materials at the best prices with doorstep delivery.</p>
@@ -65,8 +65,7 @@ export default function RegisterPage() {
       <div className="flex-1 flex items-center justify-center p-6 sm:p-12">
         <div className="w-full max-w-md">
           <div className="lg:hidden flex items-center gap-3 mb-8">
-            <Building2 className="w-8 h-8 text-orange-600" />
-            <span className="text-2xl font-extrabold text-gray-900">Nirmaan</span>
+            <NirmaanLogo className="h-9 w-auto" />
           </div>
 
           {/* Step indicator */}
@@ -103,6 +102,15 @@ export default function RegisterPage() {
                   </div>
                 </div>
                 <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Username <span className="text-gray-400 font-normal">(optional)</span></label>
+                  <div className="relative">
+                    <AtSign className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input type="text" value={form.username} onChange={e => setForm({ ...form, username: e.target.value.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase() })} placeholder="Choose a unique username" className="w-full pl-12 pr-4 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none text-gray-900" minLength={3} maxLength={50} />
+                  </div>
+                  {form.username && form.username.length < 3 && <p className="text-xs text-red-500 mt-1">Username must be at least 3 characters</p>}
+                  {form.username && form.username.length >= 3 && <p className="text-xs text-green-600 mt-1">You can use this to sign in later</p>}
+                </div>
+                <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
                   <div className="relative">
                     <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -133,7 +141,7 @@ export default function RegisterPage() {
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
                   <div className="relative">
                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                    <input type={showPassword ? 'text' : 'password'} value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} placeholder="Min 6 characters" className="w-full pl-12 pr-12 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none text-gray-900" required />
+                    <input type={showPassword ? 'text' : 'password'} value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} placeholder="Min 8 characters, 1 uppercase, 1 digit" className="w-full pl-12 pr-12 py-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none text-gray-900" required />
                     <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
                       {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                     </button>

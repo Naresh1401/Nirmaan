@@ -41,8 +41,8 @@ export default function DeliveryRegisterPage() {
         <div className="bg-gradient-to-r from-cyan-600 to-blue-700 py-12 px-4">
           <div className="max-w-4xl mx-auto text-center">
             <Truck className="w-12 h-12 text-white mx-auto mb-4" />
-            <h1 className="text-3xl font-bold text-white mb-2">Become a Nirmaan Delivery Partner</h1>
-            <p className="text-cyan-100 text-lg">Earn ₹25,000 - ₹60,000/month delivering construction materials</p>
+            <h1 className="text-3xl font-bold text-white mb-2">Deliver with Nirmaan</h1>
+            <p className="text-cyan-100 text-lg">Earn by delivering construction materials in your area</p>
           </div>
         </div>
 
@@ -50,10 +50,10 @@ export default function DeliveryRegisterPage() {
           {/* Benefits */}
           <div className="grid sm:grid-cols-4 gap-4 mb-6">
             {[
-              { icon: IndianRupee, label: 'Earn ₹25K+/mo', desc: 'Guaranteed minimum earnings' },
-              { icon: Clock, label: 'Flexible Hours', desc: 'Work when you want' },
-              { icon: ShieldCheck, label: 'Insurance Cover', desc: 'Free accident insurance' },
-              { icon: MapPin, label: 'Local Routes', desc: 'Deliver in your city' },
+              { icon: IndianRupee, label: 'Per-trip Payment', desc: 'Paid per delivery trip' },
+              { icon: Clock, label: 'Flexible Hours', desc: 'Pick your own schedule' },
+              { icon: ShieldCheck, label: 'Insurance Cover', desc: 'Accident insurance included' },
+              { icon: MapPin, label: 'Local Routes', desc: 'Deliver in your district' },
             ].map((b, i) => (
               <div key={i} className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm text-center">
                 <b.icon className="w-6 h-6 text-blue-500 mx-auto mb-2" />
@@ -86,7 +86,7 @@ export default function DeliveryRegisterPage() {
                 <select value={form.city} onChange={e => set('city', e.target.value)}
                   className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none">
                   <option value="">Select city</option>
-                  {['Hyderabad', 'Mumbai', 'Bangalore', 'Chennai', 'Pune', 'Delhi NCR', 'Kolkata', 'Ahmedabad'].map(c => <option key={c} value={c}>{c}</option>)}
+                  {['Peddapalli', 'Karimnagar', 'Ramagundam', 'Warangal', 'Nizamabad', 'Hyderabad'].map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
               </div>
               <div>

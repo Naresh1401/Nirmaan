@@ -36,6 +36,11 @@ class Settings(BaseSettings):
     RAZORPAY_KEY_ID: str = ""
     RAZORPAY_KEY_SECRET: str = ""
 
+    # ── Twilio SMS (for OTP) ────────────────────────
+    TWILIO_ACCOUNT_SID: str = ""
+    TWILIO_AUTH_TOKEN: str = ""
+    TWILIO_PHONE_NUMBER: str = ""  # e.g. "+1234567890"
+
     # ── File Storage ──────────────────────────────────
     S3_BUCKET: str = "nirmaan-uploads"
     S3_REGION: str = "ap-south-1"

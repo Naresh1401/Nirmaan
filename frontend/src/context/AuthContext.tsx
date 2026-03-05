@@ -5,6 +5,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 export interface User {
   id: string;
   full_name: string;
+  username?: string;
   phone: string;
   email?: string;
   role: 'customer' | 'supplier' | 'delivery_partner' | 'admin';
@@ -17,13 +18,14 @@ interface AuthContextType {
   token: string | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  login: (phone: string, password: string) => Promise<void>;
+  login: (identifier: string, password: string) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
   logout: () => void;
 }
 
 interface RegisterData {
   full_name: string;
+  username?: string;
   phone: string;
   email?: string;
   password: string;
@@ -56,11 +58,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(false);
   }, []);
 
-  const login = async (phone: string, password: string) => {
+  const login = async (identifier: string, password: string) => {
     const res = await fetch(`${API_URL}/api/v1/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone, password }),
+      body: JSON.stringify({ identifier, password }),
     });
     if (!res.ok) {
       const err = await res.json();

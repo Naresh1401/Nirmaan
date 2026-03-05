@@ -6,22 +6,23 @@ import {
   Search, Truck, ShieldCheck, TrendingDown, ArrowRight,
   Package, MapPin, Star, ChevronRight,
   Percent, Zap, Shield, CreditCard, BarChart3, Calculator,
-  Phone, Award, CheckCircle2, Heart,
+  Award, CheckCircle2, Heart,
   ShoppingCart, Sparkles, IndianRupee, Factory
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const categories = [
-  { name: 'Cement', icon: '🏗️', slug: 'cement', count: '120+ Products', color: 'from-gray-700 to-gray-900' },
-  { name: 'Sand', icon: '⏳', slug: 'sand', count: '45+ Products', color: 'from-amber-600 to-amber-800' },
-  { name: 'Steel & TMT', icon: '🔩', slug: 'steel', count: '85+ Products', color: 'from-slate-600 to-slate-800' },
-  { name: 'Bricks', icon: '🧱', slug: 'bricks', count: '60+ Products', color: 'from-red-600 to-red-800' },
-  { name: 'Tiles', icon: '🔲', slug: 'tiles', count: '200+ Products', color: 'from-blue-600 to-blue-800' },
-  { name: 'Paint', icon: '🎨', slug: 'paint', count: '150+ Products', color: 'from-purple-600 to-purple-800' },
-  { name: 'Plumbing', icon: '🔧', slug: 'plumbing', count: '90+ Products', color: 'from-cyan-600 to-cyan-800' },
-  { name: 'Electrical', icon: '⚡', slug: 'electrical', count: '110+ Products', color: 'from-yellow-600 to-yellow-800' },
-  { name: 'Gravel', icon: '🪨', slug: 'gravel', count: '30+ Products', color: 'from-stone-600 to-stone-800' },
-  { name: 'Tools', icon: '🛠️', slug: 'tools', count: '75+ Products', color: 'from-emerald-600 to-emerald-800' },
+  { name: 'Cement', icon: '🏗️', slug: 'cement', count: '15 brands', color: 'from-gray-700 to-gray-900' },
+  { name: 'Sand', icon: '⏳', slug: 'sand', count: 'River & M-Sand', color: 'from-amber-600 to-amber-800' },
+  { name: 'Steel & TMT', icon: '🔩', slug: 'steel', count: '8mm–25mm bars', color: 'from-slate-600 to-slate-800' },
+  { name: 'Bricks', icon: '🧱', slug: 'bricks', count: 'Clay & Fly Ash', color: 'from-red-600 to-red-800' },
+  { name: 'Tiles', icon: '🔲', slug: 'tiles', count: 'Floor & Wall', color: 'from-blue-600 to-blue-800' },
+  { name: 'Paint', icon: '🎨', slug: 'paint', count: 'Interior & Exterior', color: 'from-purple-600 to-purple-800' },
+  { name: 'Plumbing', icon: '🔧', slug: 'plumbing', count: 'Pipes & Fittings', color: 'from-cyan-600 to-cyan-800' },
+  { name: 'Electrical', icon: '⚡', slug: 'electrical', count: 'Wires & Switches', color: 'from-yellow-600 to-yellow-800' },
+  { name: 'Granite', icon: '⬛', slug: 'granite', count: 'Blocks & Slabs', color: 'from-neutral-700 to-neutral-900' },
+  { name: 'Gravel', icon: '🪨', slug: 'gravel', count: '6mm–40mm Grades', color: 'from-stone-600 to-stone-800' },
+  { name: 'Tools', icon: '🛠️', slug: 'tools', count: 'Hand & Power', color: 'from-emerald-600 to-emerald-800' },
 ];
 
 const trendingProducts = [
@@ -31,6 +32,8 @@ const trendingProducts = [
   { id: '8', name: 'Red Clay Bricks (1000pcs)', price: 6500, mrp: 7500, supplier: 'Kalyan Brick Works', rating: 4.6, reviews: 167, discount: 13, unit: 'lot' },
   { id: '2', name: 'ACC Cement (50kg)', price: 375, mrp: 410, supplier: 'Karimnagar Hardware', rating: 4.4, reviews: 95, discount: 9, unit: 'bag' },
   { id: '14', name: 'Crushed Stone 20mm', price: 1800, mrp: 2100, supplier: 'Rock Aggregates', rating: 4.2, reviews: 56, discount: 14, unit: 'ton' },
+  { id: '16', name: 'Black Granite (Polished)', price: 85, mrp: 110, supplier: 'Telangana Granite Works', rating: 4.6, reviews: 74, discount: 23, unit: 'sqft' },
+  { id: '25', name: 'Gravel 20mm (Medium Grade)', price: 1800, mrp: 2100, supplier: 'Rock Aggregates', rating: 4.4, reviews: 92, discount: 14, unit: 'ton' },
 ];
 
 const deals = [
@@ -41,9 +44,15 @@ const deals = [
 ];
 
 const testimonials = [
-  { name: 'Rajesh Kumar', role: 'Civil Contractor, Peddapalli', text: 'Nirmaan saved me 18% on my last project. Price comparison is a game-changer. I can see all supplier rates in one place.', rating: 5 },
-  { name: 'Suresh Reddy', role: 'Builder, Karimnagar', text: 'Delivery tracking gives me exact ETAs. No more waiting around at the site for material trucks. Highly recommended!', rating: 5 },
-  { name: 'Priya Housing Ltd.', role: 'Real Estate Developer', text: 'Bulk ordering with supplier splitting is brilliant. We order 500 tons of material monthly through Nirmaan seamlessly.', rating: 4 },
+  { name: 'Rajesh K.', role: 'Contractor, Peddapalli', text: 'Comparing rates across different suppliers used to take me a full day. Now I can see everything in one place and just order. Saved decent money on cement for my last project.', rating: 4 },
+  { name: 'Suresh R.', role: 'Builder, Karimnagar', text: 'The delivery tracking is what I use most. I know exactly when the truck is coming so I can plan my labour accordingly. Much better than calling the supplier 5 times.', rating: 5 },
+  { name: 'Mahesh B.', role: 'Home Builder, Ramagundam', text: 'Built my own house through this. The material estimator helped me figure out quantities, and the credit option gave me some breathing room on payments. Still learning the app but it works.', rating: 4 },
+  { name: 'Venkatesh P.', role: 'Civil Engineer, Warangal', text: 'We ordered 40 tons of gravel and 200 bags of cement for a commercial site. Nirmaan\'s prices were genuinely lower than what our regular dealer offered. Delivery was on time both days.', rating: 5 },
+  { name: 'Lakshmi D.', role: 'Interior Designer, Hanamkonda', text: 'I use Nirmaan mainly for granite and tiles. The Kashmir White granite I ordered came in perfect condition. Being able to compare across 3-4 suppliers from my phone saves a lot of running around.', rating: 4 },
+  { name: 'Srinivas G.', role: 'Contractor, Godavarikhani', text: 'Started using this 6 months back. The credit line they gave us after a few orders really helps with cash flow. I don\'t have to pay everything upfront for materials anymore.', rating: 5 },
+  { name: 'Ramana T.', role: 'Builder, Mancherial', text: 'Good for bulk sand and gravel orders. The tipper arrives when they say it will. Only thing I wish is they had more suppliers for steel in my area.', rating: 4 },
+  { name: 'Anil M.', role: 'Site Supervisor, Peddapalli', text: 'My contractor asked me to start ordering through Nirmaan. The invoice is clean, delivery is trackable, and I don\'t have to chase suppliers for receipts. Makes my job simpler.', rating: 5 },
+  { name: 'Prasad K.', role: 'Mason, Karimnagar', text: 'I ordered fly ash bricks for a small extension job. Price was fair and they delivered same day. The app is easy enough to use even for someone like me who isn\'t very tech-savvy.', rating: 4 },
 ];
 
 export default function HomePage() {
@@ -63,13 +72,13 @@ export default function HomePage() {
             <div>
               <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-white text-sm mb-6">
                 <Sparkles className="w-4 h-4" />
-                <span>Serving 15,000+ builders across Telangana</span>
+                <span>Now delivering across Peddapalli &amp; Karimnagar districts</span>
               </div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-4">
-                Build Smarter.<br /><span className="text-yellow-200">Save More.</span>
+                Construction Materials,<br /><span className="text-yellow-200">Delivered Right.</span>
               </h1>
               <p className="text-xl text-orange-100 mb-8 max-w-lg">
-                India&apos;s first construction materials marketplace. Compare prices from 500+ verified suppliers. Get materials delivered to your site.
+                Compare prices from local verified suppliers. Order cement, steel, sand and more — delivered straight to your construction site.
               </p>
               <div className="bg-white rounded-2xl p-2 shadow-2xl flex flex-col sm:flex-row gap-2">
                 <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-xl flex-shrink-0">
@@ -92,10 +101,10 @@ export default function HomePage() {
               </div>
               <div className="flex flex-wrap gap-6 mt-8">
                 {[
-                  { label: 'Suppliers', value: '500+', icon: Factory },
-                  { label: 'Products', value: '10,000+', icon: Package },
-                  { label: 'Deliveries', value: '25,000+', icon: Truck },
-                  { label: 'Cities', value: '6', icon: MapPin },
+                  { label: 'Suppliers', value: '50+', icon: Factory },
+                  { label: 'Materials', value: '800+', icon: Package },
+                  { label: 'Deliveries', value: '1,200+', icon: Truck },
+                  { label: 'Districts', value: '5', icon: MapPin },
                 ].map(s => (
                   <div key={s.label} className="flex items-center gap-2 text-white/90">
                     <s.icon className="w-5 h-5 text-yellow-200" />
@@ -126,7 +135,7 @@ export default function HomePage() {
       <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-3">
         <div className="max-w-7xl mx-auto px-4 flex items-center justify-center gap-4 text-sm font-medium">
           <Zap className="w-4 h-4 text-yellow-300 animate-pulse" />
-          <span>New: Business Credit now available! Get up to ₹5,00,000 credit limit for your construction projects</span>
+          <span>Business Credit now available — apply for a credit line and pay for materials in 30/60/90 days</span>
           <Link href={isAuthenticated ? '/credit' : '/login'} className="underline hover:text-yellow-200 flex items-center gap-1">Apply Now <ArrowRight className="w-3 h-3" /></Link>
         </div>
       </div>
@@ -134,7 +143,7 @@ export default function HomePage() {
       {/* CATEGORIES */}
       <section className="max-w-7xl mx-auto px-4 py-12">
         <div className="flex items-center justify-between mb-8">
-          <div><h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Shop by Category</h2><p className="text-gray-500 mt-1">Everything you need to build, under one roof</p></div>
+          <div><h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Shop by Category</h2><p className="text-gray-500 mt-1">Browse materials from suppliers near you</p></div>
           <Link href={isAuthenticated ? '/products' : '/login'} className="text-orange-600 hover:text-orange-700 font-semibold flex items-center gap-1 text-sm">View All <ChevronRight className="w-4 h-4" /></Link>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -223,17 +232,17 @@ export default function HomePage() {
       <section className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-16">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3">Why Builders Choose Nirmaan</h2>
-            <p className="text-slate-400 max-w-2xl mx-auto">We solve every major pain point in construction material procurement</p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3">Why Use Nirmaan</h2>
+            <p className="text-slate-400 max-w-2xl mx-auto">A few things we&apos;re building to make material buying simpler</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { icon: BarChart3, title: 'Price Transparency', desc: 'Compare real-time prices from multiple suppliers. View 30-day price history & trends. Never overpay again.', color: 'text-blue-400', bg: 'bg-blue-400/10', href: '/products' },
-              { icon: Package, title: 'Inventory Visibility', desc: 'See real-time stock levels across all suppliers. No more wasted trips to out-of-stock dealers.', color: 'text-green-400', bg: 'bg-green-400/10', href: '/products' },
-              { icon: Truck, title: 'Reliable Delivery', desc: 'GPS-tracked deliveries with exact ETAs. Combined delivery for multiple materials to save cost.', color: 'text-orange-400', bg: 'bg-orange-400/10', href: '/delivery/register' },
-              { icon: Calculator, title: 'Smart Estimator', desc: 'AI-powered material calculator. Enter your project size, get exact material requirements instantly.', color: 'text-purple-400', bg: 'bg-purple-400/10', href: '/estimator' },
-              { icon: CreditCard, title: 'Business Credit', desc: 'Get up to ₹5L credit line. Buy now, pay in 30/60/90 days. Digital invoices & payment tracking.', color: 'text-yellow-400', bg: 'bg-yellow-400/10', href: '/credit' },
-              { icon: Shield, title: 'Quality Assured', desc: 'All suppliers verified. Material certifications verified. Weight verification at pickup & delivery.', color: 'text-red-400', bg: 'bg-red-400/10', href: '/suppliers' },
+              { icon: BarChart3, title: 'Compare Prices', desc: 'See rates from multiple suppliers side by side. Check what others are paying in your area before you order.', color: 'text-blue-400', bg: 'bg-blue-400/10', href: '/products' },
+              { icon: Package, title: 'Check Availability', desc: 'Know what\'s in stock before placing an order. We update availability from suppliers regularly.', color: 'text-green-400', bg: 'bg-green-400/10', href: '/products' },
+              { icon: Truck, title: 'Tracked Delivery', desc: 'Track your material truck with GPS. Get updates when it\'s picked up, on the way, and at your site.', color: 'text-orange-400', bg: 'bg-orange-400/10', href: '/delivery/register' },
+              { icon: Calculator, title: 'Material Estimator', desc: 'Enter your room/house dimensions and get a rough bill of quantities. Useful for planning before you order.', color: 'text-purple-400', bg: 'bg-purple-400/10', href: '/estimator' },
+              { icon: CreditCard, title: 'Business Credit', desc: 'Eligible businesses can get a credit line and pay for materials later. Apply online, approval in 24-48 hours.', color: 'text-yellow-400', bg: 'bg-yellow-400/10', href: '/credit' },
+              { icon: Shield, title: 'Verified Suppliers', desc: 'We check GST registration, go through past reviews, and verify the supplier before listing them on the platform.', color: 'text-red-400', bg: 'bg-red-400/10', href: '/suppliers' },
             ].map(f => (
               <Link key={f.title} href={isAuthenticated ? f.href : '/login'} className={`${f.bg} border border-white/5 rounded-2xl p-6 hover:border-white/20 transition-all cursor-pointer group`}>
                 <f.icon className={`w-10 h-10 ${f.color} mb-4`} />
@@ -249,15 +258,15 @@ export default function HomePage() {
       {/* HOW IT WORKS */}
       <section className="max-w-7xl mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">Order in 4 Simple Steps</h2>
-          <p className="text-gray-500">From search to delivery — it just works</p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">How It Works</h2>
+          <p className="text-gray-500">Place an order in a few minutes, track it till delivery</p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
-            { step: '01', title: 'Search & Compare', desc: 'Browse materials, compare prices across suppliers, check ratings & reviews', icon: Search, color: 'bg-orange-500', href: '/products' },
-            { step: '02', title: 'Add to Cart & Order', desc: 'Select quantity, choose delivery slot, apply bulk discounts automatically', icon: ShoppingCart, color: 'bg-blue-500', href: '/cart' },
-            { step: '03', title: 'Track in Real-Time', desc: 'GPS-tracked delivery from warehouse to your construction site', icon: MapPin, color: 'bg-green-500', href: '/orders' },
-            { step: '04', title: 'Verify & Accept', desc: 'Check weight, quality verification, rate your experience', icon: CheckCircle2, color: 'bg-purple-500', href: '/orders' },
+            { step: '01', title: 'Search Materials', desc: 'Pick what you need — cement, steel, sand, bricks. Compare prices from different suppliers.', icon: Search, color: 'bg-orange-500', href: '/products' },
+            { step: '02', title: 'Place Your Order', desc: 'Add to cart, pick a delivery time that works, and choose how you want to pay.', icon: ShoppingCart, color: 'bg-blue-500', href: '/cart' },
+            { step: '03', title: 'Track Delivery', desc: 'Follow your truck on the map. You\'ll get updates as it moves towards your site.', icon: MapPin, color: 'bg-green-500', href: '/orders' },
+            { step: '04', title: 'Receive & Verify', desc: 'Check the material at your site. Confirm delivery and rate the supplier.', icon: CheckCircle2, color: 'bg-purple-500', href: '/orders' },
           ].map(s => (
             <Link key={s.step} href={isAuthenticated ? s.href : '/login'} className="relative group">
               <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-lg hover:border-orange-200 transition-all h-full">
@@ -273,20 +282,38 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* TESTIMONIALS */}
-      <section className="bg-orange-50 py-16">
+      {/* TESTIMONIALS — Floating Marquee */}
+      <section className="bg-orange-50 py-16 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">Trusted by Builders</h2>
-            <p className="text-gray-500">Real feedback from contractors using Nirmaan</p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">What Our Users Say</h2>
+            <p className="text-gray-500">Feedback from contractors and builders in Telangana</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((t, i) => (
-              <div key={i} className="bg-white rounded-2xl p-6 shadow-sm border border-orange-100">
-                <div className="flex gap-1 mb-4">{Array.from({ length: t.rating }).map((_, j) => (<Star key={j} className="w-5 h-5 fill-orange-400 text-orange-400" />))}</div>
-                <p className="text-gray-700 mb-4 leading-relaxed">&ldquo;{t.text}&rdquo;</p>
+        </div>
+        {/* Row 1 — scrolls left */}
+        <div className="relative mb-5">
+          <div className="flex gap-5 animate-marquee-left hover:[animation-play-state:paused]">
+            {[...testimonials.slice(0, 5), ...testimonials.slice(0, 5)].map((t, i) => (
+              <div key={i} className="bg-white rounded-2xl p-6 shadow-sm border border-orange-100 min-w-[340px] max-w-[340px] flex-shrink-0">
+                <div className="flex gap-1 mb-3">{Array.from({ length: t.rating }).map((_, j) => (<Star key={j} className="w-4 h-4 fill-orange-400 text-orange-400" />))}{Array.from({ length: 5 - t.rating }).map((_, j) => (<Star key={j} className="w-4 h-4 text-gray-200" />))}</div>
+                <p className="text-gray-700 text-sm mb-4 leading-relaxed line-clamp-4">&ldquo;{t.text}&rdquo;</p>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 font-bold">{t.name[0]}</div>
+                  <div className="w-9 h-9 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 font-bold text-sm">{t.name[0]}</div>
+                  <div><p className="font-semibold text-gray-900 text-sm">{t.name}</p><p className="text-gray-500 text-xs">{t.role}</p></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Row 2 — scrolls right */}
+        <div className="relative">
+          <div className="flex gap-5 animate-marquee-right hover:[animation-play-state:paused]">
+            {[...testimonials.slice(4), ...testimonials.slice(4)].map((t, i) => (
+              <div key={i} className="bg-white rounded-2xl p-6 shadow-sm border border-orange-100 min-w-[340px] max-w-[340px] flex-shrink-0">
+                <div className="flex gap-1 mb-3">{Array.from({ length: t.rating }).map((_, j) => (<Star key={j} className="w-4 h-4 fill-orange-400 text-orange-400" />))}{Array.from({ length: 5 - t.rating }).map((_, j) => (<Star key={j} className="w-4 h-4 text-gray-200" />))}</div>
+                <p className="text-gray-700 text-sm mb-4 leading-relaxed line-clamp-4">&ldquo;{t.text}&rdquo;</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 font-bold text-sm">{t.name[0]}</div>
                   <div><p className="font-semibold text-gray-900 text-sm">{t.name}</p><p className="text-gray-500 text-xs">{t.role}</p></div>
                 </div>
               </div>
@@ -300,7 +327,7 @@ export default function HomePage() {
         <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl p-8 sm:p-12 flex flex-col lg:flex-row items-center gap-8">
           <div className="flex-1">
             <h2 className="text-3xl font-bold text-white mb-3">Are You a Supplier?</h2>
-            <p className="text-blue-100 text-lg mb-6">Join 500+ suppliers on Nirmaan. Get discovered by thousands of contractors. Zero listing fees for the first 3 months.</p>
+            <p className="text-blue-100 text-lg mb-6">List your materials on Nirmaan and reach contractors across Telangana. Currently onboarding suppliers — no listing fees while we grow.</p>
             <div className="flex flex-wrap gap-4 mb-6">
               {['Digital Storefront', 'Order Management', 'Payment Tracking', 'Business Analytics'].map(f => (
                 <span key={f} className="bg-white/20 text-white text-sm px-3 py-1.5 rounded-full flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> {f}</span>
@@ -313,10 +340,10 @@ export default function HomePage() {
           <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 text-white w-full lg:w-80">
             <h3 className="font-bold text-xl mb-4">Supplier Benefits</h3>
             {[
-              { label: 'Avg Monthly Revenue', value: '₹2.5L+' },
-              { label: 'New Customers/Month', value: '30+' },
-              { label: 'Platform Commission', value: '2-5%' },
-              { label: 'Payment Settlement', value: 'T+1 Day' },
+              { label: 'Avg Order Size', value: '₹35K' },
+              { label: 'Active Buyers', value: 'Growing' },
+              { label: 'Commission', value: '2-5%' },
+              { label: 'Settlement', value: 'T+1 Day' },
             ].map(b => (
               <div key={b.label} className="flex items-center justify-between py-3 border-b border-white/10 last:border-0">
                 <span className="text-blue-100 text-sm">{b.label}</span><span className="font-bold text-lg">{b.value}</span>
@@ -329,8 +356,8 @@ export default function HomePage() {
       {/* FINAL CTA */}
       <section className="bg-gradient-to-br from-orange-500 to-red-600 py-16">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Ready to Build Smarter?</h2>
-          <p className="text-orange-100 text-xl mb-8 max-w-2xl mx-auto">Join 15,000+ builders who save time and money on every construction project with Nirmaan.</p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Try Nirmaan for Your Next Order</h2>
+          <p className="text-orange-100 text-xl mb-8 max-w-2xl mx-auto">Create a free account, browse materials, and see if the prices work for you. No commitments.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             {!isAuthenticated ? (
               <>
@@ -346,9 +373,8 @@ export default function HomePage() {
             )}
           </div>
           <div className="flex items-center justify-center gap-8 mt-10 text-white/80 text-sm">
-            <span className="flex items-center gap-1"><Phone className="w-4 h-4" /> 1800-NIRMAAN</span>
             <span className="flex items-center gap-1"><MapPin className="w-4 h-4" /> Peddapalli, Telangana</span>
-            <span className="flex items-center gap-1"><Award className="w-4 h-4" /> Since 2024</span>
+            <span className="flex items-center gap-1"><Award className="w-4 h-4" /> Started 2024</span>
           </div>
         </div>
       </section>

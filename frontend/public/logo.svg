@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 64" fill="none">
+  <!-- Icon Mark: Abstract building blocks / rising structure -->
+  <g>
+    <!-- Bottom left block -->
+    <rect x="4" y="36" width="20" height="24" rx="3" fill="#F97316"/>
+    <!-- Middle block -->
+    <rect x="28" y="22" width="20" height="38" rx="3" fill="#EA580C"/>
+    <!-- Tall right block -->
+    <rect x="52" y="6" width="20" height="54" rx="3" fill="#C2410C"/>
+    <!-- Accent triangle / roof peak -->
+    <polygon points="62,2 72,6 52,6" fill="#F97316"/>
+    <!-- Small window details -->
+    <rect x="10" y="42" width="8" height="6" rx="1.5" fill="white" opacity="0.4"/>
+    <rect x="34" y="28" width="8" height="6" rx="1.5" fill="white" opacity="0.35"/>
+    <rect x="34" y="40" width="8" height="6" rx="1.5" fill="white" opacity="0.35"/>
+    <rect x="58" y="14" width="8" height="6" rx="1.5" fill="white" opacity="0.3"/>
+    <rect x="58" y="26" width="8" height="6" rx="1.5" fill="white" opacity="0.3"/>
+    <rect x="58" y="38" width="8" height="6" rx="1.5" fill="white" opacity="0.3"/>
+  </g>
+  <!-- Brand Name -->
+  <text x="86" y="44" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="36" font-weight="800" fill="#111827" letter-spacing="-1">
+    Nirmaan
+  </text>
+  <!-- Tagline -->
+  <text x="88" y="58" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="10" font-weight="600" fill="#9CA3AF" letter-spacing="3.5">
+    BUILD SMARTER
+  </text>
+</svg>
