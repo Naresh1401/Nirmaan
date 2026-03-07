@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import AuthGuard from '@/components/AuthGuard';
@@ -54,7 +54,7 @@ const categoryOptions = [
   { value: 'tools', label: 'Tools' },
 ];
 
-export default function ProductsPage() {
+function ProductsContent() {
   const searchParams = useSearchParams();
   const [searchQ, setSearchQ] = useState('');
   const [category, setCategory] = useState('');
@@ -197,5 +197,13 @@ export default function ProductsPage() {
         </div>
       </div>
     </AuthGuard>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500" /></div>}>
+      <ProductsContent />
+    </Suspense>
   );
 }
