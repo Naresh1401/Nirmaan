@@ -4,7 +4,9 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AuthProvider } from "@/context/AuthContext";
+import { PremiumProvider } from "@/context/PremiumContext";
 import ChatBot from "@/components/ChatBot";
+import PremiumChatBot from "@/components/PremiumChatBot";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -40,12 +42,16 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AuthProvider>
-          <div className="flex min-h-screen flex-col">
-            <Navbar />
-            <main className="flex-1">{children}</main>
-            <Footer />
-            <ChatBot />
-          </div>
+          <PremiumProvider>
+            <div className="flex min-h-screen flex-col">
+              <Navbar />
+              <main className="flex-1">{children}</main>
+              <Footer />
+              {/* PremiumChatBot renders only for premium users; ChatBot for all others */}
+              <ChatBot />
+              <PremiumChatBot />
+            </div>
+          </PremiumProvider>
         </AuthProvider>
       </body>
     </html>

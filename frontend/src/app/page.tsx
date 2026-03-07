@@ -6,7 +6,7 @@ import {
   Search, Truck, ShieldCheck, TrendingDown, ArrowRight,
   Package, MapPin, Star, ChevronRight,
   Percent, Zap, Shield, CreditCard, BarChart3, Calculator,
-  Award, CheckCircle2, Heart,
+  Award, CheckCircle2, Heart, Check,
   ShoppingCart, Sparkles, IndianRupee, Factory
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
@@ -318,6 +318,61 @@ export default function HomePage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* PREMIUM PROMOTION BANNER */}
+      <section className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-16 px-4">
+        <div className="max-w-5xl mx-auto">
+          <div className="bg-gradient-to-r from-amber-900/30 to-slate-800 border border-amber-500/30 rounded-3xl p-8 sm:p-12 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+            <div className="relative flex flex-col lg:flex-row items-start lg:items-center gap-8">
+              <div className="flex-1">
+                <div className="inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold px-3 py-1.5 rounded-full mb-4">
+                  👑 NEW — NirmaaN Premium
+                </div>
+                <h2 className="text-3xl font-bold text-white mb-3">
+                  Build More. Save More.<br />
+                  <span className="bg-gradient-to-r from-amber-400 to-yellow-300 bg-clip-text text-transparent">Premium is Here.</span>
+                </h2>
+                <p className="text-slate-400 text-lg mb-6 max-w-lg">
+                  Unlock up to 15% off all orders, free delivery, AI civil engineering consultant,
+                  3x loyalty points, and a dedicated account manager.
+                </p>
+                <div className="flex flex-wrap gap-3 mb-6">
+                  {['Up to 15% discount', 'Free delivery', 'AI Consultant', 'Loyalty rewards', '500 welcome points'].map(b => (
+                    <span key={b} className="bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1">
+                      <Check className="w-3 h-3" /> {b}
+                    </span>
+                  ))}
+                </div>
+                <Link href="/premium" className="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-900 font-bold px-8 py-4 rounded-xl hover:from-amber-400 hover:to-yellow-400 transition-all shadow-xl text-lg">
+                  👑 Explore Premium Plans
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
+              </div>
+              <div className="bg-slate-800/50 border border-amber-500/20 rounded-2xl p-5 w-full lg:w-64 flex-shrink-0">
+                <p className="text-amber-400 text-xs font-bold uppercase tracking-wide mb-3">Starting at just</p>
+                <div className="flex items-baseline gap-1 mb-1">
+                  <span className="text-white font-extrabold text-4xl">₹499</span>
+                  <span className="text-slate-400 text-sm">/month</span>
+                </div>
+                <p className="text-slate-400 text-xs mb-4">Save up to ₹7,989 with yearly plan</p>
+                <div className="space-y-2">
+                  {[
+                    { tier: '🥈 Silver', price: '₹499/mo' },
+                    { tier: '🥇 Gold', price: '₹999/mo' },
+                    { tier: '💎 Platinum', price: '₹2,499/mo' },
+                  ].map(p => (
+                    <div key={p.tier} className="flex justify-between text-xs text-slate-300">
+                      <span>{p.tier}</span>
+                      <span className="text-amber-400 font-semibold">{p.price}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

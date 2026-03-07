@@ -4,11 +4,13 @@ import { useState } from 'react';
 import Link from 'next/link';
 import AuthGuard from '@/components/AuthGuard';
 import { useAuth } from '@/context/AuthContext';
-import { MapPin, CreditCard, Truck, Shield, Calendar, Clock, CheckCircle2, ArrowLeft, Building2, Smartphone, ShoppingCart } from 'lucide-react';
+import { usePremium } from '@/context/PremiumContext';
+import { MapPin, CreditCard, Truck, Shield, Calendar, Clock, CheckCircle2, ArrowLeft, Building2, Smartphone, ShoppingCart, Crown, Gift } from 'lucide-react';
 import { useCartStore } from '@/hooks/useCart';
 
 export default function CheckoutPage() {
   const { user } = useAuth();
+  const { isPremium, membershipTier, loyaltyPoints, benefits } = usePremium();
   const { items: cartItems, getTotal, getItemCount, clearCart } = useCartStore();
   const [deliveryAddress, setDeliveryAddress] = useState('');
   const [pincode, setPincode] = useState('');
@@ -25,11 +27,26 @@ export default function CheckoutPage() {
   const [upiId, setUpiId] = useState('');
   const [processing, setProcessing] = useState(false);
   const [orderId, setOrderId] = useState('');
+  const [applyPoints, setApplyPoints] = useState(false);
+  const [pointsToApply, setPointsToApply] = useState(0);
 
   const subtotal = getTotal();
-  const deliveryFee = subtotal > 5000 ? 0 : subtotal > 0 ? 300 : 0;
-  const platformFee = Math.round(subtotal * 0.035);
-  const total = subtotal + deliveryFee + platformFee;
+  // Premium discount
+  const discountPercent = isPremium ? ((benefits as Record<string, unknown>)?.discount_percent as number ?? 0) : 0;
+  const premiumDiscount = Math.round(subtotal * discountPercent / 100);
+  const discountedSubtotal = subtotal - premiumDiscount;
+
+  // Delivery fee based on tier
+  const freeDeliveryThreshold = isPremium
+    ? ((benefits as Record<string, unknown>)?.free_delivery_threshold as number ?? 10000)
+    : 10000;
+  const deliveryFee = freeDeliveryThreshold === 0 || discountedSubtotal >= freeDeliveryThreshold ? 0 : discountedSubtotal > 0 ? 300 : 0;
+
+  const platformFee = Math.round(discountedSubtotal * 0.035);
+  // Loyalty points discount
+  const maxPointsUsable = loyaltyPoints ? Math.min(loyaltyPoints.available_points, Math.round((discountedSubtotal + deliveryFee + platformFee) * 100)) : 0;
+  const loyaltyDiscount = applyPoints ? Math.round(pointsToApply / 100) : 0;
+  const total = discountedSubtotal + deliveryFee + platformFee - loyaltyDiscount;
   const itemCount = getItemCount();
 
   const handlePlaceOrder = async () => {
@@ -286,15 +303,84 @@ export default function CheckoutPage() {
 
             {/* Summary */}
             <div>
-              <div className="bg-white rounded-2xl p-5 border border-gray-100 sticky top-24">
-                <h3 className="font-bold text-gray-900 text-lg mb-4">Order Summary</h3>
-                <div className="space-y-2 text-sm mb-4">
+              <div className="bg-white rounded-2xl p-5 border border-gray-100 sticky top-24 space-y-4">
+                <h3 className="font-bold text-gray-900 text-lg">Order Summary</h3>
+
+                {/* Premium Discount notice */}
+                {isPremium && discountPercent > 0 && (
+                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-center gap-2 text-sm">
+                    <Crown className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                    <span className="text-amber-700 font-medium">{discountPercent}% Premium discount applied!</span>
+                  </div>
+                )}
+
+                {/* Loyalty Points */}
+                {isPremium && loyaltyPoints && loyaltyPoints.available_points > 0 && (
+                  <div className="bg-purple-50 border border-purple-200 rounded-xl p-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <Gift className="w-4 h-4 text-purple-500" />
+                        <span className="text-sm font-semibold text-purple-800">Loyalty Points</span>
+                      </div>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={applyPoints}
+                          onChange={(e) => {
+                            setApplyPoints(e.target.checked);
+                            if (e.target.checked) setPointsToApply(maxPointsUsable);
+                            else setPointsToApply(0);
+                          }}
+                          className="sr-only peer"
+                        />
+                        <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-purple-500"></div>
+                      </label>
+                    </div>
+                    <p className="text-xs text-purple-600">
+                      {loyaltyPoints.available_points.toLocaleString('en-IN')} pts available
+                      {applyPoints && ` — ₹${loyaltyDiscount} discount applied`}
+                    </p>
+                    {applyPoints && (
+                      <div className="mt-2">
+                        <input
+                          type="range"
+                          min={0}
+                          max={maxPointsUsable}
+                          step={100}
+                          value={pointsToApply}
+                          onChange={(e) => setPointsToApply(Number(e.target.value))}
+                          className="w-full accent-purple-500"
+                        />
+                        <div className="flex justify-between text-[10px] text-purple-500 mt-0.5">
+                          <span>0 pts</span>
+                          <span className="font-bold">{pointsToApply} pts = ₹{Math.round(pointsToApply / 100)}</span>
+                          <span>{maxPointsUsable} pts</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <div className="space-y-2 text-sm">
                   <div className="flex justify-between"><span className="text-gray-500">Subtotal ({itemCount} items)</span><span>₹{subtotal.toLocaleString('en-IN')}</span></div>
-                  <div className="flex justify-between"><span className="text-gray-500">Delivery</span><span className={deliveryFee === 0 ? 'text-green-600 font-medium' : ''}>{deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`}</span></div>
+                  {premiumDiscount > 0 && (
+                    <div className="flex justify-between text-green-600"><span>Premium Discount ({discountPercent}%)</span><span>-₹{premiumDiscount.toLocaleString('en-IN')}</span></div>
+                  )}
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Delivery</span>
+                    <span className={deliveryFee === 0 ? 'text-green-600 font-medium' : ''}>{deliveryFee === 0 ? 'FREE' : `₹${deliveryFee}`}</span>
+                  </div>
+                  {isPremium && freeDeliveryThreshold === 0 && (
+                    <p className="text-[10px] text-amber-600 flex items-center gap-1"><Crown className="w-3 h-3" /> Free delivery included with your plan</p>
+                  )}
                   <div className="flex justify-between"><span className="text-gray-500">Platform Fee</span><span>₹{platformFee.toLocaleString('en-IN')}</span></div>
+                  {loyaltyDiscount > 0 && (
+                    <div className="flex justify-between text-purple-600"><span>Loyalty Points ({pointsToApply} pts)</span><span>-₹{loyaltyDiscount}</span></div>
+                  )}
                   <div className="border-t pt-2 flex justify-between"><span className="font-bold text-lg">Total</span><span className="font-extrabold text-xl">₹{total.toLocaleString('en-IN')}</span></div>
                 </div>
-                <div className="bg-gray-50 rounded-xl p-3 mb-4 text-xs text-gray-500 space-y-1">
+
+                <div className="bg-gray-50 rounded-xl p-3 text-xs text-gray-500 space-y-1">
                   <div className="flex justify-between"><span>Payment</span><span className="font-semibold text-gray-700">{paymentLabel()}</span></div>
                   <div className="flex justify-between"><span>Delivery</span><span className="font-semibold text-gray-700">{deliverySlot === 'morning' ? '6-10 AM' : deliverySlot === 'midday' ? '10 AM-2 PM' : deliverySlot === 'afternoon' ? '2-6 PM' : 'Flexible'}</span></div>
                 </div>
@@ -304,11 +390,11 @@ export default function CheckoutPage() {
                     <><svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing Payment...</>
                   ) : paymentMethod === 'cod' ? 'Place Order (Pay on Delivery)' : paymentMethod === 'credit' ? 'Place Order (Use Credit)' : `Pay ₹${total.toLocaleString('en-IN')} & Place Order`}
                 </button>
-                <div className="mt-4 space-y-2">
+                <div className="mt-2 space-y-2">
                   <div className="flex items-center gap-2 text-xs text-gray-500"><Shield className="w-4 h-4 text-green-500" /><span>Protected by Nirmaan Quality Guarantee</span></div>
                   <div className="flex items-center gap-2 text-xs text-gray-500"><Truck className="w-4 h-4 text-blue-500" /><span>Real-time GPS tracking after dispatch</span></div>
                 </div>
-                <div className="mt-4 pt-4 border-t border-gray-100">
+                <div className="pt-4 border-t border-gray-100">
                   <p className="text-[10px] text-gray-400 mb-2 text-center">ACCEPTED PAYMENT METHODS</p>
                   <div className="flex items-center justify-center gap-3 text-xl">
                     <span title="Cash">💵</span><span title="Card">💳</span><span title="Net Banking">🏦</span><span title="UPI">📱</span><span title="PhonePe">🟣</span><span title="Google Pay">🔵</span>

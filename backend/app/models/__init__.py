@@ -13,6 +13,10 @@ from app.models.admin import (
     AdminProfile, TOTPDevice, BackupCode, AdminSession,
     AuditLog, Dispute, SystemAlert, ForecastResult,
 )
+from app.models.premium import (
+    PremiumMembership, LoyaltyPoints, LoyaltyTransaction,
+    PremiumBenefit, ReferralCode, MembershipTier, MembershipStatus,
+)
 
 __all__ = [
     "User",
@@ -38,4 +42,11 @@ __all__ = [
     "Dispute",
     "SystemAlert",
     "ForecastResult",
+    "PremiumMembership",
+    "LoyaltyPoints",
+    "LoyaltyTransaction",
+    "PremiumBenefit",
+    "ReferralCode",
+    "MembershipTier",
+    "MembershipStatus",
 ]

@@ -168,6 +168,83 @@ class ApiClient {
       window.location.href = "/login";
     }
   }
+
+  // ── Premium ───────────────────────────────────────────
+  async getPlans() {
+    const res = await this.client.get("/premium/plans");
+    return res.data;
+  }
+
+  async subscribe(tier: string, billingCycle: string) {
+    const res = await this.client.post("/premium/subscribe", {
+      tier,
+      billing_cycle: billingCycle,
+    });
+    return res.data;
+  }
+
+  async getMembership() {
+    const res = await this.client.get("/premium/membership");
+    return res.data;
+  }
+
+  async renewMembership() {
+    const res = await this.client.put("/premium/membership/renew");
+    return res.data;
+  }
+
+  async cancelMembership() {
+    const res = await this.client.delete("/premium/membership/cancel");
+    return res.data;
+  }
+
+  async getBenefits() {
+    const res = await this.client.get("/premium/benefits");
+    return res.data;
+  }
+
+  // ── Loyalty ───────────────────────────────────────────
+  async getLoyaltyBalance() {
+    const res = await this.client.get("/premium/loyalty/balance");
+    return res.data;
+  }
+
+  async getLoyaltyHistory(limit = 20) {
+    const res = await this.client.get("/premium/loyalty/history", {
+      params: { limit },
+    });
+    return res.data;
+  }
+
+  async redeemPoints(points: number, orderId?: string) {
+    const res = await this.client.post("/premium/loyalty/redeem", {
+      points,
+      order_id: orderId,
+    });
+    return res.data;
+  }
+
+  // ── Referral ──────────────────────────────────────────
+  async generateReferralCode() {
+    const res = await this.client.post("/premium/referral/generate");
+    return res.data;
+  }
+
+  async applyReferralCode(code: string) {
+    const res = await this.client.post("/premium/referral/apply", { code });
+    return res.data;
+  }
+
+  async getReferralStats() {
+    const res = await this.client.get("/premium/referral/stats");
+    return res.data;
+  }
+
+  // ── AI Consultant ─────────────────────────────────────
+  async consultAI(query: string, context?: Record<string, unknown>) {
+    const res = await this.client.post("/ai/consultant", { query, context });
+    return res.data;
+  }
 }
 
 export const api = new ApiClient();

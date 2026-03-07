@@ -37,6 +37,10 @@ class User(Base):
     avatar_url: Mapped[str] = mapped_column(String(500), nullable=True)
     city: Mapped[str] = mapped_column(String(100), nullable=True)
     state: Mapped[str] = mapped_column(String(100), nullable=True)
+    # Premium membership tier (denormalised for fast access)
+    membership_tier: Mapped[str] = mapped_column(
+        String(20), default="free", nullable=False, server_default="free"
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
@@ -51,6 +55,19 @@ class User(Base):
     delivery_partner = relationship("DeliveryPartner", back_populates="user", uselist=False)
     orders = relationship("Order", back_populates="customer")
     reviews = relationship("Review", back_populates="reviewer")
+    premium_membership = relationship(
+        "PremiumMembership", back_populates="user", uselist=False
+    )
+    loyalty_points = relationship(
+        "LoyaltyPoints", back_populates="user", uselist=False
+    )
+    referral_code = relationship(
+        "ReferralCode", back_populates="user", uselist=False
+    )
+
+    @property
+    def is_premium(self) -> bool:
+        return self.membership_tier in ("silver", "gold", "platinum")
 
     def __repr__(self) -> str:
         return f"<User {self.full_name} ({self.role.value})>"
