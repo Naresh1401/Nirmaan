@@ -54,6 +54,10 @@ coverage.xml
 # Alembic
 alembic/versions/*.pyc
 
+# Backup files
+*.bak
+*.backup
+
 # Logs
 logs/
 *.log
