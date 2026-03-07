@@ -21,6 +21,7 @@ from app.core.middleware import (
 from app.routers import auth, suppliers, products, orders, delivery, search, admin
 from app.routers import estimator, reviews, prices, credit, inventory
 from app.routers import admin_auth, admin_dashboard
+from app.routers import premium, ai_consultant
 
 # Import all models so tables are created
 import app.models  # noqa: F401
@@ -82,6 +83,8 @@ app.include_router(reviews.router, prefix="/api/v1/reviews", tags=["Reviews"])
 app.include_router(prices.router, prefix="/api/v1/prices", tags=["Price Transparency"])
 app.include_router(credit.router)  # prefix in router
 app.include_router(inventory.router)  # prefix in router
+app.include_router(premium.router)  # prefix in router
+app.include_router(ai_consultant.router)  # prefix in router
 
 
 @app.get("/", tags=["Health"])

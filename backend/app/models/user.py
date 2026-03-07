@@ -51,6 +51,7 @@ class User(Base):
     delivery_partner = relationship("DeliveryPartner", back_populates="user", uselist=False)
     orders = relationship("Order", back_populates="customer")
     reviews = relationship("Review", back_populates="reviewer")
+    premium_membership = relationship("PremiumMembership", back_populates="user", uselist=False)
 
     def __repr__(self) -> str:
         return f"<User {self.full_name} ({self.role.value})>"

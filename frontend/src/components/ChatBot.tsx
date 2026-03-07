@@ -6,7 +6,7 @@ import Link from 'next/link';
 import {
   X, Send, User, Sparkles,
   ArrowRight, ChevronDown, RotateCcw, Minimize2,
-  Calculator
+  Calculator, Crown, Brain, Lock,
 } from 'lucide-react';
 import {
   estimateBuilding,
@@ -25,6 +25,8 @@ import {
   type MaterialItem,
 } from '@/lib/estimator';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 // ── Types ──
 interface ChatMessage {
   id: number;
@@ -35,6 +37,7 @@ interface ChatMessage {
   products?: { name: string; price: string }[];
   estimation?: EstimationResult;
   comparison?: ComparisonResult;
+  isPremiumResponse?: boolean;
 }
 
 // ── Security: Input sanitizer & data-leak prevention ──
@@ -78,6 +81,17 @@ const QUICK_PROMPTS = [
   { icon: '📦', label: 'What materials do you sell?', category: 'products' },
   { icon: '🔄', label: 'Compare road types for 2km', category: 'compare-road' },
   { icon: '💰', label: 'How does business credit work?', category: 'credit' },
+];
+
+const PREMIUM_QUICK_PROMPTS = [
+  { icon: '🏗️', label: 'Beam size for 6m span', category: 'consultant' },
+  { icon: '🪨', label: 'Foundation for soft clay soil', category: 'consultant' },
+  { icon: '⚡', label: 'Seismic design requirements', category: 'consultant' },
+  { icon: '📏', label: 'Column design for 600kN load', category: 'consultant' },
+  { icon: '💰', label: 'Cost of 2000 sqft house', category: 'consultant' },
+  { icon: '🛣️', label: 'Road construction guide', category: 'consultant' },
+  { icon: '📋', label: 'IS code references', category: 'consultant' },
+  { icon: '🌉', label: 'Bridge type for 45m span', category: 'consultant' },
 ];
 
 // ── Static responses ──
@@ -560,7 +574,7 @@ function EstimationExtras({ estimation }: { estimation: EstimationResult }) {
 //  MAIN CHATBOT COMPONENT
 // ══════════════════════════════════════════════════════════════
 export default function ChatBot() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user, token } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -570,6 +584,10 @@ export default function ChatBot() {
   const [pulseCount, setPulseCount] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const isPremium = !!(user?.membership_tier && user.membership_tier !== 'free');
+
+  const premiumGreeting = "## 🏆 Premium Civil Engineering Consultant\n\nHello! I'm your **dedicated civil engineering expert** powered by Nirmaan Premium.\n\nI can help with advanced topics:\n\n**Structural Design**\n- Beam, column & slab sizing (IS 456)\n- Foundation recommendations (IS 1904, IS 2911)\n- Seismic design (IS 1893, IS 13920)\n\n**Material & Cost Estimation**\n- Detailed quantity take-off\n- Current Telangana market rates\n- Budget optimization\n\n**Infrastructure**\n- Road & pavement design (IRC)\n- Bridge engineering\n- Water & drainage systems\n\n**IS Code Library**\n- IS 456, IS 875, IS 1893, IS 800 & more\n\nAsk me anything like:\n- \"What size beam for a 6m span?\"\n- \"Foundation for soft clay soil?\"\n- \"Seismic zone for Warangal?\"\n- \"Cost of 1500 sqft house in Karimnagar?\"";
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -592,18 +610,68 @@ export default function ChatBot() {
     setIsMinimized(false);
     setHasNewMessage(false);
     if (messages.length === 0) {
-      const greeting = BOT_RESPONSES.greeting;
+      const greeting = isPremium ? premiumGreeting : BOT_RESPONSES.greeting.content;
       setMessages([{
         id: 1,
         role: 'bot',
-        content: greeting.content,
+        content: greeting,
         timestamp: new Date(),
-        links: greeting.links,
+        links: isPremium ? [{ label: 'Upgrade Plan', href: '/premium' }] : BOT_RESPONSES.greeting.links,
+        isPremiumResponse: isPremium,
       }]);
     }
-  }, [messages.length]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages.length, isPremium]);
 
-  const sendMessage = useCallback((text: string) => {
+  const sendPremiumMessage = useCallback(async (text: string) => {
+    if (!token) return false;
+    try {
+      const res = await fetch(`${API_URL}/api/v1/ai-consultant/consult`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ question: text }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        if (res.status === 429) {
+          // Rate limit hit
+          const botMsg: ChatMessage = {
+            id: Date.now() + 1,
+            role: 'bot',
+            content: `⚠️ **Daily query limit reached** for your ${user?.membership_tier || 'current'} plan.\n\nUpgrade to a higher tier for more AI queries per day.`,
+            timestamp: new Date(),
+            links: [{ label: 'Upgrade Plan', href: '/premium' }],
+          };
+          setMessages(prev => [...prev, botMsg]);
+          setIsTyping(false);
+          return true;
+        }
+        throw new Error(err.detail || 'Consultant error');
+      }
+      const data = await res.json();
+      const botMsg: ChatMessage = {
+        id: Date.now() + 1,
+        role: 'bot',
+        content: data.answer,
+        timestamp: new Date(),
+        isPremiumResponse: true,
+        links: [
+          { label: 'Materials', href: '/products' },
+          { label: 'AI Estimator', href: '/estimator' },
+        ],
+      };
+      setMessages(prev => [...prev, botMsg]);
+      setIsTyping(false);
+      return true;
+    } catch {
+      return false;
+    }
+  }, [token, user?.membership_tier]);
+
+  const sendMessage = useCallback(async (text: string) => {
     const sanitized = sanitizeInput(text);
     if (!sanitized) return;
 
@@ -630,6 +698,12 @@ export default function ChatBot() {
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setIsTyping(true);
+
+    // Premium users → call AI consultant API first
+    if (isPremium && token) {
+      const handled = await sendPremiumMessage(sanitized);
+      if (handled) return;
+    }
 
     const delay = 600 + Math.random() * 800;
     setTimeout(() => {
@@ -664,27 +738,37 @@ export default function ChatBot() {
       setMessages(prev => [...prev, botMsg]);
       setIsTyping(false);
     }, delay);
-  }, []);
+  }, [isPremium, token, sendPremiumMessage]);
 
   const handleQuickPrompt = useCallback((prompt: string) => {
     sendMessage(prompt);
   }, [sendMessage]);
 
   const resetChat = useCallback(() => {
-    const greeting = BOT_RESPONSES.greeting;
+    const greeting = isPremium ? premiumGreeting : BOT_RESPONSES.greeting.content;
     setMessages([{
       id: Date.now(),
       role: 'bot',
-      content: greeting.content,
+      content: greeting,
       timestamp: new Date(),
-      links: greeting.links,
+      links: isPremium ? [{ label: 'Upgrade Plan', href: '/premium' }] : BOT_RESPONSES.greeting.links,
+      isPremiumResponse: isPremium,
     }]);
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPremium]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     sendMessage(input);
   };
+
+  const headerGradient = isPremium
+    ? 'bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700'
+    : 'bg-gradient-to-r from-orange-500 via-orange-600 to-red-600';
+  const fabGradient = isPremium
+    ? 'bg-gradient-to-br from-violet-500 to-purple-700'
+    : 'bg-gradient-to-br from-orange-500 to-red-600';
+  const activeColor = isPremium ? 'orange' : 'orange';
 
   return (
     <>
@@ -693,14 +777,23 @@ export default function ChatBot() {
         <button
           onClick={openChat}
           className="fixed bottom-6 right-6 z-50 group"
-          aria-label="Open Civil Engineering Estimator"
+          aria-label={isPremium ? 'Open Premium Civil Engineering Consultant' : 'Open Civil Engineering Estimator'}
         >
-          <div className="absolute inset-0 rounded-full bg-orange-500 animate-ping opacity-20" />
-          <div className={`absolute inset-0 rounded-full bg-orange-400 opacity-30 transition-transform duration-1000 ${pulseCount % 2 === 0 ? 'scale-125' : 'scale-100'}`} />
-          <div className="relative w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-all duration-300 hover:shadow-orange-500/40 hover:shadow-xl">
-            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-orange-400 to-red-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-            <Calculator className="w-7 h-7 text-white relative z-10 group-hover:rotate-12 transition-transform" />
-            {hasNewMessage && (
+          <div className={`absolute inset-0 rounded-full ${isPremium ? 'bg-violet-500' : 'bg-orange-500'} animate-ping opacity-20`} />
+          <div className={`absolute inset-0 rounded-full ${isPremium ? 'bg-violet-400' : 'bg-orange-400'} opacity-30 transition-transform duration-1000 ${pulseCount % 2 === 0 ? 'scale-125' : 'scale-100'}`} />
+          <div className={`relative w-16 h-16 ${fabGradient} rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-all duration-300`}>
+            <div className={`absolute inset-0 rounded-full ${fabGradient} opacity-0 group-hover:opacity-100 transition-opacity`} />
+            {isPremium ? (
+              <Brain className="w-7 h-7 text-white relative z-10 group-hover:scale-110 transition-transform" />
+            ) : (
+              <Calculator className="w-7 h-7 text-white relative z-10 group-hover:rotate-12 transition-transform" />
+            )}
+            {isPremium && (
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-amber-400 rounded-full border-2 border-white flex items-center justify-center">
+                <Crown className="w-3 h-3 text-white" />
+              </span>
+            )}
+            {hasNewMessage && !isPremium && (
               <span className="absolute -top-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
                 <span className="text-[10px] text-white font-bold">1</span>
               </span>
@@ -708,8 +801,11 @@ export default function ChatBot() {
           </div>
           <div className="absolute bottom-full right-0 mb-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 pointer-events-none">
             <div className="bg-gray-900 text-white text-sm font-medium px-4 py-2 rounded-xl shadow-xl whitespace-nowrap flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-yellow-300" />
-              Civil Engineering Estimator
+              {isPremium ? (
+                <><Crown className="w-4 h-4 text-amber-400" /> Premium Civil Engineer Consultant</>
+              ) : (
+                <><Sparkles className="w-4 h-4 text-yellow-300" /> Civil Engineering Estimator</>
+              )}
               <span className="absolute bottom-0 right-6 translate-y-1/2 rotate-45 w-2 h-2 bg-gray-900" />
             </div>
           </div>
@@ -719,21 +815,32 @@ export default function ChatBot() {
       {/* Chat Window */}
       {isOpen && (
         <div className={`fixed bottom-6 right-6 z-50 transition-all duration-300 ${isMinimized ? 'w-80' : 'w-[420px] sm:w-[460px]'}`}>
-          <div className={`bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden flex flex-col transition-all duration-300 ${isMinimized ? 'h-16' : 'h-[650px] max-h-[85vh]'}`}>
+          <div className={`bg-white rounded-2xl shadow-2xl border ${isPremium ? 'border-violet-200' : 'border-gray-200'} overflow-hidden flex flex-col transition-all duration-300 ${isMinimized ? 'h-16' : 'h-[650px] max-h-[85vh]'}`}>
             {/* Header */}
             <div
-              className="bg-gradient-to-r from-orange-500 via-orange-600 to-red-600 px-5 py-4 flex items-center justify-between cursor-pointer shrink-0"
+              className={`${headerGradient} px-5 py-4 flex items-center justify-between cursor-pointer shrink-0`}
               onClick={() => isMinimized && setIsMinimized(false)}
             >
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                  <Calculator className="w-5 h-5 text-white" />
+                  {isPremium ? <Brain className="w-5 h-5 text-white" /> : <Calculator className="w-5 h-5 text-white" />}
                 </div>
                 <div>
-                  <h3 className="text-white font-bold text-sm">Nirmaan Estimator</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-white font-bold text-sm">
+                      {isPremium ? 'Civil Engineer Consultant' : 'Nirmaan Estimator'}
+                    </h3>
+                    {isPremium && (
+                      <span className="flex items-center gap-0.5 bg-amber-400/30 text-amber-100 text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                        <Crown className="w-2.5 h-2.5" /> Premium
+                      </span>
+                    )}
+                  </div>
                   <div className="flex items-center gap-1.5">
                     <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                    <span className="text-orange-100 text-xs">Buildings • Roads • Bridges • More</span>
+                    <span className={`${isPremium ? 'text-violet-100' : 'text-orange-100'} text-xs`}>
+                      {isPremium ? 'IS Code • Structural • Soil • Cost' : 'Buildings • Roads • Bridges • More'}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -753,18 +860,20 @@ export default function ChatBot() {
             {!isMinimized && (
               <>
                 {/* Messages */}
-                <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 bg-gradient-to-b from-orange-50/50 to-white">
+                <div className={`flex-1 overflow-y-auto px-4 py-4 space-y-4 bg-gradient-to-b ${isPremium ? 'from-violet-50/50' : 'from-orange-50/50'} to-white`}>
                   {messages.map(msg => (
                     <div key={msg.id} className={`flex gap-2.5 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                       {msg.role === 'bot' && (
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center shrink-0 mt-1 shadow-sm">
-                          <Calculator className="w-4 h-4 text-white" />
+                        <div className={`w-8 h-8 rounded-full ${msg.isPremiumResponse ? 'bg-gradient-to-br from-violet-500 to-purple-700' : 'bg-gradient-to-br from-orange-500 to-red-600'} flex items-center justify-center shrink-0 mt-1 shadow-sm`}>
+                          {msg.isPremiumResponse ? <Brain className="w-4 h-4 text-white" /> : <Calculator className="w-4 h-4 text-white" />}
                         </div>
                       )}
                       <div className={`max-w-[85%] ${msg.role === 'user' ? 'order-first' : ''}`}>
                         <div className={`rounded-2xl px-4 py-3 text-sm leading-relaxed shadow-sm ${
                           msg.role === 'user'
-                            ? 'bg-gradient-to-br from-orange-500 to-red-600 text-white rounded-br-md'
+                            ? isPremium
+                              ? 'bg-gradient-to-br from-violet-600 to-purple-700 text-white rounded-br-md'
+                              : 'bg-gradient-to-br from-orange-500 to-red-600 text-white rounded-br-md'
                             : 'bg-white text-gray-800 border border-gray-100 rounded-bl-md'
                         }`}>
                           {msg.content.split('\n').map((line, i) => (
@@ -772,7 +881,11 @@ export default function ChatBot() {
                               {line.split(/(\*\*.*?\*\*)/).map((part, j) =>
                                 part.startsWith('**') && part.endsWith('**')
                                   ? <strong key={j} className="font-semibold">{part.slice(2, -2)}</strong>
-                                  : part
+                                  : part.startsWith('## ')
+                                    ? <span key={j} className="font-bold text-base block mb-1">{part.slice(3)}</span>
+                                    : part.startsWith('# ')
+                                      ? <span key={j} className="font-bold text-lg block mb-1">{part.slice(2)}</span>
+                                      : part
                               )}
                             </p>
                           ))}
@@ -812,7 +925,11 @@ export default function ChatBot() {
                         {msg.links && msg.links.length > 0 && (
                           <div className="mt-2 flex flex-wrap gap-1.5">
                             {msg.links.map((link, i) => (
-                              <Link key={i} href={isAuthenticated ? link.href : '/login'} className="inline-flex items-center gap-1 text-xs font-semibold bg-orange-50 text-orange-700 px-3 py-1.5 rounded-full hover:bg-orange-100 transition-colors border border-orange-200">
+                              <Link key={i} href={isAuthenticated ? link.href : '/login'} className={`inline-flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full hover:opacity-80 transition-colors border ${
+                                isPremium
+                                  ? 'bg-violet-50 text-violet-700 border-violet-200'
+                                  : 'bg-orange-50 text-orange-700 border-orange-200'
+                              }`}>
                                 {link.label}
                                 <ArrowRight className="w-3 h-3" />
                               </Link>
@@ -835,19 +952,32 @@ export default function ChatBot() {
                   {/* Typing indicator */}
                   {isTyping && (
                     <div className="flex gap-2.5 justify-start">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center shrink-0">
-                        <Calculator className="w-4 h-4 text-white" />
+                      <div className={`w-8 h-8 rounded-full ${isPremium ? 'bg-gradient-to-br from-violet-500 to-purple-700' : 'bg-gradient-to-br from-orange-500 to-red-600'} flex items-center justify-center shrink-0`}>
+                        {isPremium ? <Brain className="w-4 h-4 text-white" /> : <Calculator className="w-4 h-4 text-white" />}
                       </div>
                       <div className="bg-white border border-gray-100 rounded-2xl rounded-bl-md px-4 py-3 shadow-sm">
                         <div className="flex items-center gap-2">
                           <div className="flex gap-1.5">
-                            <span className="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                            <span className="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                            <span className="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                            <span className={`w-2 h-2 ${isPremium ? 'bg-violet-400' : 'bg-orange-400'} rounded-full animate-bounce`} style={{ animationDelay: '0ms' }} />
+                            <span className={`w-2 h-2 ${isPremium ? 'bg-violet-400' : 'bg-orange-400'} rounded-full animate-bounce`} style={{ animationDelay: '150ms' }} />
+                            <span className={`w-2 h-2 ${isPremium ? 'bg-violet-400' : 'bg-orange-400'} rounded-full animate-bounce`} style={{ animationDelay: '300ms' }} />
                           </div>
-                          <span className="text-[10px] text-gray-400">Calculating...</span>
+                          <span className="text-[10px] text-gray-400">{isPremium ? 'Consulting…' : 'Calculating...'}</span>
                         </div>
                       </div>
+                    </div>
+                  )}
+
+                  {/* Non-premium upgrade nudge */}
+                  {!isPremium && isAuthenticated && messages.length > 2 && (
+                    <div className="bg-gradient-to-r from-violet-50 to-purple-50 border border-violet-200 rounded-xl px-3 py-2.5 text-xs text-violet-800">
+                      <div className="flex items-center gap-2">
+                        <Crown className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                        <p><strong>Upgrade to Premium</strong> for expert structural design, IS code guidance, foundation recommendations, and advanced civil engineering consultation.</p>
+                      </div>
+                      <Link href="/premium" className="mt-2 inline-flex items-center gap-1 font-bold text-violet-700 hover:underline">
+                        See Premium Plans <ArrowRight className="w-3 h-3" />
+                      </Link>
                     </div>
                   )}
 
@@ -857,16 +987,20 @@ export default function ChatBot() {
                 {/* Quick prompts */}
                 {messages.length <= 1 && !isTyping && (
                   <div className="px-4 pb-2 shrink-0">
-                    <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-2">Quick Estimations</p>
+                    <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                      {isPremium ? 'Quick Consultations' : 'Quick Estimations'}
+                    </p>
                     <div className="grid grid-cols-2 gap-1.5">
-                      {QUICK_PROMPTS.map((qp, i) => (
+                      {(isPremium ? PREMIUM_QUICK_PROMPTS : QUICK_PROMPTS).map((qp, i) => (
                         <button
                           key={i}
                           onClick={() => handleQuickPrompt(qp.label)}
-                          className="text-left text-[11px] bg-gray-50 hover:bg-orange-50 border border-gray-100 hover:border-orange-200 rounded-xl px-2.5 py-2 transition-all hover:shadow-sm group"
+                          className={`text-left text-[11px] bg-gray-50 border border-gray-100 rounded-xl px-2.5 py-2 transition-all hover:shadow-sm group ${
+                            isPremium ? 'hover:bg-violet-50 hover:border-violet-200' : 'hover:bg-orange-50 hover:border-orange-200'
+                          }`}
                         >
                           <span className="mr-1">{qp.icon}</span>
-                          <span className="text-gray-600 group-hover:text-orange-700 transition-colors">{qp.label}</span>
+                          <span className={`text-gray-600 transition-colors ${isPremium ? 'group-hover:text-violet-700' : 'group-hover:text-orange-700'}`}>{qp.label}</span>
                         </button>
                       ))}
                     </div>
@@ -875,25 +1009,37 @@ export default function ChatBot() {
 
                 {/* Input */}
                 <form onSubmit={handleSubmit} className="px-4 py-3 bg-white border-t border-gray-100 shrink-0">
-                  <div className="flex items-center gap-2 bg-gray-50 rounded-xl border border-gray-200 focus-within:border-orange-400 focus-within:ring-2 focus-within:ring-orange-100 transition-all px-3 py-1">
+                  <div className={`flex items-center gap-2 bg-gray-50 rounded-xl border focus-within:ring-2 transition-all px-3 py-1 ${
+                    isPremium
+                      ? 'border-gray-200 focus-within:border-violet-400 focus-within:ring-violet-100'
+                      : 'border-gray-200 focus-within:border-orange-400 focus-within:ring-orange-100'
+                  }`}>
                     <input
                       ref={inputRef}
                       type="text"
                       value={input}
                       onChange={e => setInput(e.target.value)}
-                      placeholder="Try: 1500 sqft house, 2km road, 40m bridge..."
+                      placeholder={isPremium ? 'Ask any civil engineering question…' : 'Try: 1500 sqft house, 2km road, 40m bridge...'}
                       className="flex-1 bg-transparent outline-none text-sm text-gray-800 placeholder:text-gray-400 py-2"
                       disabled={isTyping}
                     />
                     <button
                       type="submit"
                       disabled={!input.trim() || isTyping}
-                      className="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center text-white disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-md transition-all hover:scale-105 shrink-0"
+                      className={`w-8 h-8 rounded-lg flex items-center justify-center text-white disabled:opacity-30 disabled:cursor-not-allowed hover:shadow-md transition-all hover:scale-105 shrink-0 ${
+                        isPremium
+                          ? 'bg-gradient-to-br from-violet-500 to-purple-700'
+                          : 'bg-gradient-to-br from-orange-500 to-red-600'
+                      }`}
                     >
                       <Send className="w-4 h-4" />
                     </button>
                   </div>
-                  <p className="text-[10px] text-center text-gray-400 mt-2">Estimates are approximate • Actual costs may vary ±10-15%</p>
+                  <p className="text-[10px] text-center text-gray-400 mt-2">
+                    {isPremium
+                      ? '🏆 Premium Civil Engineering Consultant • IS Code references included'
+                      : 'Estimates are approximate • Actual costs may vary ±10-15%'}
+                  </p>
                 </form>
               </>
             )}
