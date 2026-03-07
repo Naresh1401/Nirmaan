@@ -159,10 +159,10 @@ export default function SettingsPage() {
           <div className="bg-white rounded-xl border border-gray-200 p-6 max-w-2xl">
             <div className="flex items-center gap-4 mb-6">
               <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-2xl font-bold text-white">
-                {(profile.username || admin?.username || '?')[0]?.toUpperCase()}
+                {(profile.username || admin?.full_name || '?')[0]?.toUpperCase()}
               </div>
               <div>
-                <h3 className="text-lg font-bold text-gray-900">{profile.username || admin?.username}</h3>
+                <h3 className="text-lg font-bold text-gray-900">{profile.username || admin?.full_name}</h3>
                 <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-700">{profile.admin_role || admin?.admin_role || 'admin'}</span>
               </div>
             </div>
