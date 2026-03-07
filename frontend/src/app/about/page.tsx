@@ -31,7 +31,7 @@ export default function AboutPage() {
     <div className="min-h-screen bg-white">
       {/* Hero */}
       <section className="bg-gradient-to-br from-orange-500 via-red-500 to-pink-600 py-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-5xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 bg-white/20 text-white rounded-full px-4 py-1.5 text-sm font-semibold mb-6">
             <Building2 className="w-4 h-4" /> Our Story
           </div>
@@ -157,7 +157,7 @@ export default function AboutPage() {
 
       {/* CTA */}
       <section className="py-16 px-4 bg-gradient-to-r from-orange-500 to-red-600">
-        <div className="max-w-3xl mx-auto text-center">
+        <div className="max-w-4xl mx-auto text-center">
           <Heart className="w-10 h-10 text-white mx-auto mb-4" />
           <h2 className="text-3xl font-bold text-white mb-3">Want to Try Nirmaan?</h2>
           <p className="text-white/80 mb-8">Sign up and see what materials are available near you</p>

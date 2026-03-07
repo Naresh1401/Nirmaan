@@ -306,7 +306,7 @@ export default function SetuPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-violet-50/30 to-white">
       {/* Header */}
       <div className="bg-gradient-to-r from-violet-700 via-purple-700 to-indigo-800 text-white">
-        <div className="max-w-5xl mx-auto px-4 py-6 sm:py-8">
+        <div className="max-w-5xl mx-auto px-4 py-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center backdrop-blur-sm border border-white/20">

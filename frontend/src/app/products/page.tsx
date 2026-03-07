@@ -149,10 +149,10 @@ function ProductsContent() {
         </div>
 
         {/* Product Grid */}
-        <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {filtered.map(p => (
-              <Link key={p.id} href={`/products/${p.id}`} className="bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 overflow-hidden group">
+              <Link key={p.id} href={`/products/${p.id}`} className="bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 overflow-hidden group h-full flex flex-col">
                 <div className="relative">
                   <div className="bg-gradient-to-br from-gray-100 to-gray-50 h-40 flex items-center justify-center">
                     <span className="text-6xl group-hover:scale-110 transition-transform">{p.image}</span>
@@ -165,7 +165,7 @@ function ProductsContent() {
                     <Heart className={`w-4 h-4 ${wishlist.has(p.id) ? 'fill-red-500' : ''}`} />
                   </button>
                 </div>
-                <div className="p-4">
+                <div className="p-4 flex-1">
                   <div className="text-xs text-orange-600 font-semibold mb-1">{p.brand}</div>
                   <h3 className="font-bold text-gray-900 group-hover:text-orange-600 transition-colors line-clamp-2 min-h-[2.5rem]">{p.name}</h3>
                   <p className="text-gray-500 text-xs mt-1 flex items-center gap-1"><Factory className="w-3 h-3" /> {p.supplier}</p>

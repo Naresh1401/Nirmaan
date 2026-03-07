@@ -146,7 +146,7 @@ export default function HomePage() {
       </div>
 
       {/* CATEGORIES */}
-      <section className="max-w-7xl mx-auto px-4 py-12">
+      <section className="max-w-7xl mx-auto px-4 py-16">
         <div className="flex items-center justify-between mb-8">
           <div><h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Shop by Category</h2><p className="text-gray-500 mt-1">Browse materials from suppliers near you</p></div>
           <Link href={isAuthenticated ? '/products' : '/login'} className="text-orange-600 hover:text-orange-700 font-semibold flex items-center gap-1 text-sm">View All <ChevronRight className="w-4 h-4" /></Link>
@@ -177,7 +177,7 @@ export default function HomePage() {
       </section>
 
       {/* DEALS */}
-      <section className="bg-gradient-to-b from-gray-50 to-white py-12">
+      <section className="bg-gradient-to-b from-gray-50 to-white py-16">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center gap-3 mb-8">
             <div className="bg-red-100 rounded-full p-2"><Percent className="w-6 h-6 text-red-600" /></div>
@@ -200,7 +200,7 @@ export default function HomePage() {
       </section>
 
       {/* TRENDING PRODUCTS */}
-      <section className="max-w-7xl mx-auto px-4 py-12">
+      <section className="max-w-7xl mx-auto px-4 py-16">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
             <div className="bg-orange-100 rounded-full p-2"><TrendingDown className="w-6 h-6 text-orange-600" /></div>
@@ -210,8 +210,8 @@ export default function HomePage() {
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {trendingProducts.map((p, i) => (
-            <Link key={i} href={isAuthenticated ? `/products/${p.id}` : '/login'} className="bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 overflow-hidden group">
-              <div className="p-5">
+            <Link key={i} href={isAuthenticated ? `/products/${p.id}` : '/login'} className="bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 overflow-hidden group h-full flex flex-col">
+              <div className="p-5 flex-1">
                 <div className="flex items-start justify-between mb-3">
                   <div className="bg-red-50 text-red-600 text-xs font-bold px-2 py-1 rounded-lg">{p.discount}% OFF</div>
                   <button className="text-gray-300 hover:text-red-500 transition-colors"><Heart className="w-5 h-5" /></button>

@@ -29,7 +29,7 @@ export default function SuppliersPage() {
   return (
     <AuthGuard>
       <div className="min-h-screen bg-gray-50">
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 py-10">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 py-12">
           <div className="max-w-7xl mx-auto px-4">
             <h1 className="text-3xl font-bold text-white mb-2">Verified Suppliers</h1>
             <p className="text-blue-100 mb-6">Discover trusted construction material suppliers near you</p>
@@ -46,7 +46,7 @@ export default function SuppliersPage() {
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="max-w-7xl mx-auto px-4 py-8">
           <p className="text-sm text-gray-500 mb-4">{filtered.length} suppliers found</p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {filtered.map(s => (

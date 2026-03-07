@@ -378,7 +378,7 @@ export default function PremiumPage() {
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
         <div className="absolute top-0 right-0 w-96 h-96 bg-violet-300/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-400/20 rounded-full blur-3xl translate-y-1/4 -translate-x-1/4" />
-        <div className="relative max-w-5xl mx-auto px-4 py-16 text-center">
+        <div className="relative max-w-6xl mx-auto px-4 py-16 text-center">
           <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-white text-sm mb-6">
             <Crown className="w-4 h-4 text-yellow-300" />
             Nirmaan — The Digital Operating System for Construction
@@ -407,7 +407,7 @@ export default function PremiumPage() {
       </section>
 
       {/* ═══ Construction Lifecycle Pipeline ═══ */}
-      <section className="max-w-6xl mx-auto px-4 py-12">
+      <section className="max-w-7xl mx-auto px-4 py-12">
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">One Platform, Entire Construction Lifecycle</h2>
           <p className="text-gray-500">Nirmaan digitizes every phase — from the first idea to long-term infrastructure analytics</p>
@@ -429,7 +429,7 @@ export default function PremiumPage() {
       </section>
 
       {/* ═══ Messages ═══ */}
-      <div className="max-w-5xl mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4">
         {successMsg && (
           <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-start gap-3 mb-4">
             <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
@@ -676,7 +676,7 @@ export default function PremiumPage() {
       </section>
 
       {/* ═══ Loyalty Program ═══ */}
-      <section className="max-w-5xl mx-auto px-4 py-12">
+      <section className="max-w-7xl mx-auto px-4 py-12">
         <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl p-8 border border-amber-200">
           <div className="flex items-center gap-3 mb-6">
             <div className="bg-amber-400/20 rounded-xl p-3"><Gift className="w-7 h-7 text-amber-600" /></div>
@@ -727,7 +727,7 @@ export default function PremiumPage() {
       </section>
 
       {/* ═══ Revenue Model (Transparency) ═══ */}
-      <section className="max-w-5xl mx-auto px-4 py-12">
+      <section className="max-w-7xl mx-auto px-4 py-12">
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">How Nirmaan Works</h2>
           <p className="text-gray-500">A sustainable ecosystem powering India&apos;s construction industry</p>
@@ -744,7 +744,7 @@ export default function PremiumPage() {
       </section>
 
       {/* ═══ Platform Vision Grid ═══ */}
-      <section className="max-w-5xl mx-auto px-4 py-12">
+      <section className="max-w-7xl mx-auto px-4 py-12">
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Explore the Platform</h2>
           <p className="text-gray-500">Every module connects to create the complete construction operating system</p>
@@ -770,7 +770,7 @@ export default function PremiumPage() {
 
       {/* ═══ CTA ═══ */}
       {!isAuthenticated && (
-        <section className="max-w-3xl mx-auto px-4 pb-16 text-center">
+        <section className="max-w-4xl mx-auto px-4 pb-16 text-center">
           <div className="bg-gradient-to-br from-violet-600 to-indigo-700 rounded-3xl p-8 text-white">
             <Crown className="w-12 h-12 text-yellow-300 mx-auto mb-4" />
             <h2 className="text-2xl font-extrabold mb-2">Start Building Smarter Today</h2>

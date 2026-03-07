@@ -29,7 +29,7 @@ export default function ContactPage() {
     <div className="min-h-screen bg-white">
       {/* Header */}
       <section className="bg-gradient-to-br from-slate-800 to-slate-900 py-16 px-4">
-        <div className="max-w-3xl mx-auto text-center">
+        <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl font-bold text-white mb-3">Get in Touch</h1>
           <p className="text-slate-300 text-lg">
             Have a question, feedback, or issue with an order? We&apos;re here to help.
@@ -37,7 +37,7 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <div className="max-w-4xl mx-auto px-4 py-12 grid md:grid-cols-3 gap-8">
+      <div className="max-w-5xl mx-auto px-4 py-16 grid md:grid-cols-3 gap-8">
         {/* Contact info */}
         <div className="space-y-6">
           <div>

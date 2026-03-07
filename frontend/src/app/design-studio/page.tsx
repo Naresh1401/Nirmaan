@@ -1141,7 +1141,7 @@ export default function DesignStudioPage() {
       <section className="relative bg-gradient-to-br from-indigo-700 via-violet-600 to-purple-800 overflow-hidden">
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
         <div className="absolute top-0 right-0 w-96 h-96 bg-violet-300/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
-        <div className="relative max-w-5xl mx-auto px-4 py-14 text-center">
+        <div className="relative max-w-6xl mx-auto px-4 py-14 text-center">
           <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-white text-sm mb-5">
             <Layers className="w-4 h-4 text-yellow-300" />
             Gold+ Feature — Architecture & Design Studio
@@ -1163,7 +1163,7 @@ export default function DesignStudioPage() {
       </section>
 
       {/* ═══ AI Design Tools ═══ */}
-      <section className="max-w-6xl mx-auto px-4 py-12">
+      <section className="max-w-7xl mx-auto px-4 py-12">
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">AI-Powered Design Tools</h2>
           <p className="text-gray-500">Automate floor plans, visualizations, and compliance checks with AI</p>
@@ -1206,7 +1206,7 @@ export default function DesignStudioPage() {
       </section>
 
       {/* ═══ Design Packages ═══ */}
-      <section className="max-w-5xl mx-auto px-4 py-10">
+      <section className="max-w-7xl mx-auto px-4 py-12">
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Design Packages</h2>
           <p className="text-gray-500">Ready-made packages for residential and commercial projects</p>
@@ -1250,7 +1250,7 @@ export default function DesignStudioPage() {
       </section>
 
       {/* ═══ Browse Architects & Designers ═══ */}
-      <section className="max-w-6xl mx-auto px-4 py-10">
+      <section className="max-w-7xl mx-auto px-4 py-12">
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Browse Architects & Designers</h2>
           <p className="text-gray-500">Verified professionals for every type of design project</p>
@@ -1387,7 +1387,7 @@ export default function DesignStudioPage() {
       </section>
 
       {/* ═══ How It Works ═══ */}
-      <section className="max-w-5xl mx-auto px-4 py-10">
+      <section className="max-w-7xl mx-auto px-4 py-12">
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">How It Works</h2>
         </div>
@@ -1409,7 +1409,7 @@ export default function DesignStudioPage() {
       </section>
 
       {/* ═══ CTA ═══ */}
-      <section className="max-w-3xl mx-auto px-4 pb-16 text-center">
+      <section className="max-w-4xl mx-auto px-4 pb-16 text-center">
         <div className="bg-gradient-to-br from-violet-600 to-indigo-700 rounded-3xl p-8 text-white">
           <Layers className="w-10 h-10 text-yellow-300 mx-auto mb-3" />
           <h2 className="text-xl font-extrabold mb-2">Need a Custom Design?</h2>

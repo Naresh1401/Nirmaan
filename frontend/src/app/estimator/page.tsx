@@ -153,7 +153,7 @@ export default function EstimatorPage() {
       <div className="min-h-screen bg-gray-50 flex flex-col">
         {/* Header */}
         <div className="bg-gradient-to-r from-violet-600 to-purple-700 py-6 px-4">
-          <div className="max-w-4xl mx-auto flex items-center justify-between">
+          <div className="max-w-5xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="bg-white/20 rounded-xl p-2.5"><Bot className="w-6 h-6 text-white" /></div>
               <div>
@@ -166,7 +166,7 @@ export default function EstimatorPage() {
         </div>
 
         {/* Chat area */}
-        <div className="flex-1 max-w-4xl w-full mx-auto px-4 py-6 overflow-y-auto">
+        <div className="flex-1 max-w-5xl w-full mx-auto px-4 py-6 overflow-y-auto">
           <div className="space-y-4">
             {messages.map(msg => (
               <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -238,7 +238,7 @@ export default function EstimatorPage() {
 
         {/* Quick Prompts */}
         {messages.length <= 1 && (
-          <div className="max-w-4xl w-full mx-auto px-4 pb-4">
+          <div className="max-w-5xl w-full mx-auto px-4 pb-4">
             <p className="text-xs text-gray-500 font-semibold mb-2">Quick Estimates:</p>
             <div className="flex flex-wrap gap-2">
               {quickPrompts.map((qp, i) => (
@@ -250,7 +250,7 @@ export default function EstimatorPage() {
 
         {/* Input */}
         <div className="border-t border-gray-200 bg-white p-4">
-          <div className="max-w-4xl mx-auto flex gap-3">
+          <div className="max-w-5xl mx-auto flex gap-3">
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
