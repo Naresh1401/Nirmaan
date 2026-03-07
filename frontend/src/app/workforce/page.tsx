@@ -152,7 +152,11 @@ export default function WorkforcePage() {
 
   const filtered = WORKERS.filter(w => {
     const matchType = activeType === 'all' || w.type === activeType;
-    const matchSearch = !searchQ || w.name.toLowerCase().includes(searchQ.toLowerCase()) || w.label.toLowerCase().includes(searchQ.toLowerCase()) || w.location.toLowerCase().includes(searchQ.toLowerCase());
+    const q = searchQ.toLowerCase();
+    const matchSearch = !searchQ
+      || w.name.toLowerCase().includes(q)
+      || w.label.toLowerCase().includes(q)
+      || w.location.toLowerCase().includes(q);
     const matchAvailable = !showAvailableOnly || w.available;
     return matchType && matchSearch && matchAvailable;
   });

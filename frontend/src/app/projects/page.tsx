@@ -133,7 +133,10 @@ export default function ProjectsPage() {
 
   const filtered = SAMPLE_PROJECTS.filter(p => {
     const matchType = activeType === 'all' || p.type === activeType;
-    const matchSearch = !searchQ || p.title.toLowerCase().includes(searchQ.toLowerCase()) || p.location.toLowerCase().includes(searchQ.toLowerCase());
+    const q = searchQ.toLowerCase();
+    const matchSearch = !searchQ
+      || p.title.toLowerCase().includes(q)
+      || p.location.toLowerCase().includes(q);
     return matchType && matchSearch;
   });
 

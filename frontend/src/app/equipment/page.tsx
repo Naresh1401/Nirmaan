@@ -159,7 +159,10 @@ export default function EquipmentPage() {
 
   const filtered = EQUIPMENT.filter(e => {
     const matchType = activeType === 'all' || e.type === activeType;
-    const matchSearch = !searchQ || e.name.toLowerCase().includes(searchQ.toLowerCase()) || e.location.toLowerCase().includes(searchQ.toLowerCase());
+    const q = searchQ.toLowerCase();
+    const matchSearch = !searchQ
+      || e.name.toLowerCase().includes(q)
+      || e.location.toLowerCase().includes(q);
     return matchType && matchSearch;
   });
 

@@ -768,7 +768,6 @@ export default function ChatBot() {
   const fabGradient = isPremium
     ? 'bg-gradient-to-br from-violet-500 to-purple-700'
     : 'bg-gradient-to-br from-orange-500 to-red-600';
-  const activeColor = isPremium ? 'orange' : 'orange';
 
   return (
     <>
