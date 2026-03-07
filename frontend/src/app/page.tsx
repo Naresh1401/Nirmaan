@@ -46,15 +46,15 @@ const deals = [
 ];
 
 const testimonials = [
-  { name: 'Rajesh K.', role: 'Contractor, Peddapalli', text: 'Comparing rates across different suppliers used to take me a full day. Now I can see everything in one place and just order. Saved decent money on cement for my last project.', rating: 4 },
-  { name: 'Suresh R.', role: 'Builder, Karimnagar', text: 'The delivery tracking is what I use most. I know exactly when the truck is coming so I can plan my labour accordingly. Much better than calling the supplier 5 times.', rating: 5 },
+  { name: 'Rajesh K.', role: 'Contractor, Karimnagar', text: 'Comparing rates across different suppliers used to take me a full day. Now I can see everything in one place and just order. Saved decent money on cement for my last project.', rating: 4 },
+  { name: 'Suresh R.', role: 'Builder, Peddapalli', text: 'The delivery tracking is what I use most. I know exactly when the truck is coming so I can plan my labour accordingly. Much better than calling the supplier 5 times.', rating: 5 },
   { name: 'Mahesh B.', role: 'Home Builder, Ramagundam', text: 'Built my own house through this. The material estimator helped me figure out quantities, and the credit option gave me some breathing room on payments. Still learning the app but it works.', rating: 4 },
-  { name: 'Venkatesh P.', role: 'Civil Engineer, Warangal', text: 'We ordered 40 tons of gravel and 200 bags of cement for a commercial site. Nirmaan\'s prices were genuinely lower than what our regular dealer offered. Delivery was on time both days.', rating: 5 },
+  { name: 'Venkatesh P.', role: 'Civil Engineer, Hyderabad', text: 'We ordered 40 tons of gravel and 200 bags of cement for a commercial site. Nirmaan\'s prices were genuinely lower than what our regular dealer offered. Delivery was on time both days.', rating: 5 },
   { name: 'Lakshmi D.', role: 'Interior Designer, Hanamkonda', text: 'I use Nirmaan mainly for granite and tiles. The Kashmir White granite I ordered came in perfect condition. Being able to compare across 3-4 suppliers from my phone saves a lot of running around.', rating: 4 },
   { name: 'Srinivas G.', role: 'Contractor, Godavarikhani', text: 'Started using this 6 months back. The credit line they gave us after a few orders really helps with cash flow. I don\'t have to pay everything upfront for materials anymore.', rating: 5 },
   { name: 'Ramana T.', role: 'Builder, Mancherial', text: 'Good for bulk sand and gravel orders. The tipper arrives when they say it will. Only thing I wish is they had more suppliers for steel in my area.', rating: 4 },
-  { name: 'Anil M.', role: 'Site Supervisor, Peddapalli', text: 'My contractor asked me to start ordering through Nirmaan. The invoice is clean, delivery is trackable, and I don\'t have to chase suppliers for receipts. Makes my job simpler.', rating: 5 },
-  { name: 'Prasad K.', role: 'Mason, Karimnagar', text: 'I ordered fly ash bricks for a small extension job. Price was fair and they delivered same day. The app is easy enough to use even for someone like me who isn\'t very tech-savvy.', rating: 4 },
+  { name: 'Anil M.', role: 'Site Supervisor, Warangal', text: 'My contractor asked me to start ordering through Nirmaan. The invoice is clean, delivery is trackable, and I don\'t have to chase suppliers for receipts. Makes my job simpler.', rating: 5 },
+  { name: 'Prasad K.', role: 'Mason, Siddipet', text: 'I ordered fly ash bricks for a small extension job. Price was fair and they delivered same day. The app is easy enough to use even for someone like me who isn\'t very tech-savvy.', rating: 4 },
 ];
 
 export default function HomePage() {
@@ -74,7 +74,7 @@ export default function HomePage() {
             <div>
               <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-white text-sm mb-6">
                 <Sparkles className="w-4 h-4" />
-                <span>Now delivering across Peddapalli &amp; Karimnagar districts</span>
+                <span>Now delivering across Peddapalli & surrounding regions</span>
               </div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-4">
                 Construction Materials,<br /><span className="text-yellow-200">Delivered Right.</span>
@@ -89,8 +89,11 @@ export default function HomePage() {
                     <option>Peddapalli</option>
                     <option>Karimnagar</option>
                     <option>Ramagundam</option>
+                    <option>Mancherial</option>
                     <option>Warangal</option>
                     <option>Hyderabad</option>
+                    <option>Nizamabad</option>
+                    <option>Siddipet</option>
                   </select>
                 </div>
                 <div className="flex items-center flex-1 gap-2 px-3">
@@ -104,9 +107,9 @@ export default function HomePage() {
               <div className="flex flex-wrap gap-6 mt-8">
                 {[
                   { label: 'Suppliers', value: '50+', icon: Factory },
-                  { label: 'Materials', value: '800+', icon: Package },
-                  { label: 'Deliveries', value: '1,200+', icon: Truck },
-                  { label: 'Districts', value: '5', icon: MapPin },
+                  { label: 'Materials', value: '2,000+', icon: Package },
+                  { label: 'Deliveries', value: '5,000+', icon: Truck },
+                  { label: 'Locations', value: '8+', icon: MapPin },
                 ].map(s => (
                   <div key={s.label} className="flex items-center gap-2 text-white/90">
                     <s.icon className="w-5 h-5 text-yellow-200" />
@@ -296,7 +299,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">What Our Users Say</h2>
-            <p className="text-gray-500">Feedback from contractors and builders in Telangana</p>
+            <p className="text-gray-500">Feedback from contractors and builders across Telangana</p>
           </div>
         </div>
         {/* Row 1 — scrolls left */}
@@ -336,7 +339,7 @@ export default function HomePage() {
         <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl p-8 sm:p-12 flex flex-col lg:flex-row items-center gap-8">
           <div className="flex-1">
             <h2 className="text-3xl font-bold text-white mb-3">Are You a Supplier?</h2>
-            <p className="text-blue-100 text-lg mb-6">List your materials on Nirmaan and reach contractors across Telangana. Currently onboarding suppliers — no listing fees while we grow.</p>
+            <p className="text-blue-100 text-lg mb-6">List your materials on Nirmaan and reach contractors across Peddapalli &amp; surrounding districts. Currently onboarding suppliers — no listing fees while we grow.</p>
             <div className="flex flex-wrap gap-4 mb-6">
               {['Digital Storefront', 'Order Management', 'Payment Tracking', 'Business Analytics'].map(f => (
                 <span key={f} className="bg-white/20 text-white text-sm px-3 py-1.5 rounded-full flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> {f}</span>
@@ -382,7 +385,7 @@ export default function HomePage() {
             )}
           </div>
           <div className="flex items-center justify-center gap-8 mt-10 text-white/80 text-sm">
-            <span className="flex items-center gap-1"><MapPin className="w-4 h-4" /> Peddapalli, Telangana</span>
+            <span className="flex items-center gap-1"><MapPin className="w-4 h-4" /> India</span>
             <span className="flex items-center gap-1"><Award className="w-4 h-4" /> Started 2024</span>
           </div>
         </div>

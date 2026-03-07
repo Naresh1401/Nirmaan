@@ -365,7 +365,7 @@ export default function CreditPage() {
 
           {/* Contact */}
           <div className="text-center text-sm text-gray-500 mb-8">
-            Questions? Call us at <a href="tel:+918555501401" className="text-emerald-600 font-semibold">+91 85555 01401</a> or email <a href="mailto:hello@nirmaan.co" className="text-emerald-600 font-semibold">hello@nirmaan.co</a>
+            Questions? Call us at <a href="tel:+919989860375" className="text-emerald-600 font-semibold">+91 99898 60375</a> or email <a href="mailto:hello@nirmaan.co" className="text-emerald-600 font-semibold">hello@nirmaan.co</a>
           </div>
         </div>
       </div>

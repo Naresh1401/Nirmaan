@@ -8,13 +8,13 @@ import { useState } from 'react';
 
 const suppliers = [
   { id: 's1', name: 'Peddapalli Traders', city: 'Peddapalli', rating: 4.5, reviews: 128, products: 45, orders: 890, verified: true, categories: ['Cement', 'Sand', 'Steel'], since: '2020', delivery: 'Same Day', image: '🏪' },
-  { id: 's2', name: 'Sri Ganesh Hardware', city: 'Peddapalli', rating: 4.3, reviews: 67, products: 32, orders: 450, verified: true, categories: ['Cement', 'Bricks', 'Tiles'], since: '2018', delivery: 'Same Day', image: '🏬' },
+  { id: 's2', name: 'Sri Ganesh Hardware', city: 'Karimnagar', rating: 4.3, reviews: 67, products: 32, orders: 450, verified: true, categories: ['Cement', 'Bricks', 'Tiles'], since: '2018', delivery: 'Same Day', image: '🏬' },
   { id: 's3', name: 'Karimnagar Building Materials', city: 'Karimnagar', rating: 4.6, reviews: 203, products: 78, orders: 1200, verified: true, categories: ['All Materials'], since: '2015', delivery: 'Next Day', image: '🏗️' },
-  { id: 's4', name: 'Sri Steel Works', city: 'Peddapalli', rating: 4.7, reviews: 89, products: 25, orders: 670, verified: true, categories: ['Steel', 'TMT Bars'], since: '2019', delivery: 'Same Day', image: '🔩' },
-  { id: 's5', name: 'Godavari Sand Depot', city: 'Ramagundam', rating: 4.3, reviews: 234, products: 8, orders: 2100, verified: true, categories: ['Sand', 'Gravel'], since: '2017', delivery: 'Same Day', image: '⏳' },
-  { id: 's6', name: 'Kalyan Brick Works', city: 'Peddapalli', rating: 4.6, reviews: 167, products: 12, orders: 980, verified: true, categories: ['Bricks', 'Blocks'], since: '2016', delivery: 'Same Day', image: '🧱' },
-  { id: 's7', name: 'Tile Palace', city: 'Karimnagar', rating: 4.5, reviews: 203, products: 150, orders: 560, verified: false, categories: ['Tiles', 'Sanitaryware'], since: '2021', delivery: '2-3 Days', image: '🔲' },
-  { id: 's8', name: 'Color World Paints', city: 'Warangal', rating: 4.4, reviews: 145, products: 95, orders: 340, verified: true, categories: ['Paint', 'Primers'], since: '2020', delivery: 'Next Day', image: '🎨' },
+  { id: 's4', name: 'Sri Steel Works', city: 'Ramagundam', rating: 4.7, reviews: 89, products: 25, orders: 670, verified: true, categories: ['Steel', 'TMT Bars'], since: '2019', delivery: 'Same Day', image: '🔩' },
+  { id: 's5', name: 'Godavari Sand Depot', city: 'Mancherial', rating: 4.3, reviews: 234, products: 8, orders: 2100, verified: true, categories: ['Sand', 'Gravel'], since: '2017', delivery: 'Same Day', image: '⏳' },
+  { id: 's6', name: 'Kalyan Brick Works', city: 'Warangal', rating: 4.6, reviews: 167, products: 12, orders: 980, verified: true, categories: ['Bricks', 'Blocks'], since: '2016', delivery: 'Same Day', image: '🧱' },
+  { id: 's7', name: 'Tile Palace', city: 'Hyderabad', rating: 4.5, reviews: 203, products: 150, orders: 560, verified: false, categories: ['Tiles', 'Sanitaryware'], since: '2021', delivery: '2-3 Days', image: '🔲' },
+  { id: 's8', name: 'Color World Paints', city: 'Nizamabad', rating: 4.4, reviews: 145, products: 95, orders: 340, verified: true, categories: ['Paint', 'Primers'], since: '2020', delivery: 'Next Day', image: '🎨' },
 ];
 
 export default function SuppliersPage() {

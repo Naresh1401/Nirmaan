@@ -40,7 +40,7 @@ export function Navbar() {
       <div className="bg-gradient-to-r from-orange-600 via-orange-500 to-red-500 text-white text-[11px] sm:text-xs text-center py-1.5 font-medium tracking-wide">
         <span className="inline-flex items-center gap-2">
           <span className="hidden sm:inline">🏗️</span>
-          <span>Telangana&apos;s Trusted Construction Materials Platform</span>
+          <span>Peddapalli&apos;s Trusted Construction Materials Platform</span>
           <span className="mx-1 opacity-50">•</span>
           <span className="font-semibold">🚚 FREE Delivery on orders above ₹10,000</span>
         </span>

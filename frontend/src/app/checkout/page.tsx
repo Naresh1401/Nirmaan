@@ -117,7 +117,7 @@ export default function CheckoutPage() {
                   <div>
                     <label className="text-sm font-medium text-gray-700 mb-1 block">City</label>
                     <select value={deliveryCity} onChange={e => setDeliveryCity(e.target.value)} className="w-full border border-gray-200 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-orange-500 text-gray-900" title="Select city">
-                      <option>Peddapalli</option><option>Karimnagar</option><option>Ramagundam</option><option>Warangal</option><option>Hyderabad</option><option>Nizamabad</option>
+                      <option>Peddapalli</option><option>Karimnagar</option><option>Ramagundam</option><option>Mancherial</option><option>Warangal</option><option>Hyderabad</option>
                     </select>
                   </div>
                   <div>

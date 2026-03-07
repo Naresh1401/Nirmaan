@@ -102,7 +102,7 @@ function estimateMaterials(prompt: string): { products: { name: string; qty: str
     ? `Here's the estimated materials for your ${sqft} sq.ft RCC slab. Using M20 grade concrete mix design.`
     : isFoundation
     ? `Here's the estimated materials for foundation of a ${sqft} sq.ft plot. Based on standard strip foundation design.`
-    : `Here's the estimated materials for your ${sqft} sq.ft construction${multiplier > 1 ? ' (multi-floor)' : ''}. Based on standard construction practices and current Telangana rates.`;
+    : `Here's the estimated materials for your ${sqft} sq.ft construction${multiplier > 1 ? ' (multi-floor)' : ''}. Based on standard construction practices and current Telangana market rates.`;
 
   return { products, totalCost, summary };
 }

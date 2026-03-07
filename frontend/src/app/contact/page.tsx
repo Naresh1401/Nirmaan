@@ -46,7 +46,7 @@ export default function ContactPage() {
               <div className="flex items-start gap-3">
                 <Phone className="w-4 h-4 text-orange-500 mt-0.5" />
                 <div>
-                  <p className="font-medium text-gray-900">+91 85555 01401</p>
+                  <p className="font-medium text-gray-900">+91 99898 60375</p>
                   <p className="text-gray-500">Mon-Sat, 9 AM - 7 PM</p>
                 </div>
               </div>

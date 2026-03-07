@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Building2, MapPin, Phone, FileText, CheckCircle2, ArrowRight, Upload, ArrowLeft } from 'lucide-react';
 
 export default function SupplierRegisterPage() {
-  const [form, setForm] = useState({ business_name: '', gst_number: '', pan_number: '', description: '', address: '', city: 'Peddapalli', state: 'Telangana', pincode: '', delivery_radius_km: '10' });
+  const [form, setForm] = useState({ business_name: '', gst_number: '', pan_number: '', description: '', address: '', city: '', state: '', pincode: '', delivery_radius_km: '10' });
   const [submitted, setSubmitted] = useState(false);
 
   if (submitted) {

@@ -10,8 +10,8 @@ export function Footer() {
           <div>
             <NirmaanLogo className="h-9 w-auto" white />
             <p className="mt-3 text-sm text-gray-400">
-              Online marketplace for construction materials.
-              Based in Peddapalli, Telangana.
+              Building Peddapalli&apos;s future, one material at a time.
+              Delivering construction materials across Peddapalli &amp; surrounding regions.
             </p>
           </div>
 
@@ -63,7 +63,7 @@ export function Footer() {
                 </Link>
               </li>
               <li className="pt-2 text-gray-400">
-                📞 +91 85555 01401
+                📞 +91 99898 60375
               </li>
               <li className="text-gray-400">
                 ✉️ hello@nirmaan.co
@@ -80,7 +80,7 @@ export function Footer() {
           </div>
           <div className="flex items-center gap-1.5 text-xs text-gray-500">
             <span>Proudly built in</span>
-            <span className="font-semibold bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent">Telangana, India</span>
+            <span className="font-semibold bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent">Peddapalli, Telangana</span>
             <span className="text-red-500 animate-pulse text-sm">♥</span>
           </div>
         </div>

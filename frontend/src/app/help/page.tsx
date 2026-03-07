@@ -42,7 +42,7 @@ const sections: { title: string; icon: React.ReactNode; faqs: FAQ[] }[] = [
     faqs: [
       {
         q: 'How long does delivery take?',
-        a: 'Most orders within Peddapalli and Karimnagar districts are delivered same-day or next-day, depending on when you place the order and what the supplier has in stock. Orders placed before 2 PM have a better chance of same-day delivery.',
+a: 'Most orders are delivered same-day or next-day, depending on when you place the order and what the supplier has in stock. Orders placed before 2 PM have a better chance of same-day delivery.',
       },
       {
         q: 'Can I track my delivery?',
@@ -147,7 +147,7 @@ export default function HelpPage() {
           <p className="text-gray-600 text-sm mb-4">We&apos;re available Mon-Sat, 9 AM to 7 PM.</p>
           <div className="flex flex-col sm:flex-row justify-center gap-3">
             <a href="tel:+918555501401" className="inline-flex items-center justify-center gap-2 bg-orange-500 text-white font-semibold px-5 py-2.5 rounded-lg text-sm hover:bg-orange-600 transition-colors">
-              <Phone className="w-4 h-4" /> Call: +91 85555 01401
+              <Phone className="w-4 h-4" /> Call: +91 99898 60375
             </a>
             <a href="mailto:hello@nirmaan.co" className="inline-flex items-center justify-center gap-2 border border-orange-300 text-orange-700 font-semibold px-5 py-2.5 rounded-lg text-sm hover:bg-orange-100 transition-colors">
               <Mail className="w-4 h-4" /> hello@nirmaan.co

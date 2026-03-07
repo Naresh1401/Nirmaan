@@ -13,12 +13,12 @@ const roles = [
   { value: 'delivery_partner', label: 'Delivery Partner', desc: 'Deliver materials & earn' },
 ];
 
-const cities = ['Peddapalli', 'Karimnagar', 'Ramagundam', 'Warangal', 'Hyderabad', 'Nizamabad', 'Mancherial', 'Adilabad'];
+const cities = ['Peddapalli', 'Karimnagar', 'Ramagundam', 'Mancherial', 'Warangal', 'Hyderabad', 'Nizamabad', 'Siddipet', 'Jagtial', 'Kamareddy'];
 
 export default function RegisterPage() {
   const { register, isAuthenticated } = useAuth();
   const router = useRouter();
-  const [form, setForm] = useState({ full_name: '', username: '', phone: '', email: '', password: '', confirmPassword: '', role: 'customer', city: 'Peddapalli', state: 'Telangana' });
+  const [form, setForm] = useState({ full_name: '', username: '', phone: '', email: '', password: '', confirmPassword: '', role: 'customer', city: 'Peddapalli', state: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
