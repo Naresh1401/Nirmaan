@@ -14,6 +14,7 @@ Nirmaan is a full-stack construction materials marketplace platform connecting b
 - [Prerequisites](#prerequisites)
 - [Environment Variables & API Keys](#environment-variables--api-keys)
 - [Getting Started](#getting-started)
+- [Database Migrations](#database-migrations)
 - [End-to-End Workflow](#end-to-end-workflow)
 - [API Reference](#api-reference)
 - [Security](#security)
@@ -308,7 +309,9 @@ SECRET_KEY="dev-secret-key" \
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-The backend auto-creates all database tables on first startup.
+The backend auto-creates all database tables on first startup via SQLAlchemy `create_all`.
+For an existing database, use the Alembic migrations described in the
+[Database Migrations](#database-migrations) section instead.
 
 ### 3. Frontend Setup
 
@@ -338,6 +341,86 @@ docker-compose up --build
 ```
 
 This launches PostgreSQL, Redis, backend, and frontend in containers.
+
+---
+
+## Database Migrations
+
+Alembic is used to manage schema changes. The `backend/alembic/` directory contains
+all migration revisions and an async-compatible `env.py`.
+
+### First-time setup (fresh database)
+
+```bash
+cd backend
+source venv/bin/activate
+
+# Apply all migrations (creates every table from scratch)
+DATABASE_URL="postgresql+asyncpg://nirmaan:nirmaan@localhost:5433/nirmaan" \
+alembic upgrade head
+```
+
+### Applying migrations on an existing database
+
+When you pull changes that include new migration files, run:
+
+```bash
+cd backend
+source venv/bin/activate
+
+DATABASE_URL="postgresql+asyncpg://nirmaan:nirmaan@localhost:5433/nirmaan" \
+alembic upgrade head
+```
+
+Alembic detects which revisions have already been applied and only runs new ones.
+
+### After merging PR #1 — Premium tier
+
+PR #1 adds a `membership_tier` column to the `users` table and five new premium
+tables. SQLAlchemy's `create_all` **will not add the column** to an already-existing
+`users` table. You must run the migration:
+
+```bash
+cd backend
+source venv/bin/activate
+
+DATABASE_URL="postgresql+asyncpg://nirmaan:nirmaan@localhost:5433/nirmaan" \
+alembic upgrade 0002_premium_tier
+```
+
+Then seed the `premium_benefits` catalogue:
+
+```bash
+DATABASE_URL="postgresql+asyncpg://nirmaan:nirmaan@localhost:5433/nirmaan" \
+python scripts/seed_premium_benefits.py
+```
+
+### Creating a new migration
+
+When you add or modify a SQLAlchemy model:
+
+```bash
+cd backend
+source venv/bin/activate
+
+# Auto-generate migration from model diff
+DATABASE_URL="postgresql+asyncpg://nirmaan:nirmaan@localhost:5433/nirmaan" \
+alembic revision --autogenerate -m "describe your change"
+
+# Review the generated file in backend/alembic/versions/, then apply it
+DATABASE_URL="postgresql+asyncpg://nirmaan:nirmaan@localhost:5433/nirmaan" \
+alembic upgrade head
+```
+
+### Checking migration status
+
+```bash
+DATABASE_URL="postgresql+asyncpg://nirmaan:nirmaan@localhost:5433/nirmaan" \
+alembic current          # show current revision
+
+DATABASE_URL="postgresql+asyncpg://nirmaan:nirmaan@localhost:5433/nirmaan" \
+alembic history --verbose   # list all revisions
+```
 
 ---
 
@@ -812,7 +895,7 @@ NEXT_PUBLIC_API_URL=http://localhost:8000 npm run dev
 - [ ] Set up Redis for rate limiting persistence and Celery tasks
 - [ ] Configure AWS S3 for image/file uploads
 - [ ] Set up Razorpay for payment processing
-- [ ] Use Alembic for database migrations instead of auto-create
+- [x] Alembic migrations configured — run `alembic upgrade head` before first start
 - [ ] Set up monitoring and log aggregation
 
 ---
