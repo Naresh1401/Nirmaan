@@ -2,35 +2,24 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X, ShoppingCart, User, LogOut, CreditCard, LayoutDashboard, ChevronDown, Bot, Crown } from "lucide-react";
+import { Menu, X, ShoppingCart, User, LogOut, LayoutDashboard, ChevronDown, Bot } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useCartStore } from "@/hooks/useCart";
 import NirmaanLogo from "@/components/NirmaanLogo";
 
 const NAV_LINKS = [
   { label: "Materials", href: "/products" },
-  { label: "Projects", href: "/projects" },
-  { label: "Workforce", href: "/workforce" },
-  { label: "Equipment", href: "/equipment" },
+  { label: "Suppliers", href: "/suppliers" },
   { label: "AI Estimator", href: "/estimator" },
-  { label: "Credit", href: "/credit" },
+  { label: "Orders", href: "/orders" },
+  { label: "About", href: "/about" },
 ];
-
-const TIER_BADGE: Record<string, { label: string; color: string }> = {
-  silver: { label: 'Silver', color: 'bg-slate-200 text-slate-700' },
-  gold: { label: 'Gold', color: 'bg-amber-100 text-amber-700' },
-  platinum: { label: 'Platinum', color: 'bg-violet-100 text-violet-700' },
-};
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const cartCount = useCartStore((s) => s.getItemCount());
-
-  const tierInfo = user?.membership_tier && user.membership_tier !== 'free'
-    ? TIER_BADGE[user.membership_tier]
-    : null;
 
   return (
     <header className="sticky top-0 z-50 border-b bg-white/95 backdrop-blur shadow-sm">
@@ -51,7 +40,7 @@ export function Navbar() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden items-center gap-5 lg:flex">
+        <nav className="hidden items-center gap-6 lg:flex">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
@@ -62,13 +51,6 @@ export function Navbar() {
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-500 transition-all group-hover:w-full"></span>
             </Link>
           ))}
-          <Link
-            href="/premium"
-            className="flex items-center gap-1.5 text-sm font-bold text-violet-700 bg-violet-50 hover:bg-violet-100 px-3 py-1.5 rounded-full transition-all border border-violet-200"
-          >
-            <Crown className="h-3.5 w-3.5 text-amber-500" />
-            Premium
-          </Link>
         </nav>
 
         {/* Actions */}
@@ -97,11 +79,6 @@ export function Navbar() {
                   {(user?.full_name || 'U')[0].toUpperCase()}
                 </div>
                 <span className="hidden md:inline max-w-[100px] truncate">{user?.full_name || 'User'}</span>
-                {tierInfo && (
-                  <span className={`hidden md:inline text-[10px] font-bold px-1.5 py-0.5 rounded-full ${tierInfo.color}`}>
-                    {tierInfo.label}
-                  </span>
-                )}
                 <ChevronDown className="h-3.5 w-3.5 text-gray-400" />
               </button>
               {userMenuOpen && (
@@ -111,20 +88,9 @@ export function Navbar() {
                     <div className="px-4 py-2 border-b border-gray-100">
                       <p className="font-bold text-gray-900 text-sm truncate">{user?.full_name}</p>
                       <p className="text-xs text-gray-400 truncate">{user?.email || user?.phone}</p>
-                      {tierInfo && (
-                        <span className={`inline-flex items-center gap-1 mt-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${tierInfo.color}`}>
-                          <Crown className="w-2.5 h-2.5" /> {tierInfo.label} Member
-                        </span>
-                      )}
                     </div>
                     <Link href="/orders" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
                       <ShoppingCart className="w-4 h-4 text-gray-400" /> My Orders
-                    </Link>
-                    <Link href="/credit" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
-                      <CreditCard className="w-4 h-4 text-gray-400" /> Business Credit
-                    </Link>
-                    <Link href="/premium" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-violet-700 hover:bg-violet-50">
-                      <Crown className="w-4 h-4 text-amber-500" /> Premium & Rewards
                     </Link>
                     {user?.role === 'supplier' && (
                       <Link href="/supplier/dashboard" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
@@ -187,9 +153,6 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <Link href="/premium" onClick={() => setMobileOpen(false)} className="rounded-xl px-4 py-3 text-sm font-bold text-violet-700 hover:bg-violet-50 flex items-center gap-2">
-              <Crown className="w-4 h-4 text-amber-500" /> Premium
-            </Link>
             <div className="mt-3 border-t pt-3">
               {isAuthenticated ? (
                 <div className="space-y-2">
@@ -199,7 +162,7 @@ export function Navbar() {
                     </div>
                     <div>
                       <p className="font-bold text-gray-900 text-sm">{user?.full_name}</p>
-                      <p className="text-xs text-gray-400 capitalize">{user?.membership_tier || user?.role}</p>
+                      <p className="text-xs text-gray-400">{user?.role}</p>
                     </div>
                   </div>
                   <button onClick={() => { logout(); setMobileOpen(false); }}

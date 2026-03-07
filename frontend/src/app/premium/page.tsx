@@ -1,16 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 import {
   Crown, Star, Zap, Shield, Brain, Wrench, Users, Truck,
   Building2, CheckCircle2, ArrowRight, Sparkles, Award,
-  TrendingUp, Globe, ChevronRight, X, Gift, Layers,
+  TrendingUp, Globe, Gift, Layers,
   FlaskConical, MapPin, BarChart3, Lock,
 } from 'lucide-react';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 const TIERS = [
   {
@@ -184,63 +182,20 @@ const LOYALTY_BENEFITS = [
 ];
 
 export default function PremiumPage() {
-  const { user, token, isAuthenticated } = useAuth();
-  const [membershipStatus, setMembershipStatus] = useState<{
-    tier: string;
-    loyalty_points: number;
-    points_value_inr: number;
-    expires_at: string | null;
-    remaining_ai_queries_today: number;
-  } | null>(null);
-  const [loadingStatus, setLoadingStatus] = useState(false);
-  const [subscribing, setSubscribing] = useState<string | null>(null);
-  const [successMsg, setSuccessMsg] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
+  const { user, isAuthenticated } = useAuth();
+  const [contactMsg, setContactMsg] = useState('');
 
-  useEffect(() => {
-    if (isAuthenticated && token) {
-      setLoadingStatus(true);
-      fetch(`${API_URL}/api/v1/premium/status`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-        .then(r => r.json())
-        .then(d => setMembershipStatus(d))
-        .catch(() => {})
-        .finally(() => setLoadingStatus(false));
-    }
-  }, [isAuthenticated, token]);
-
-  const handleSubscribe = async (tierId: string) => {
-    if (!isAuthenticated || !token) {
+  const handleSubscribe = (tierId: string) => {
+    if (!isAuthenticated) {
       window.location.href = '/login';
       return;
     }
     if (tierId === 'free') return;
-    setSubscribing(tierId);
-    setSuccessMsg('');
-    setErrorMsg('');
-    try {
-      const res = await fetch(`${API_URL}/api/v1/premium/subscribe`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ tier: tierId, payment_reference: `mock_${Date.now()}` }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.detail || 'Subscription failed');
-      setSuccessMsg(`🎉 Welcome to ${tierId.charAt(0).toUpperCase() + tierId.slice(1)}! ${data.loyalty_bonus_awarded ? `You earned ${data.loyalty_bonus_awarded} bonus loyalty points!` : ''}`);
-      // Refresh status
-      const r2 = await fetch(`${API_URL}/api/v1/premium/status`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setMembershipStatus(await r2.json());
-    } catch (err: unknown) {
-      setErrorMsg(err instanceof Error ? err.message : 'Something went wrong');
-    } finally {
-      setSubscribing(null);
-    }
+    setContactMsg(`To subscribe to the ${tierId.charAt(0).toUpperCase() + tierId.slice(1)} plan, please contact us at support@nirmaan.app or call +91-XXXXXXXXXX.`);
+    setTimeout(() => setContactMsg(''), 6000);
   };
 
-  const currentTier = membershipStatus?.tier || 'free';
+  const currentTier = user?.membership_tier || 'free';
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-violet-50 via-white to-gray-50">
@@ -261,17 +216,10 @@ export default function PremiumPage() {
           <p className="text-xl text-violet-100 mb-8 max-w-2xl mx-auto">
             Unlock advanced AI civil engineering consultation, project marketplace, workforce hiring, equipment rental, and much more.
           </p>
-          {isAuthenticated && membershipStatus && (
+          {isAuthenticated && (
             <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-2xl px-6 py-3 text-white mb-8">
               <Crown className="w-5 h-5 text-yellow-300" />
               <span className="font-semibold capitalize">Current: {currentTier} Plan</span>
-              {membershipStatus.loyalty_points > 0 && (
-                <>
-                  <span className="opacity-50">•</span>
-                  <Gift className="w-4 h-4 text-yellow-300" />
-                  <span>{membershipStatus.loyalty_points.toLocaleString()} points (₹{membershipStatus.points_value_inr})</span>
-                </>
-              )}
             </div>
           )}
         </div>
@@ -279,16 +227,10 @@ export default function PremiumPage() {
 
       {/* Messages */}
       <div className="max-w-5xl mx-auto px-4 mt-4">
-        {successMsg && (
-          <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-start gap-3">
-            <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-            <p className="text-green-800 font-medium">{successMsg}</p>
-          </div>
-        )}
-        {errorMsg && (
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3">
-            <X className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
-            <p className="text-red-800 font-medium">{errorMsg}</p>
+        {contactMsg && (
+          <div className="bg-violet-50 border border-violet-200 rounded-xl p-4 flex items-start gap-3">
+            <CheckCircle2 className="w-5 h-5 text-violet-500 mt-0.5 flex-shrink-0" />
+            <p className="text-violet-800 font-medium">{contactMsg}</p>
           </div>
         )}
       </div>
@@ -356,14 +298,14 @@ export default function PremiumPage() {
                   </ul>
                   <button
                     onClick={() => handleSubscribe(tier.id)}
-                    disabled={isCurrentTier || subscribing === tier.id || tier.id === 'free'}
+                    disabled={isCurrentTier || tier.id === 'free'}
                     className={`w-full py-3 rounded-xl font-bold text-sm transition-all ${
                       isCurrentTier
                         ? 'bg-green-100 text-green-700 cursor-default'
                         : tier.ctaStyle
                     } disabled:opacity-60`}
                   >
-                    {subscribing === tier.id ? 'Processing…' : isCurrentTier ? '✓ Current Plan' : tier.cta}
+                    {isCurrentTier ? '✓ Current Plan' : tier.cta}
                   </button>
                 </div>
               </div>
@@ -437,7 +379,7 @@ export default function PremiumPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
             {[
               { icon: TrendingUp, title: 'Earn', desc: 'Get 1–5 points per ₹1 spent, multiplied by your tier' },
-              { icon: Award, title: 'Redeem', desc: 'Convert points to instant discounts at checkout (100 pts = ₹1)' },
+              { icon: Award, title: 'Redeem', desc: 'Convert points to instant discounts on your next order (100 pts = ₹1)' },
               { icon: Sparkles, title: 'Bonus', desc: 'Get welcome bonuses (500–5000 pts) when you upgrade your plan' },
             ].map(item => {
               const Icon = item.icon;
@@ -450,18 +392,6 @@ export default function PremiumPage() {
               );
             })}
           </div>
-          {isAuthenticated && membershipStatus && (
-            <div className="mt-6 bg-white rounded-xl p-4 border border-amber-100 flex items-center justify-between">
-              <div>
-                <p className="text-sm font-semibold text-gray-700">Your Loyalty Points</p>
-                <p className="text-2xl font-extrabold text-amber-600">{membershipStatus.loyalty_points.toLocaleString()} pts</p>
-                <p className="text-xs text-gray-400">≈ ₹{membershipStatus.points_value_inr} in discounts</p>
-              </div>
-              <Link href="/premium/loyalty" className="bg-amber-500 hover:bg-amber-600 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition-all flex items-center gap-2">
-                Redeem <ChevronRight className="w-4 h-4" />
-              </Link>
-            </div>
-          )}
         </div>
       </section>
 
@@ -480,7 +410,7 @@ export default function PremiumPage() {
             { icon: '🚜', label: 'Equipment Rental', href: '/equipment' },
             { icon: '🏛️', label: 'Design Studio', href: '/premium#design' },
             { icon: '🌐', label: 'Digital Twins', href: '/premium#digital-twin' },
-            { icon: '💰', label: 'Construction Finance', href: '/credit' },
+            { icon: '📊', label: 'Project Analytics', href: '/projects' },
           ].map(item => (
             <Link key={item.label} href={item.href} className="bg-white rounded-2xl border border-gray-100 p-4 text-center hover:shadow-md transition-all hover:border-violet-200">
               <div className="text-3xl mb-2">{item.icon}</div>

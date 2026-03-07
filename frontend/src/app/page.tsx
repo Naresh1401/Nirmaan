@@ -5,7 +5,7 @@ import { useAuth } from '@/context/AuthContext';
 import {
   Search, Truck, ShieldCheck, TrendingDown, ArrowRight,
   Package, MapPin, Star, ChevronRight,
-  Percent, Zap, Shield, CreditCard, BarChart3, Calculator,
+  Percent, Shield, BarChart3, Calculator,
   Award, CheckCircle2, Heart,
   ShoppingCart, Sparkles, IndianRupee, Factory
 } from 'lucide-react';
@@ -118,7 +118,7 @@ export default function HomePage() {
                 { icon: TrendingDown, title: 'Best Prices', desc: 'Compare across suppliers', href: '/products' },
                 { icon: Truck, title: 'Fast Delivery', desc: 'Same-day to your site', href: '/orders' },
                 { icon: ShieldCheck, title: 'Quality Verified', desc: 'Certified materials', href: '/suppliers' },
-                { icon: CreditCard, title: 'Business Credit', desc: 'Buy now, pay later', href: '/credit' },
+                { icon: BarChart3, title: 'Price Insights', desc: 'Market rate transparency', href: '/products' },
               ].map(f => (
                 <Link key={f.title} href={isAuthenticated ? f.href : '/login'} className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all cursor-pointer">
                   <f.icon className="w-10 h-10 text-yellow-200 mb-3" />
@@ -130,15 +130,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* ANNOUNCEMENT BAR */}
-      <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-3">
-        <div className="max-w-7xl mx-auto px-4 flex items-center justify-center gap-4 text-sm font-medium">
-          <Zap className="w-4 h-4 text-yellow-300 animate-pulse" />
-          <span>Business Credit now available — apply for a credit line and pay for materials in 30/60/90 days</span>
-          <Link href={isAuthenticated ? '/credit' : '/login'} className="underline hover:text-yellow-200 flex items-center gap-1">Apply Now <ArrowRight className="w-3 h-3" /></Link>
-        </div>
-      </div>
 
       {/* CATEGORIES */}
       <section className="max-w-7xl mx-auto px-4 py-12">
@@ -241,8 +232,8 @@ export default function HomePage() {
               { icon: Package, title: 'Check Availability', desc: 'Know what\'s in stock before placing an order. We update availability from suppliers regularly.', color: 'text-green-400', bg: 'bg-green-400/10', href: '/products' },
               { icon: Truck, title: 'Tracked Delivery', desc: 'Track your material truck with GPS. Get updates when it\'s picked up, on the way, and at your site.', color: 'text-orange-400', bg: 'bg-orange-400/10', href: '/delivery/register' },
               { icon: Calculator, title: 'Material Estimator', desc: 'Enter your room/house dimensions and get a rough bill of quantities. Useful for planning before you order.', color: 'text-purple-400', bg: 'bg-purple-400/10', href: '/estimator' },
-              { icon: CreditCard, title: 'Business Credit', desc: 'Eligible businesses can get a credit line and pay for materials later. Apply online, approval in 24-48 hours.', color: 'text-yellow-400', bg: 'bg-yellow-400/10', href: '/credit' },
               { icon: Shield, title: 'Verified Suppliers', desc: 'We check GST registration, go through past reviews, and verify the supplier before listing them on the platform.', color: 'text-red-400', bg: 'bg-red-400/10', href: '/suppliers' },
+              { icon: Award, title: 'Quality Guaranteed', desc: 'Materials from listed suppliers are checked against quality standards. Rate your delivery to help others choose.', color: 'text-yellow-400', bg: 'bg-yellow-400/10', href: '/suppliers' },
             ].map(f => (
               <Link key={f.title} href={isAuthenticated ? f.href : '/login'} className={`${f.bg} border border-white/5 rounded-2xl p-6 hover:border-white/20 transition-all cursor-pointer group`}>
                 <f.icon className={`w-10 h-10 ${f.color} mb-4`} />
