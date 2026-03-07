@@ -11,7 +11,6 @@ export interface User {
   role: 'customer' | 'supplier' | 'delivery_partner' | 'admin';
   city?: string;
   state?: string;
-  membership_tier?: 'free' | 'silver' | 'gold' | 'platinum';
 }
 
 interface AuthContextType {
