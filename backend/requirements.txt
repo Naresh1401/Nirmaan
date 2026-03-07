@@ -18,5 +18,3 @@ python-dotenv==1.0.1
 pytest==7.4.4
 pytest-asyncio==0.23.4
 twilio==9.10.2
-pyotp==2.9.0
-qrcode[pil]==7.4.2
