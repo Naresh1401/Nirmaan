@@ -20,6 +20,10 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["Permissions-Policy"] = (
             "camera=(), microphone=(), geolocation=(), payment=()"
         )
+        response.headers["Content-Security-Policy"] = (
+            "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; "
+            "img-src 'self' data:; font-src 'self'; frame-ancestors 'none'"
+        )
         response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
         response.headers["Pragma"] = "no-cache"
         # Remove server version header
@@ -64,8 +68,16 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
         # Determine rate limit based on path
         is_auth = "/auth/" in path
-        limit = self.auth_limit if is_auth else self.general_limit
-        bucket = f"auth:{client_ip}" if is_auth else f"api:{client_ip}"
+        is_2fa = "/verify-2fa" in path or "/verify-backup-code" in path
+        if is_2fa:
+            limit = 5  # Strict limit for 2FA attempts
+            bucket = f"2fa:{client_ip}"
+        elif is_auth:
+            limit = self.auth_limit
+            bucket = f"auth:{client_ip}"
+        else:
+            limit = self.general_limit
+            bucket = f"api:{client_ip}"
 
         self._clean_old(bucket, now)
 
@@ -81,15 +93,16 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             )
 
         self._requests[bucket].append(now)
-        return await call_next(request)
 
-        # Periodic cleanup (every 1000 requests)
+        # Periodic cleanup to prevent memory growth
         if sum(len(v) for v in self._requests.values()) > 10000:
             cutoff = now - self.window
             for k in list(self._requests):
                 self._requests[k] = [t for t in self._requests[k] if t > cutoff]
                 if not self._requests[k]:
                     del self._requests[k]
+
+        return await call_next(request)
 
 
 class InputSanitizationMiddleware(BaseHTTPMiddleware):
@@ -137,4 +150,22 @@ class InputSanitizationMiddleware(BaseHTTPMiddleware):
                     content={"detail": "Request contains potentially unsafe content."},
                 )
 
+        return await call_next(request)
+
+
+class RequestBodySizeLimitMiddleware(BaseHTTPMiddleware):
+    """Reject requests with bodies exceeding the configured size limit."""
+
+    def __init__(self, app, max_body_bytes: int = 10 * 1024 * 1024):  # 10 MB default
+        super().__init__(app)
+        self.max_body_bytes = max_body_bytes
+
+    async def dispatch(self, request: Request, call_next):
+        if request.method in ("POST", "PUT", "PATCH"):
+            content_length = request.headers.get("content-length")
+            if content_length and int(content_length) > self.max_body_bytes:
+                return JSONResponse(
+                    status_code=413,
+                    content={"detail": "Request body too large."},
+                )
         return await call_next(request)

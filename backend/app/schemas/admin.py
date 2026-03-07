@@ -17,6 +17,11 @@ class AdminLoginRequest(BaseModel):
 class AdminLoginResponse(BaseModel):
     requires_2fa: bool
     temp_token: Optional[str] = None  # Short-lived token for 2FA step
+    access_token: Optional[str] = None
+    user_id: Optional[str] = None
+    full_name: Optional[str] = None
+    admin_role: Optional[str] = None
+    permissions: Optional[list[str]] = None
     message: str
 
 

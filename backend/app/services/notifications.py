@@ -64,17 +64,20 @@ async def send_notification(notification: Notification) -> bool:
     """
     Send a notification through available channels.
 
-    In production, this would:
-    1. Send push notification (Firebase Cloud Messaging)
-    2. Send SMS (for critical updates)
-    3. Send WhatsApp message (via Twilio/Gupshup)
-    4. Store in-app notification in database
-    5. Emit WebSocket event for real-time updates
+    Currently logs in-app. In production, extend with:
+    - Push notifications (Firebase Cloud Messaging)
+    - SMS (Twilio)
+    - WebSocket events for real-time updates
     """
-    # TODO: Implement actual notification delivery
-    print(f"[NOTIFICATION] {notification.type.value} → {notification.user_id}")
-    print(f"  Title: {notification.title}")
-    print(f"  Message: {notification.message}")
+    import logging
+
+    logger = logging.getLogger(__name__)
+    logger.info(
+        "Notification [%s] → user %s: %s",
+        notification.type.value,
+        notification.user_id,
+        notification.title,
+    )
     return True
 
 

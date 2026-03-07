@@ -17,10 +17,12 @@ from app.core.middleware import (
     SecurityHeadersMiddleware,
     RateLimitMiddleware,
     InputSanitizationMiddleware,
+    RequestBodySizeLimitMiddleware,
 )
-from app.routers import auth, suppliers, products, orders, delivery, search, admin
+from app.routers import auth, suppliers, products, orders, delivery, search
 from app.routers import estimator, reviews, prices, credit, inventory
 from app.routers import admin_auth, admin_dashboard
+from app.routers import premium, ai_consultant
 
 # Import all models so tables are created
 import app.models  # noqa: F401
@@ -49,6 +51,7 @@ app = FastAPI(
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(RateLimitMiddleware, auth_limit=10, general_limit=120, window=60)
 app.add_middleware(InputSanitizationMiddleware)
+app.add_middleware(RequestBodySizeLimitMiddleware, max_body_bytes=10 * 1024 * 1024)
 
 # CORS — restricted to known origins
 app.add_middleware(
@@ -74,7 +77,6 @@ app.include_router(products.router, prefix="/api/v1/products", tags=["Products"]
 app.include_router(orders.router, prefix="/api/v1/orders", tags=["Orders"])
 app.include_router(delivery.router, prefix="/api/v1/deliveries", tags=["Delivery"])
 app.include_router(search.router, prefix="/api/v1/search", tags=["Search"])
-app.include_router(admin.router, prefix="/api/v1/admin", tags=["Admin"])
 app.include_router(admin_auth.router, prefix="/api/v1/admin/auth", tags=["Admin Auth"])
 app.include_router(admin_dashboard.router, prefix="/api/v1/admin/v2", tags=["Admin Dashboard"])
 app.include_router(estimator.router, prefix="/api/v1/estimator", tags=["AI Estimator"])
@@ -82,6 +84,8 @@ app.include_router(reviews.router, prefix="/api/v1/reviews", tags=["Reviews"])
 app.include_router(prices.router, prefix="/api/v1/prices", tags=["Price Transparency"])
 app.include_router(credit.router)  # prefix in router
 app.include_router(inventory.router)  # prefix in router
+app.include_router(premium.router)  # prefix in router
+app.include_router(ai_consultant.router)  # prefix in router
 
 
 @app.get("/", tags=["Health"])

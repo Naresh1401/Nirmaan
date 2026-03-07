@@ -1,1 +1,0 @@
-"""Nirmaan Backend Application."""

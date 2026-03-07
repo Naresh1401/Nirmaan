@@ -214,7 +214,7 @@ export default function LoginPage() {
                   : 'text-gray-500 hover:text-gray-700'
               }`}
             >
-              <Lock className="w-4 h-4" /> Password
+              <Lock className="w-4 h-4" /> Login
             </button>
             <button
               onClick={() => switchTab('otp')}

@@ -6,6 +6,7 @@ Production-grade admin auth for Nirmaan platform.
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 from uuid import UUID
+import hashlib
 
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, Query
 from sqlalchemy import select, func
@@ -38,6 +39,13 @@ from app.services.admin_security import (
     get_admin_profile, get_or_create_admin_profile, get_client_ip,
     generate_session_token,
 )
+from collections import defaultdict
+import time
+
+# 2FA attempt tracking: {temp_token_hash: [timestamps]}
+_2fa_attempts: dict[str, list[float]] = defaultdict(list)
+MAX_2FA_ATTEMPTS = 5
+_2FA_WINDOW = 300  # 5 minutes
 
 router = APIRouter()
 
@@ -54,11 +62,38 @@ async def require_admin_with_profile(
         raise HTTPException(status_code=403, detail="Admin access required")
     
     user_id = UUID(current_user["user_id"])
+
+    # Validate user still exists and is active in DB
+    user_result = await db.execute(select(User).where(User.id == user_id))
+    user = user_result.scalar_one_or_none()
+    if not user or not user.is_active or user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Admin access revoked")
+
     profile = await get_admin_profile(db, user_id)
     
     if not profile:
         raise HTTPException(status_code=403, detail="Admin profile not configured")
     
+    # Validate session is still active in DB
+    token_str = request.headers.get("authorization", "").replace("Bearer ", "")
+    try:
+        token_data = decode_token(token_str)
+        session_id = token_data.get("session_id")
+        if session_id:
+            sess_result = await db.execute(
+                select(AdminSession).where(
+                    AdminSession.id == UUID(session_id),
+                    AdminSession.is_active == True,
+                    AdminSession.expires_at > datetime.now(timezone.utc),
+                )
+            )
+            if not sess_result.scalar_one_or_none():
+                raise HTTPException(status_code=401, detail="Session expired or revoked")
+    except HTTPException:
+        raise
+    except Exception:
+        raise HTTPException(status_code=401, detail="Invalid session")
+
     # Check IP allowlist
     client_ip = get_client_ip(request)
     if profile.ip_allowlist and not check_ip_allowed(client_ip, profile.ip_allowlist):
@@ -185,7 +220,7 @@ async def admin_login(
             "admin_role": profile.admin_role.value,
             "session_id": str(session.id),
         },
-        expires_delta=timedelta(hours=8),
+        expires_delta=timedelta(hours=2),
     )
     
     await create_audit_log(
@@ -196,12 +231,43 @@ async def admin_login(
     
     return AdminLoginResponse(
         requires_2fa=False,
-        temp_token=access_token,
+        access_token=access_token,
+        user_id=str(user.id),
+        full_name=user.full_name,
+        admin_role=profile.admin_role.value,
+        permissions=profile.get_permissions(),
         message="Login successful",
     )
 
 
 MAX_LOCKOUT_THRESHOLD = 10
+
+
+# ── Logout ──────────────────────────────────────────────
+
+@router.post("/logout")
+async def admin_logout(
+    request: Request,
+    admin_data: dict = Depends(require_admin_with_profile),
+    db: AsyncSession = Depends(get_db),
+):
+    """Logout admin: revoke current session."""
+    auth_header = request.headers.get("authorization", "")
+    token_str = auth_header.replace("Bearer ", "") if auth_header else ""
+    try:
+        token_data = decode_token(token_str)
+        session_id = token_data.get("session_id")
+        if session_id:
+            await revoke_session(db, UUID(session_id))
+    except Exception:
+        pass
+
+    await create_audit_log(
+        db, admin_data["user_id"], "logout", "auth",
+        ip_address=admin_data["client_ip"],
+        user_agent=request.headers.get("user-agent"),
+    )
+    return {"message": "Logged out successfully"}
 
 
 # ── Login (Step 2: 2FA verification) ────────────────────
@@ -221,6 +287,14 @@ async def verify_2fa(
     if token_data.get("type") != "2fa_pending":
         raise HTTPException(status_code=400, detail="Invalid token type")
     
+    # Rate-limit 2FA attempts per temp_token
+    token_key = hashlib.sha256(payload.temp_token.encode()).hexdigest()[:16]
+    now = time.time()
+    _2fa_attempts[token_key] = [t for t in _2fa_attempts[token_key] if now - t < _2FA_WINDOW]
+    if len(_2fa_attempts[token_key]) >= MAX_2FA_ATTEMPTS:
+        raise HTTPException(status_code=429, detail="Too many 2FA attempts. Request a new login.")
+    _2fa_attempts[token_key].append(now)
+
     user_id = UUID(token_data["sub"])
     client_ip = get_client_ip(request)
     
@@ -269,7 +343,7 @@ async def verify_2fa(
             "admin_role": profile.admin_role.value,
             "session_id": str(session.id),
         },
-        expires_delta=timedelta(hours=8),
+        expires_delta=timedelta(hours=2),
     )
     
     await create_audit_log(
@@ -280,7 +354,7 @@ async def verify_2fa(
     
     return AdminTokenResponse(
         access_token=access_token,
-        expires_in=8 * 3600,
+        expires_in=2 * 3600,
         admin_role=profile.admin_role.value,
         permissions=profile.get_permissions(),
         user={
@@ -310,6 +384,14 @@ async def verify_backup_code(
     if token_data.get("type") != "2fa_pending":
         raise HTTPException(status_code=400, detail="Invalid token type")
     
+    # Rate-limit 2FA/backup attempts per temp_token
+    token_key = hashlib.sha256(payload.temp_token.encode()).hexdigest()[:16]
+    now = time.time()
+    _2fa_attempts[token_key] = [t for t in _2fa_attempts[token_key] if now - t < _2FA_WINDOW]
+    if len(_2fa_attempts[token_key]) >= MAX_2FA_ATTEMPTS:
+        raise HTTPException(status_code=429, detail="Too many attempts. Request a new login.")
+    _2fa_attempts[token_key].append(now)
+
     user_id = UUID(token_data["sub"])
     client_ip = get_client_ip(request)
     
@@ -360,7 +442,7 @@ async def verify_backup_code(
             "admin_role": profile.admin_role.value,
             "session_id": str(session.id),
         },
-        expires_delta=timedelta(hours=8),
+        expires_delta=timedelta(hours=2),
     )
     
     # Count remaining backup codes
@@ -380,7 +462,7 @@ async def verify_backup_code(
     
     return AdminTokenResponse(
         access_token=access_token,
-        expires_in=8 * 3600,
+        expires_in=2 * 3600,
         admin_role=profile.admin_role.value,
         permissions=profile.get_permissions(),
         user={

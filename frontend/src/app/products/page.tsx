@@ -37,6 +37,10 @@ const allProducts = [
   { id: '26', name: 'Gravel 40mm (Coarse Grade)', price: 1650, mrp: 1950, supplier: 'Karimnagar Stone Crushers', supplierId: 's20', rating: 4.1, reviews: 34, discount: 15, unit: 'ton', category: 'gravel', brand: 'Coarse', stock: 600, delivery: 'Same Day', image: '🪨' },
   { id: '27', name: 'Blue Metal 6mm (Chips)', price: 1400, mrp: 1700, supplier: 'Rock Aggregates', supplierId: 's14', rating: 4.0, reviews: 29, discount: 18, unit: 'ton', category: 'gravel', brand: 'Blue Metal', stock: 250, delivery: 'Same Day', image: '🪨' },
   { id: '28', name: 'Pea Gravel (Rounded)', price: 2200, mrp: 2600, supplier: 'Crusher Works', supplierId: 's7', rating: 4.5, reviews: 41, discount: 15, unit: 'ton', category: 'gravel', brand: 'Pea Gravel', stock: 180, delivery: 'Next Day', image: '🪨' },
+  // Scaffolding
+  { id: '29', name: 'MS Scaffolding Frame 5x4 ft', price: 1450, mrp: 1700, supplier: 'Sri Steel Works', supplierId: 's4', rating: 4.3, reviews: 42, discount: 15, unit: 'piece', category: 'scaffolding', brand: 'Standard', stock: 120, delivery: 'Next Day', image: '🏗️' },
+  { id: '30', name: 'Scaffolding Plank (Steel) 10ft', price: 850, mrp: 1000, supplier: 'Karimnagar Hardware', supplierId: 's2', rating: 4.4, reviews: 38, discount: 15, unit: 'piece', category: 'scaffolding', brand: 'Heavy Duty', stock: 200, delivery: 'Same Day', image: '🏗️' },
+  { id: '31', name: 'Scaffolding Clamp (Swivel)', price: 120, mrp: 150, supplier: 'Tools Mart', supplierId: 's15', rating: 4.2, reviews: 67, discount: 20, unit: 'piece', category: 'scaffolding', brand: 'GI Clamp', stock: 500, delivery: 'Same Day', image: '🏗️' },
 ];
 
 const categoryOptions = [
@@ -52,6 +56,7 @@ const categoryOptions = [
   { value: 'granite', label: 'Granite' },
   { value: 'gravel', label: 'Gravel' },
   { value: 'tools', label: 'Tools' },
+  { value: 'scaffolding', label: 'Scaffolding' },
 ];
 
 function ProductsContent() {
@@ -62,6 +67,10 @@ function ProductsContent() {
   const [showFilters, setShowFilters] = useState(false);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
   const [ratingFilter, setRatingFilter] = useState(0);
+  const [wishlist, setWishlist] = useState<Set<string>>(new Set());
+  const [toast, setToast] = useState('');
+
+  const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(''), 2500); };
 
   // Read URL params on mount
   useEffect(() => {
@@ -149,8 +158,11 @@ function ProductsContent() {
                     <span className="text-6xl group-hover:scale-110 transition-transform">{p.image}</span>
                   </div>
                   <div className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-lg">{p.discount}% OFF</div>
-                  <button className="absolute top-3 right-3 bg-white/90 rounded-full p-2 text-gray-400 hover:text-red-500 transition-colors shadow-sm">
-                    <Heart className="w-4 h-4" />
+                  <button
+                    onClick={e => { e.preventDefault(); e.stopPropagation(); setWishlist(prev => { const next = new Set(prev); if (next.has(p.id)) { next.delete(p.id); showToast('Removed from wishlist'); } else { next.add(p.id); showToast(`${p.name} added to wishlist ❤️`); } return next; }); }}
+                    className={`absolute top-3 right-3 bg-white/90 rounded-full p-2 transition-colors shadow-sm ${wishlist.has(p.id) ? 'text-red-500' : 'text-gray-400 hover:text-red-500'}`}
+                  >
+                    <Heart className={`w-4 h-4 ${wishlist.has(p.id) ? 'fill-red-500' : ''}`} />
                   </button>
                 </div>
                 <div className="p-4">
@@ -196,6 +208,11 @@ function ProductsContent() {
           )}
         </div>
       </div>
+      {toast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-sm px-5 py-3 rounded-xl shadow-lg z-50 animate-pulse">
+          {toast}
+        </div>
+      )}
     </AuthGuard>
   );
 }

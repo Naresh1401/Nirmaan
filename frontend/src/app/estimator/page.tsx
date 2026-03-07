@@ -114,7 +114,10 @@ export default function EstimatorPage() {
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [toast, setToast] = useState('');
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(''), 2500); };
 
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
 
@@ -205,8 +208,8 @@ export default function EstimatorPage() {
                         </div>
                       </div>
                       <div className="mt-3 flex gap-2">
-                        <button className="bg-violet-500 hover:bg-violet-600 text-white text-xs font-bold px-4 py-2 rounded-lg transition-all">🛒 Add All to Cart</button>
-                        <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold px-4 py-2 rounded-lg transition-all">📄 Download PDF</button>
+                        <button onClick={() => showToast('All materials added to cart! 🛒')} className="bg-violet-500 hover:bg-violet-600 text-white text-xs font-bold px-4 py-2 rounded-lg transition-all">🛒 Add All to Cart</button>
+                        <button onClick={() => { const el = document.createElement('a'); el.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(msg.products!.map(p => `${p.name} | ${p.qty} ${p.unit} | ₹${p.rate} | ₹${p.total}`).join('\n') + '\nTotal: ₹' + msg.totalCost!.toLocaleString('en-IN'))); el.setAttribute('download', 'estimate.txt'); el.click(); showToast('Estimate downloaded! 📄'); }} className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold px-4 py-2 rounded-lg transition-all">📄 Download PDF</button>
                       </div>
                     </div>
                   )}
@@ -266,6 +269,7 @@ export default function EstimatorPage() {
           </div>
         </div>
       </div>
+      {toast && <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-xl shadow-lg z-50 animate-bounce text-sm font-semibold">{toast}</div>}
     </AuthGuard>
   );
 }

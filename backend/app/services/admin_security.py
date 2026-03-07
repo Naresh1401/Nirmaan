@@ -138,7 +138,7 @@ async def create_admin_session(
     admin_profile_id: UUID,
     ip_address: str,
     user_agent: str = None,
-    session_hours: int = 8,
+    session_hours: int = 2,
 ) -> AdminSession:
     """Create a new admin session."""
     session = AdminSession(
@@ -227,10 +227,24 @@ async def create_audit_log(
 # ── IP Allowlisting ─────────────────────────────────────
 
 def check_ip_allowed(ip_address: str, allowlist: list[str]) -> bool:
-    """Check if IP is in allowlist. Empty list = all allowed."""
+    """Check if IP is in allowlist. Supports exact IPs and CIDR ranges. Empty list = all allowed."""
+    import ipaddress
     if not allowlist:
         return True
-    return ip_address in allowlist
+    try:
+        client = ipaddress.ip_address(ip_address)
+    except ValueError:
+        return False
+    for entry in allowlist:
+        try:
+            if "/" in entry:
+                if client in ipaddress.ip_network(entry, strict=False):
+                    return True
+            elif client == ipaddress.ip_address(entry):
+                return True
+        except ValueError:
+            continue
+    return False
 
 
 # ── Admin Profile Helpers ───────────────────────────────

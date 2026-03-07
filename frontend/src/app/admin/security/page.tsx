@@ -46,12 +46,12 @@ export default function SecurityPage() {
 
   const fetchAuditLogs = useCallback(async () => {
     setLoading(true);
-    const params = new URLSearchParams({ skip: String((auditPage - 1) * pageSize), limit: String(pageSize) });
+    const params = new URLSearchParams({ page: String(auditPage), page_size: String(pageSize) });
     if (actionFilter) params.set('action', actionFilter);
     if (entityFilter) params.set('entity_type', entityFilter);
     try {
       const res = await adminFetch(`${API_URL}/api/v1/admin/v2/audit-logs?${params}`);
-      if (res.ok) { const d = await res.json(); setAuditLogs(d.logs || d); setAuditTotal(d.total || (d.logs || d).length); }
+      if (res.ok) { const d = await res.json(); setAuditLogs(d.audit_logs || d.logs || []); setAuditTotal(d.total || 0); }
     } catch (e) { console.error(e); }
     setLoading(false);
   }, [auditPage, actionFilter, entityFilter, adminFetch]);
@@ -60,7 +60,7 @@ export default function SecurityPage() {
     setLoading(true);
     try {
       const res = await adminFetch(`${API_URL}/api/v1/admin/v2/alerts`);
-      if (res.ok) setAlerts(await res.json());
+      if (res.ok) { const d = await res.json(); setAlerts(d.alerts || []); }
     } catch (e) { console.error(e); }
     setLoading(false);
   }, [adminFetch]);
@@ -78,7 +78,7 @@ export default function SecurityPage() {
     setLoading(true);
     try {
       const res = await adminFetch(`${API_URL}/api/v1/admin/auth/sessions`);
-      if (res.ok) setSessions(await res.json());
+      if (res.ok) { const d = await res.json(); setSessions(Array.isArray(d) ? d : d.sessions || []); }
     } catch (e) { console.error(e); }
     setLoading(false);
   }, [adminFetch]);
@@ -167,7 +167,7 @@ export default function SecurityPage() {
                       ) : auditLogs.map((l: any) => (
                         <tr key={l.id} className="hover:bg-gray-50">
                           <td className="px-4 py-3 text-xs text-gray-500 whitespace-nowrap">{formatDate(l.created_at)}</td>
-                          <td className="px-4 py-3 text-sm text-gray-700">{l.admin_username || `Admin #${l.admin_user_id}`}</td>
+                          <td className="px-4 py-3 text-sm text-gray-700">{l.admin_name || l.admin_username || `Admin #${l.admin_user_id}`}</td>
                           <td className="px-4 py-3 text-sm font-medium text-gray-900">{l.action}</td>
                           <td className="px-4 py-3 text-sm text-gray-500">{l.entity_type}{l.entity_id ? ` #${l.entity_id}` : ''}</td>
                           <td className="px-4 py-3 text-xs font-mono text-gray-400">{l.ip_address || '—'}</td>

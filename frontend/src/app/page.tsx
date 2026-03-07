@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
 import {
   Search, Truck, ShieldCheck, TrendingDown, ArrowRight,
@@ -12,17 +13,18 @@ import {
 import { useState, useEffect, useRef } from 'react';
 
 const categories = [
-  { name: 'Cement', icon: '🏗️', slug: 'cement', count: '15 brands', color: 'from-gray-700 to-gray-900' },
-  { name: 'Sand', icon: '⏳', slug: 'sand', count: 'River & M-Sand', color: 'from-amber-600 to-amber-800' },
-  { name: 'Steel & TMT', icon: '🔩', slug: 'steel', count: '8mm–25mm bars', color: 'from-slate-600 to-slate-800' },
-  { name: 'Bricks', icon: '🧱', slug: 'bricks', count: 'Clay & Fly Ash', color: 'from-red-600 to-red-800' },
-  { name: 'Tiles', icon: '🔲', slug: 'tiles', count: 'Floor & Wall', color: 'from-blue-600 to-blue-800' },
-  { name: 'Paint', icon: '🎨', slug: 'paint', count: 'Interior & Exterior', color: 'from-purple-600 to-purple-800' },
-  { name: 'Plumbing', icon: '🔧', slug: 'plumbing', count: 'Pipes & Fittings', color: 'from-cyan-600 to-cyan-800' },
-  { name: 'Electrical', icon: '⚡', slug: 'electrical', count: 'Wires & Switches', color: 'from-yellow-600 to-yellow-800' },
-  { name: 'Granite', icon: '⬛', slug: 'granite', count: 'Blocks & Slabs', color: 'from-neutral-700 to-neutral-900' },
-  { name: 'Gravel', icon: '🪨', slug: 'gravel', count: '6mm–40mm Grades', color: 'from-stone-600 to-stone-800' },
-  { name: 'Tools', icon: '🛠️', slug: 'tools', count: 'Hand & Power', color: 'from-emerald-600 to-emerald-800' },
+  { name: 'Cement', slug: 'cement', count: '15 brands', image: '/categories/cement.jpg' },
+  { name: 'Steel & TMT', slug: 'steel', count: '8mm–25mm bars', image: '/categories/steel.jpg' },
+  { name: 'Sand', slug: 'sand', count: 'River & M-Sand', image: '/categories/sand.jpg' },
+  { name: 'Bricks', slug: 'bricks', count: 'Clay & Fly Ash', image: '/categories/bricks.jpg' },
+  { name: 'Tiles', slug: 'tiles', count: 'Floor & Wall', image: '/categories/tiles.jpg' },
+  { name: 'Paint', slug: 'paint', count: 'Interior & Exterior', image: '/categories/paint.jpg' },
+  { name: 'Plumbing', slug: 'plumbing', count: 'Pipes & Fittings', image: '/categories/plumbing.jpg' },
+  { name: 'Electrical', slug: 'electrical', count: 'Wires & Switches', image: '/categories/electrical.jpg' },
+  { name: 'Granite', slug: 'granite', count: 'Blocks & Slabs', image: '/categories/granite.jpg' },
+  { name: 'Gravel', slug: 'gravel', count: '6mm–40mm Grades', image: '/categories/gravel.jpg' },
+  { name: 'Tools', slug: 'tools', count: 'Hand & Power', image: '/categories/tools.jpg' },
+  { name: 'Scaffolding', slug: 'scaffolding', count: 'Frames & Planks', image: '/categories/scaffolding.jpg' },
 ];
 
 const trendingProducts = [
@@ -146,17 +148,24 @@ export default function HomePage() {
           <div><h2 className="text-2xl sm:text-3xl font-bold text-gray-900">Shop by Category</h2><p className="text-gray-500 mt-1">Browse materials from suppliers near you</p></div>
           <Link href={isAuthenticated ? '/products' : '/login'} className="text-orange-600 hover:text-orange-700 font-semibold flex items-center gap-1 text-sm">View All <ChevronRight className="w-4 h-4" /></Link>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {categories.map(cat => (
-            <Link key={cat.slug} href={isAuthenticated ? `/products?category=${cat.slug}` : '/login'} className="group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100">
-              <div className={`bg-gradient-to-br ${cat.color} h-32 flex items-center justify-center`}>
-                <span className="text-5xl group-hover:scale-110 transition-transform duration-300">{cat.icon}</span>
+            <Link key={cat.slug} href={isAuthenticated ? `/products?category=${cat.slug}` : '/login'} className="group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:-translate-y-1">
+              <div className="relative h-36 overflow-hidden">
+                <Image
+                  src={cat.image}
+                  alt={cat.name}
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-3">
+                  <h3 className="font-bold text-white text-sm drop-shadow-lg">{cat.name}</h3>
+                  <p className="text-[11px] text-white/80">{cat.count}</p>
+                </div>
               </div>
-              <div className="p-4">
-                <h3 className="font-bold text-gray-900 group-hover:text-orange-600 transition-colors">{cat.name}</h3>
-                <p className="text-xs text-gray-500 mt-1">{cat.count}</p>
-              </div>
-              <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="absolute top-2.5 right-2.5 bg-white/90 backdrop-blur-sm rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity shadow-sm">
                 <ArrowRight className="w-3 h-3 text-orange-600" />
               </div>
             </Link>

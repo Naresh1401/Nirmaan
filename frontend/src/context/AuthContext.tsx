@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 
 export interface User {
   id: string;
@@ -11,6 +11,7 @@ export interface User {
   role: 'customer' | 'supplier' | 'delivery_partner' | 'admin';
   city?: string;
   state?: string;
+  membership_tier?: 'free' | 'silver' | 'gold' | 'platinum' | 'enterprise';
 }
 
 interface AuthContextType {
@@ -43,20 +44,41 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Fetch premium membership tier and update user object
+  const fetchMembershipTier = useCallback(async (authToken: string, currentUser: User) => {
+    try {
+      const res = await fetch(`${API_URL}/api/v1/premium/status`, {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const tier = data.tier || 'free';
+        const updatedUser = { ...currentUser, membership_tier: tier as User['membership_tier'] };
+        setUser(updatedUser);
+        localStorage.setItem('nirmaan_user', JSON.stringify(updatedUser));
+      }
+    } catch {
+      // Silently fail — user can still use the app with whatever tier is cached
+    }
+  }, []);
+
   useEffect(() => {
     const savedToken = localStorage.getItem('nirmaan_token');
     const savedUser = localStorage.getItem('nirmaan_user');
     if (savedToken && savedUser) {
       try {
+        const parsed = JSON.parse(savedUser);
         setToken(savedToken);
-        setUser(JSON.parse(savedUser));
+        setUser(parsed);
+        // Refresh membership tier in background
+        fetchMembershipTier(savedToken, parsed);
       } catch {
         localStorage.removeItem('nirmaan_token');
         localStorage.removeItem('nirmaan_user');
       }
     }
     setIsLoading(false);
-  }, []);
+  }, [fetchMembershipTier]);
 
   const login = async (identifier: string, password: string) => {
     const res = await fetch(`${API_URL}/api/v1/auth/login`, {
@@ -73,6 +95,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(data.user);
     localStorage.setItem('nirmaan_token', data.access_token);
     localStorage.setItem('nirmaan_user', JSON.stringify(data.user));
+    // Fetch membership tier after login
+    fetchMembershipTier(data.access_token, data.user);
   };
 
   const register = async (regData: RegisterData) => {
@@ -90,6 +114,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(data.user);
     localStorage.setItem('nirmaan_token', data.access_token);
     localStorage.setItem('nirmaan_user', JSON.stringify(data.user));
+    // Fetch membership tier after registration
+    fetchMembershipTier(data.access_token, data.user);
   };
 
   const logout = () => {
