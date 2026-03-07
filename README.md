@@ -2,7 +2,7 @@
 
 **Digital Infrastructure for Construction Material Supply**
 
-Nirmaan is a full-stack construction materials marketplace platform connecting builders, suppliers, and delivery partners. It features real-time pricing, AI-powered material estimation, business credit, OTP authentication, and a comprehensive admin dashboard.
+Nirmaan is a full-stack construction materials marketplace platform connecting builders, suppliers, and delivery partners. It features real-time pricing, AI-powered material estimation, business credit, OTP authentication, a 5-tier premium membership system, AI civil engineering consultant (CIVITAS), Architecture & Design Studio, equipment rental & workforce hiring marketplaces, and a comprehensive admin dashboard with 2FA & RBAC.
 
 ---
 
@@ -17,6 +17,8 @@ Nirmaan is a full-stack construction materials marketplace platform connecting b
 - [End-to-End Workflow](#end-to-end-workflow)
 - [API Reference](#api-reference)
 - [Security](#security)
+- [Premium Membership](#premium-membership)
+- [AI & Smart Features](#ai--smart-features)
 - [Frontend Pages](#frontend-pages)
 - [Deployment](#deployment)
 
@@ -99,6 +101,7 @@ NIRMAN/
 │       │   ├── order.py          # Order, OrderItem, SubOrder
 │       │   ├── delivery.py       # DeliveryPartner, Delivery
 │       │   ├── admin.py          # AdminProfile, TOTPDevice, BackupCode, AdminSession, AuditLog, Dispute, SystemAlert, ForecastResult
+│       │   ├── premium.py        # Premium membership tiers & subscriptions
 │       │   ├── review.py         # Product/Supplier reviews
 │       │   ├── payment.py        # Payment records
 │       │   ├── inventory.py      # Inventory & price change logs
@@ -118,6 +121,8 @@ NIRMAN/
 │       │   ├── reviews.py        # Review system
 │       │   ├── prices.py         # Price history & trends
 │       │   ├── credit.py         # Business credit system
+│       │   ├── premium.py        # Premium tier subscription management
+│       │   ├── ai_consultant.py  # CIVITAS AI civil engineering consultant
 │       │   └── inventory.py      # Stock & price management
 │       └── services/
 │           ├── otp.py            # OTP generation, Twilio SMS, verification
@@ -139,16 +144,16 @@ NIRMAN/
 │       ├── components/
 │       │   ├── Navbar.tsx        # Navigation with auth state
 │       │   ├── Footer.tsx        # Site footer with links
-│       │   ├── ChatBot.tsx       # AI Civil Engineering Estimator
+│       │   ├── ChatBot.tsx       # SETU — AI Construction Cost Estimator
 │       │   ├── AuthGuard.tsx     # Route protection wrapper
 │       │   ├── ProductCard.tsx   # Product display card
 │       │   └── NirmaanLogo.tsx   # Brand logo component
 │       └── app/                  # Next.js App Router pages
-│           ├── page.tsx          # Homepage (hero, categories, featured)
+│           ├── page.tsx          # Homepage (hero, 12 category images, featured)
 │           ├── login/            # Login (password + OTP tabs)
 │           ├── register/         # 2-step registration
 │           ├── forgot-password/  # 4-step password reset wizard
-│           ├── products/         # Product listing & detail
+│           ├── products/         # Product listing & detail (13 categories incl. scaffolding)
 │           ├── cart/             # Shopping cart
 │           ├── checkout/         # Order checkout
 │           ├── orders/           # Order history & tracking
@@ -157,6 +162,15 @@ NIRMAN/
 │           ├── delivery/         # Delivery partner dashboard
 │           ├── estimator/        # AI material estimator
 │           ├── credit/           # Business credit dashboard
+│           ├── premium/          # 5-tier subscription plans (Starter → Enterprise)
+│           ├── civitas/          # CIVITAS — AI Civil Engineering Consultant
+│           ├── design-studio/    # Architecture & Design Studio (6 AI tools)
+│           ├── equipment/        # Equipment rental marketplace
+│           ├── workforce/        # Workforce hiring marketplace
+│           ├── projects/         # Project management
+│           ├── sustainability/   # Sustainability initiatives
+│           ├── digital-twin/     # Digital twin visualization
+│           ├── drone-monitoring/ # Drone-based site monitoring
 │           ├── admin/            # Admin Dashboard 2.0 (13 sub-pages, 2FA, RBAC)
 │           │   ├── login/        # Admin-specific login with 2FA
 │           │   ├── dashboard/    # KPIs, charts, system alerts
@@ -180,6 +194,12 @@ NIRMAN/
 │           ├── terms/            # Terms of service
 │           ├── privacy/          # Privacy policy
 │           └── partner/          # Partner with us
+│
+├── frontend/public/
+│   └── categories/               # 12 high-res category images
+│       ├── cement.jpg, steel.jpg, sand.jpg, bricks.jpg
+│       ├── tiles.jpg, paint.jpg, plumbing.jpg, electrical.jpg
+│       └── granite.jpg, gravel.jpg, tools.jpg, scaffolding.jpg
 ```
 
 ---
@@ -597,6 +617,23 @@ Apply ──▶ Auto-Approved ──▶ Use for Orders ──▶ Repay ──▶
 | POST | `/update-stock` | ✅ Supplier/Admin | Update stock level |
 | POST | `/update-price` | ✅ Supplier/Admin | Update product price |
 
+### Premium — `/api/v1/premium`
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| GET | `/tiers` | — | List all premium tiers & benefits |
+| POST | `/subscribe` | ✅ | Subscribe to a premium tier |
+| GET | `/status` | ✅ | Get current subscription status |
+| PUT | `/upgrade` | ✅ | Upgrade to a higher tier |
+| POST | `/cancel` | ✅ | Cancel subscription |
+
+### AI Consultant — `/api/v1/ai-consultant`
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| POST | `/chat` | — | Chat with CIVITAS AI consultant |
+| GET | `/domains` | — | List available engineering domains |
+
 ### Admin — `/api/v1/admin` (Admin role required)
 
 | Method | Endpoint | Description |
@@ -686,7 +723,7 @@ Apply ──▶ Auto-Approved ──▶ Use for Orders ──▶ Repay ──▶
 | GET | `/alerts` | `dashboard:read` | System alerts |
 | PUT | `/alerts/{id}` | `dashboard:write` | Dismiss/acknowledge alert |
 
-**Total: 125+ API endpoints** across 14 resource routers.
+**Total: 135+ API endpoints** across 16 resource routers.
 
 ---
 
@@ -725,15 +762,75 @@ Apply ──▶ Auto-Approved ──▶ Use for Orders ──▶ Repay ──▶
 
 ---
 
+## Premium Membership
+
+Nirmaan offers a 5-tier subscription system with progressive feature unlocks:
+
+| Tier | Price | Key Benefits |
+|---|---|---|
+| **Starter** | Free | Basic marketplace access, standard delivery, community forums |
+| **Silver** | ₹499/mo | Priority support, 5% discount, basic analytics, email reports |
+| **Gold** | ₹1,499/mo | Dedicated account manager, 12% discount, bulk ordering, AI design tools |
+| **Platinum** | ₹4,999/mo | Custom pricing, 20% discount, API access, white-label options |
+| **Enterprise** | Custom | Full platform access, SLA guarantees, on-site support, custom integrations |
+
+Premium features are enforced across the platform — higher tiers unlock access to CIVITAS AI domains, Design Studio tools, advanced analytics, and priority delivery.
+
+---
+
+## AI & Smart Features
+
+### SETU — AI Construction Cost Estimator
+
+A chatbot-style material estimator accessible from any page. Supports 6 project types:
+- **Buildings** — RCC frame buildings (area, floors, structure type)
+- **Roads** — Flexible/rigid pavement (length, width, layers)
+- **Bridges** — RCC/steel/composite (span, width, type)
+- **Compound Walls** — Brick/block/stone (length, height, type)
+- **Water Tanks** — Circular/rectangular (capacity, type)
+- **Drainage Systems** — RCC/PVC pipes (length, diameter, type)
+
+Returns itemized material quantities, labor costs, and total estimates with tier-based pricing.
+
+### CIVITAS — AI Civil Engineering Consultant
+
+Multi-domain AI consultant covering 8 engineering specializations:
+- Structural Engineering, Geotechnical Engineering, Transportation Engineering
+- Environmental Engineering, Water Resources, Construction Management
+- Urban Planning, Earthquake Engineering
+
+Access is tier-gated — Starter users get Structural only; higher tiers unlock more domains.
+
+### Architecture & Design Studio
+
+A service marketplace for professional design work (requires Gold+ tier):
+- **Building Design** — Residential, commercial, institutional architecture
+- **Interior Design** — Space planning, material selection, 3D visualization
+- **Landscape Design** — Outdoor spaces, hardscaping, planting plans
+- **Structural Engineering** — Load analysis, foundation design, seismic analysis
+- **3D Visualization** — Photorealistic renders, walkthroughs, VR-ready models
+- **Urban Planning** — Master planning, zoning, infrastructure layout
+- **Renovation** — Retrofit design, adaptive reuse, heritage restoration
+
+### Equipment Rental Marketplace
+
+Browse and rent construction equipment — trucks, excavators, cranes, concrete mixers, and more. Includes search filters for equipment type, pricing, location, and availability.
+
+### Workforce Hiring Marketplace
+
+Find and hire skilled construction labor and contractors. Search by skill type (mason, carpenter, electrician, plumber, welder, etc.), experience level, location, and daily rates.
+
+---
+
 ## Frontend Pages
 
 | Route | Description | Auth Required |
 |---|---|---|
-| `/` | Homepage — hero, categories, featured products, testimonials | — |
+| `/` | Homepage — hero, 12 category images with gradient overlays, featured products | — |
 | `/login` | Sign in (Password or OTP tab) | — |
 | `/register` | 2-step registration wizard | — |
 | `/forgot-password` | 4-step password reset (phone/email → OTP → new password → success) | — |
-| `/products` | Product listing with filters & search | — |
+| `/products` | Product listing with filters & search (13 categories incl. scaffolding) | — |
 | `/products/[id]` | Product detail page | — |
 | `/cart` | Shopping cart | ✅ |
 | `/checkout` | Order checkout | ✅ |
@@ -741,8 +838,17 @@ Apply ──▶ Auto-Approved ──▶ Use for Orders ──▶ Repay ──▶
 | `/suppliers` | Supplier directory | — |
 | `/supplier` | Supplier dashboard (manage products/orders) | ✅ Supplier |
 | `/delivery` | Delivery partner dashboard | ✅ Delivery Partner |
-| `/estimator` | AI material estimator | — |
+| `/estimator` | AI material estimator (SETU) | — |
 | `/credit` | Business credit dashboard | ✅ |
+| `/premium` | 5-tier subscription plans (Starter/Silver/Gold/Platinum/Enterprise) | — |
+| `/civitas` | CIVITAS — AI Civil Engineering Consultant (8 domains) | — |
+| `/design-studio` | Architecture & Design Studio (6 AI tools, Gold+ tier) | ✅ Gold+ |
+| `/equipment` | Equipment rental marketplace | — |
+| `/workforce` | Workforce hiring marketplace | — |
+| `/projects` | Project management | ✅ |
+| `/sustainability` | Sustainability initiatives | — |
+| `/digital-twin` | Digital twin visualization | — |
+| `/drone-monitoring` | Drone-based site monitoring | — |
 | `/admin` | Admin Dashboard 2.0 (13 sub-pages, 2FA, RBAC) | ✅ Admin |
 | `/admin/login` | Admin login with 2FA | — |
 | `/admin/dashboard` | KPIs, revenue charts, system alerts | ✅ Admin |
