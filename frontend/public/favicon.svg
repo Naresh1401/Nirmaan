@@ -1,9 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <rect width="32" height="32" rx="7" fill="url(#fg)"/>
-  <rect x="5" y="18" width="7" height="10" rx="1.5" fill="white" opacity="0.95"/>
-  <rect x="13" y="12" width="7" height="16" rx="1.5" fill="white" opacity="0.85"/>
-  <rect x="21" y="5" width="7" height="23" rx="1.5" fill="white" opacity="0.75"/>
-  <polygon points="24.5,3 28,5 21,5" fill="white" opacity="0.95"/>
+  <!-- N-monogram: left pillar -->
+  <rect x="7" y="7" width="4.5" height="18.5" rx="1" fill="white"/>
+  <!-- N-monogram: right pillar -->
+  <rect x="20.5" y="7" width="4.5" height="18.5" rx="1" fill="white"/>
+  <!-- N-monogram: diagonal beam -->
+  <polygon points="7,7 11.5,7 25,25.5 20.5,25.5" fill="white" opacity="0.88"/>
+  <!-- Peaked crown -->
+  <polygon points="20.5,7 22.75,3.5 25,7" fill="white" opacity="0.7"/>
+  <!-- Foundation line -->
+  <rect x="5.5" y="27" width="21" height="1.5" rx="0.75" fill="white" opacity="0.35"/>
   <defs>
     <linearGradient id="fg" x1="0" y1="0" x2="32" y2="32">
       <stop offset="0%" stop-color="#F97316"/>

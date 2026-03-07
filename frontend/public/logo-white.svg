@@ -1,23 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 64" fill="none">
-  <!-- Icon Mark: Abstract building blocks / rising structure -->
-  <g>
-    <rect x="4" y="36" width="20" height="24" rx="3" fill="#FB923C"/>
-    <rect x="28" y="22" width="20" height="38" rx="3" fill="#FDBA74"/>
-    <rect x="52" y="6" width="20" height="54" rx="3" fill="#FED7AA"/>
-    <polygon points="62,2 72,6 52,6" fill="#FB923C"/>
-    <rect x="10" y="42" width="8" height="6" rx="1.5" fill="white" opacity="0.2"/>
-    <rect x="34" y="28" width="8" height="6" rx="1.5" fill="white" opacity="0.18"/>
-    <rect x="34" y="40" width="8" height="6" rx="1.5" fill="white" opacity="0.18"/>
-    <rect x="58" y="14" width="8" height="6" rx="1.5" fill="white" opacity="0.15"/>
-    <rect x="58" y="26" width="8" height="6" rx="1.5" fill="white" opacity="0.15"/>
-    <rect x="58" y="38" width="8" height="6" rx="1.5" fill="white" opacity="0.15"/>
-  </g>
-  <!-- Brand Name (white) -->
-  <text x="86" y="44" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="36" font-weight="800" fill="white" letter-spacing="-1">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 56" fill="none">
+  <!-- N-monogram mark -->
+  <rect x="2" y="8" width="8" height="40" rx="2" fill="#FDBA74"/>
+  <polygon points="2,8 10,8 46,48 38,48" fill="#FDBA74" opacity="0.75"/>
+  <rect x="38" y="8" width="8" height="40" rx="2" fill="#FDBA74"/>
+  <polygon points="38,8 42,1 46,8" fill="#FDBA74" opacity="0.6"/>
+  <rect x="0" y="50" width="48" height="2.5" rx="1.25" fill="#FDBA74" opacity="0.3"/>
+  <!-- Brand text (white) -->
+  <text x="58" y="36" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="32" font-weight="800" fill="white" letter-spacing="-0.5">
     Nirmaan
   </text>
-  <!-- Tagline -->
-  <text x="88" y="58" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="10" font-weight="600" fill="rgba(255,255,255,0.5)" letter-spacing="3.5">
+  <text x="60" y="50" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="8.5" font-weight="700" fill="rgba(255,255,255,0.5)" letter-spacing="4">
+    BUILD SMARTER
+  </text>
+</svg>
     BUILD SMARTER
   </text>
 </svg>
