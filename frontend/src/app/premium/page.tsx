@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Crown, Check, Star, Zap, Shield, Truck, Bot, Gift, Users, TrendingUp, ChevronDown, ChevronUp, ArrowRight, Sparkles } from 'lucide-react';
+import { Crown, Check, Star, Zap, Shield, Truck, Bot, Gift, Users, TrendingUp, ChevronDown, ChevronUp, ArrowRight, Sparkles, Percent } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { usePremium } from '@/context/PremiumContext';
 import { api } from '@/lib/api';
@@ -99,7 +99,7 @@ const FAQS = [
   },
   {
     q: 'What happens to my loyalty points if I downgrade?',
-    a: 'Your accumulated points remain intact. However, the earning multiplier reverts to your new tier's rate.',
+    a: 'Your accumulated points remain intact. However, the earning multiplier reverts to your new tier&apos;s rate.',
   },
   {
     q: 'Is the AI Consultant available 24/7?',
@@ -107,7 +107,7 @@ const FAQS = [
   },
   {
     q: 'Can I upgrade my plan mid-cycle?',
-    a: 'Yes. Upgrading will immediately activate your new tier's benefits. The remaining days from your current plan will be credited.',
+    a: 'Yes. Upgrading will immediately activate your new tier&apos;s benefits. The remaining days from your current plan will be credited.',
   },
 ];
 
@@ -180,7 +180,7 @@ export default function PremiumPage() {
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { icon: <TrendingDown className="w-6 h-6" />, label: 'Up to 15% off', desc: 'On all orders' },
+              { icon: <Percent className="w-6 h-6" />, label: 'Up to 15% off', desc: 'On all orders' },
               { icon: <Truck className="w-6 h-6" />, label: 'Free Delivery', desc: 'Gold & Platinum' },
               { icon: <Bot className="w-6 h-6" />, label: 'AI Consultant', desc: 'Civil engineering expert' },
               { icon: <Gift className="w-6 h-6" />, label: 'Loyalty Points', desc: 'Up to 3x multiplier' },
@@ -365,15 +365,5 @@ export default function PremiumPage() {
         </div>
       </section>
     </div>
-  );
-}
-
-// Re-export TrendingDown since lucide has it
-function TrendingDown({ className }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-      <polyline points="23 18 13.5 8.5 8.5 13.5 1 6" />
-      <polyline points="17 18 23 18 23 12" />
-    </svg>
   );
 }

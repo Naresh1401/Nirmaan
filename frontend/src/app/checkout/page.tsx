@@ -43,7 +43,8 @@ export default function CheckoutPage() {
   const deliveryFee = freeDeliveryThreshold === 0 || discountedSubtotal >= freeDeliveryThreshold ? 0 : discountedSubtotal > 0 ? 300 : 0;
 
   const platformFee = Math.round(discountedSubtotal * 0.035);
-  // Loyalty points discount
+  // maxPointsUsable: cap redeemable points so the discount can't exceed the order total.
+  // 100 loyalty points = ₹1, so multiply total (in ₹) by 100 to get the equivalent points cap.
   const maxPointsUsable = loyaltyPoints ? Math.min(loyaltyPoints.available_points, Math.round((discountedSubtotal + deliveryFee + platformFee) * 100)) : 0;
   const loyaltyDiscount = applyPoints ? Math.round(pointsToApply / 100) : 0;
   const total = discountedSubtotal + deliveryFee + platformFee - loyaltyDiscount;

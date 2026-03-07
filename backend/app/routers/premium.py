@@ -483,7 +483,7 @@ async def apply_referral_code(
     ref_result = await db.execute(
         select(ReferralCode).where(
             ReferralCode.code == body.code.upper(),
-            ReferralCode.is_active == True,  # noqa: E712
+            ReferralCode.is_active.is_(True),
         )
     )
     ref = ref_result.scalar_one_or_none()

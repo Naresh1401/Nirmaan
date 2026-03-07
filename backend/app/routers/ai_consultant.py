@@ -1,6 +1,5 @@
 """AI Civil Engineering Consultant — NirmaaN Premium feature."""
 
-from datetime import date
 from typing import Any, Dict, List, Optional
 from uuid import UUID
 

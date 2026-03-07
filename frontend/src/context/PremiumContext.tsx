@@ -53,8 +53,6 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
   const [benefits, setBenefits] = useState<Record<string, unknown>>({});
   const [isLoading, setIsLoading] = useState(false);
 
-  const authHeader = token ? { Authorization: `Bearer ${token}` } : {};
-
   const refresh = useCallback(async () => {
     if (!isAuthenticated || !token) {
       setIsPremium(false);
@@ -63,10 +61,11 @@ export function PremiumProvider({ children }: { children: ReactNode }) {
       return;
     }
     setIsLoading(true);
+    const headers = { Authorization: `Bearer ${token}` };
     try {
       const [membershipRes, loyaltyRes] = await Promise.allSettled([
-        fetch(`${API_URL}/api/v1/premium/membership`, { headers: authHeader }),
-        fetch(`${API_URL}/api/v1/premium/loyalty/balance`, { headers: authHeader }),
+        fetch(`${API_URL}/api/v1/premium/membership`, { headers }),
+        fetch(`${API_URL}/api/v1/premium/loyalty/balance`, { headers }),
       ]);
 
       if (membershipRes.status === 'fulfilled' && membershipRes.value.ok) {
