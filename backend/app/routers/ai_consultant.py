@@ -1,8 +1,10 @@
-"""SETU — Structural Engineering & Technical Utility.
+"""Nirmaan AI — The Ultimate Civil Engineering Agentic Chatbot.
 
 Premium AI Civil Engineering Consultant for the Nirmaan platform.
 Provides expert-level structural, geotechnical, hydraulic, transportation,
-environmental, construction management, 3D visualization, and software tools consultation.
+environmental, construction management, interior/exterior design, urban planning,
+safety, 3D visualization, and software tools consultation.
+Multi-agent system with 15 specialist domains and 100+ IS code references.
 """
 
 import math
@@ -19,7 +21,7 @@ from app.core.database import get_db
 from app.core.security import get_current_user
 from app.models.premium import PremiumMembership, MembershipTier, TIER_BENEFITS
 
-router = APIRouter(prefix="/api/v1/ai-consultant", tags=["SETU AI Consultant"])
+router = APIRouter(prefix="/api/v1/ai-consultant", tags=["Nirmaan AI Consultant"])
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # IS CODE REFERENCE DATABASE
@@ -218,7 +220,7 @@ def _calc_beam(span_m: float, support: str = "simply_supported") -> str:
         f"| Clear cover | 25mm |\n\n"
         f"⚠️ **WARNING:** These are preliminary sizes. Final design requires actual loading, "
         f"BM/SF diagrams, and detailed reinforcement per IS 456 Cl.22–26.\n\n"
-        f"📋 *SETU AI — Preliminary design. Must be verified by a licensed Professional Engineer.*"
+        f"📋 *Nirmaan AI — Preliminary design. Must be verified by a licensed Professional Engineer.*"
     )
 
 
@@ -275,7 +277,7 @@ def _calc_column(load_kn: float, height_m: float = 3.0, fck: int = 20, fy: int =
         f"| Type | {'Short' if is_short else 'Slender'} column |\n"
         f"| Cover | 40mm |\n\n"
         f"{'⚠️ **WARNING:** Slender column — apply additional moment per IS 456 Cl.39.7' if not is_short else ''}\n\n"
-        f"📋 *SETU AI — Preliminary design. Must be verified by a licensed Professional Engineer.*"
+        f"📋 *Nirmaan AI — Preliminary design. Must be verified by a licensed Professional Engineer.*"
     )
 
 
@@ -329,7 +331,7 @@ def _calc_slab(span_m: float, slab_type: str = "two_way", fck: int = 20, fy: int
         f"| Main steel | 8mm @ {spacing_main} c/c |\n"
         f"| Distribution | 8mm @ 300 c/c |\n"
         f"| Cover | 20mm (mild), 30mm (moderate) |\n\n"
-        f"📋 *SETU AI — Preliminary design. Must be verified by a licensed Professional Engineer.*"
+        f"📋 *Nirmaan AI — Preliminary design. Must be verified by a licensed Professional Engineer.*"
     )
 
 
@@ -386,7 +388,7 @@ def _calc_footing(load_kn: float, sbc_kn_m2: float = 150, fck: int = 20, fy: int
         f"| Bottom steel | 12mm @ 150–200 c/c (both ways) |\n"
         f"| Cover | 60mm (in contact with earth) |\n\n"
         f"⚠️ Check punching shear (two-way shear) at d/2 from column face — IS 456 Cl.31.6\n\n"
-        f"📋 *SETU AI — Preliminary design. Must be verified by a licensed Professional Engineer.*"
+        f"📋 *Nirmaan AI — Preliminary design. Must be verified by a licensed Professional Engineer.*"
     )
 
 
@@ -433,7 +435,7 @@ def _calc_retaining_wall(height_m: float, soil_type: str = "medium") -> str:
         f"2. ✅ Sliding: FOS ≥ 1.5 (μW/Pa)\n"
         f"3. ✅ Bearing pressure: Max pressure < SBC\n"
         f"4. ✅ Eccentricity: e ≤ B/6 (no tension at base)\n\n"
-        f"📋 *SETU AI — Preliminary design. Must be verified by a licensed Professional Engineer.*"
+        f"📋 *Nirmaan AI — Preliminary design. Must be verified by a licensed Professional Engineer.*"
     )
 
 
@@ -488,7 +490,7 @@ def _calc_mix_design(grade: str = "M25") -> str:
         f"- Slump test: 75–100mm (general), 100–150mm (pumped)\n"
         f"- Cube strength test: 7-day ≥ 67% of 28-day, 28-day ≥ f'ck\n"
         f"- Curing: min 7 days (IS 456), 14 days recommended\n\n"
-        f"📋 *SETU AI — Based on IS 10262:2019. Trial mixes must be conducted on-site.*"
+        f"📋 *Nirmaan AI — Based on IS 10262:2019. Trial mixes must be conducted on-site.*"
     )
 
 
@@ -527,16 +529,16 @@ def _calc_bbs(member: str = "beam", b: int = 230, d: int = 450, span_m: float = 
         f"- Development length (Ld) for 16mm Fe500 in M20 = {ld}mm\n"
         f"- Add 10% wastage for cutting and bending\n"
         f"- Stirrup hook length = 10d = 80mm each side\n\n"
-        f"📋 *SETU AI — BBS template per IS 2502. Verify with structural drawings.*"
+        f"📋 *Nirmaan AI — BBS template per IS 2502. Verify with structural drawings.*"
     )
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# SETU EXPERT RESPONSE ENGINE
+# NIRMAAN AI EXPERT RESPONSE ENGINE
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def _build_setu_response(question: str, context: Optional[str], tier: str) -> str:
-    """SETU rule-based expert civil engineering response engine."""
+def _build_nirmaan_response(question: str, context: Optional[str], tier: str) -> str:
+    """Nirmaan AI rule-based expert civil engineering response engine with 15 specialist domains."""
     q = question.lower().strip()
 
     # ── Extract numerical parameters ──
@@ -613,7 +615,7 @@ def _build_setu_response(question: str, context: Optional[str], tier: str) -> st
             "- Minimum depth: 1.5m or below frost/shrinkage zone",
             "- IS 6403 for shallow foundations, IS 2911 for piles",
             "- For Zone III+: check liquefaction potential (IS 1893)\n",
-            "📋 *SETU AI — Professional geotechnical investigation recommended.*",
+            "📋 *Nirmaan AI — Professional geotechnical investigation recommended.*",
         ]
         return "\n".join(lines)
 
@@ -649,7 +651,7 @@ def _build_setu_response(question: str, context: Optional[str], tier: str) -> st
             "3. Beam-column joints: Special confining reinforcement",
             "4. Shear walls: Boundary elements with confined concrete",
             "5. Lap splices NOT allowed in plastic hinge zones\n",
-            "📋 *SETU AI — For structures in Zone IV/V, detailed dynamic analysis is mandatory.*",
+            "📋 *Nirmaan AI — For structures in Zone IV/V, detailed dynamic analysis is mandatory.*",
         ]
         return "\n".join(lines)
 
@@ -693,7 +695,7 @@ def _build_setu_response(question: str, context: Optional[str], tier: str) -> st
             "- Design wind speed: Vz = Vb × k1 × k2 × k3\n"
             "- Design wind pressure: pz = 0.6 × Vz² (N/m²)\n"
             "- Telangana: Vb ≈ 39–44 m/s\n\n"
-            "📋 *SETU AI — Always apply appropriate load factors per IS 456 Cl.36.4.*"
+            "📋 *Nirmaan AI — Always apply appropriate load factors per IS 456 Cl.36.4.*"
         )
 
     # ── COST / BUDGET ──
@@ -731,7 +733,7 @@ def _build_setu_response(question: str, context: Optional[str], tier: str) -> st
             "| AAC Blocks | ₹45–55/block |\n"
             "| Fly Ash Bricks | ₹6–8/brick |\n\n"
             "💡 **Tip:** Use the Nirmaan AI Estimator for project-specific breakdowns.\n\n"
-            "📋 *SETU AI — Rates are indicative. Verify with local suppliers on Nirmaan.*"
+            "📋 *Nirmaan AI — Rates are indicative. Verify with local suppliers on Nirmaan.*"
         )
 
     # ── ROAD ENGINEERING ──
@@ -768,7 +770,7 @@ def _build_setu_response(question: str, context: Optional[str], tier: str) -> st
             "| BT 2-lane road | ₹1.5–2.5 crore |\n"
             "| NH 4-lane (flexible) | ₹8–15 crore |\n"
             "| NH 4-lane (rigid/CC) | ₹12–20 crore |\n\n"
-            "📋 *SETU AI — Design per IRC:37 requires traffic data (MSA) and subgrade CBR.*"
+            "📋 *Nirmaan AI — Design per IRC:37 requires traffic data (MSA) and subgrade CBR.*"
         )
 
     # ── BRIDGE ENGINEERING ──
@@ -795,7 +797,7 @@ def _build_setu_response(question: str, context: Optional[str], tier: str) -> st
             "2. Foundation: Min. 2m below max scour level\n"
             "3. Freeboard: min 1.5m above HFL\n"
             "4. Seismic: IS 1893 Part 3 for bridges\n\n"
-            "📋 *SETU AI — Bridge design requires detailed site investigation & hydraulic study.*"
+            "📋 *Nirmaan AI — Bridge design requires detailed site investigation & hydraulic study.*"
         )
 
     # ── WATER / HYDRAULIC ──
@@ -834,7 +836,7 @@ def _build_setu_response(question: str, context: Optional[str], tier: str) -> st
             "  Q = C × I × A / 360 (m³/s)\n"
             "  where: C = runoff coefficient, I = intensity (mm/hr), A = area (hectares)\n"
             "```\n\n"
-            "📋 *SETU AI — Hydraulic design requires site-specific rainfall and topographic data.*"
+            "📋 *Nirmaan AI — Hydraulic design requires site-specific rainfall and topographic data.*"
         )
 
     # ── STEEL STRUCTURE ──
@@ -867,7 +869,7 @@ def _build_setu_response(question: str, context: Optional[str], tier: str) -> st
             "- Bolt strength: Vdsb = fu/(√3 × γmb) × Anb (single shear)\n"
             "- Weld strength: fw = fu/(√3 × γmw) per IS 800 Cl.10\n"
             "- Min 2 bolts per connection\n\n"
-            "📋 *SETU AI — Steel design per IS 800:2007. Verify using STAAD/ETABS.*"
+            "📋 *Nirmaan AI — Steel design per IS 800:2007. Verify using STAAD/ETABS.*"
         )
 
     # ── IS CODE REFERENCE ──
@@ -883,7 +885,7 @@ def _build_setu_response(question: str, context: Optional[str], tier: str) -> st
             "- Example: \"What does IS 456 say about minimum cover?\"",
             "- Example: \"IS 875 Part 2 live load for hospital\"",
             "- Example: \"IS 1893 zone factor for Delhi\"\n",
-            "📋 *SETU AI — IS Codes available at bis.gov.in*",
+            "📋 *Nirmaan AI — IS Codes available at bis.gov.in*",
         ]
         return "\n".join(lines)
 
@@ -910,7 +912,7 @@ def _build_setu_response(question: str, context: Optional[str], tier: str) -> st
             "  At service: σcs ≤ 0.33·fck (tension, Type 1)\n"
             "  Minimum concrete: M35 (pre-T), M30 (post-T)\n"
             "```\n\n"
-            "📋 *SETU AI — PSC design is complex. Requires detailed tendon profile & loss calculations.*"
+            "📋 *Nirmaan AI — PSC design is complex. Requires detailed tendon profile & loss calculations.*"
         )
 
     # ── ENVIRONMENTAL / SUSTAINABILITY ──
@@ -941,7 +943,7 @@ def _build_setu_response(question: str, context: Optional[str], tier: str) -> st
             "| Virgin steel | Recycled steel | 60–75% |\n"
             "| River sand | M-Sand / recycled agg. | 90%+ |\n"
             "| Timber formwork | Steel formwork (reuse) | 80% |\n\n"
-            "📋 *SETU AI — Use Nirmaan's carbon tracking tools for project-level analysis.*"
+            "📋 *Nirmaan AI — Use Nirmaan's carbon tracking tools for project-level analysis.*"
         )
 
     # ── CONSTRUCTION MANAGEMENT ──
@@ -977,7 +979,7 @@ def _build_setu_response(question: str, context: Optional[str], tier: str) -> st
             "| Electrical + plumbing | 3–4 weeks |\n"
             "| Flooring + tiling | 2–3 weeks |\n"
             "| Painting | 2–3 weeks |\n\n"
-            "📋 *SETU AI — Use proper scheduling software for complex projects.*"
+            "📋 *Nirmaan AI — Use proper scheduling software for complex projects.*"
         )
 
     # ── NDT / QUALITY ──
@@ -1005,7 +1007,7 @@ def _build_setu_response(question: str, context: Optional[str], tier: str) -> st
             "- Individual cube: ≥ fck - 3 N/mm²\n"
             "- Mean of 3 cubes: ≥ fck + 0.825s (or fck + 3 for <30 results)\n"
             "- 150mm cubes at 28 days, water cured\n\n"
-            "📋 *SETU AI — Report anomalous results to structural engineer immediately.*"
+            "📋 *Nirmaan AI — Report anomalous results to structural engineer immediately.*"
         )
 
     # ── FAILURE ANALYSIS / FORENSIC ──
@@ -1038,7 +1040,7 @@ def _build_setu_response(question: str, context: Optional[str], tier: str) -> st
             "| Shear deficiency | Steel plates | FRP wrapping / jacketing |\n"
             "| Settlement | Underpinning | Micropiles / grouting |\n"
             "| Weak concrete | — | Concrete jacketing |\n\n"
-            "📋 *SETU AI — All rehabilitation must follow IS 15988:2013 (Seismic Evaluation & Strengthening).*"
+            "📋 *Nirmaan AI — All rehabilitation must follow IS 15988:2013 (Seismic Evaluation & Strengthening).*"
         )
 
     # ── SURVEYING ──
@@ -1066,7 +1068,7 @@ def _build_setu_response(question: str, context: Optional[str], tier: str) -> st
             "**Volume Calculation:**\n"
             "- Prismoidal formula: V = (L/6)(A₁ + 4Am + A₂)\n"
             "- Trapezoidal rule, Simpson's rule for cross-sections\n\n"
-            "📋 *SETU AI — Always check survey data against known benchmarks.*"
+            "📋 *Nirmaan AI — Always check survey data against known benchmarks.*"
         )
 
     # ── MATERIAL ESTIMATION (DETAILED) ──
@@ -1093,13 +1095,13 @@ def _build_setu_response(question: str, context: Optional[str], tier: str) -> st
             "- Cement: 3–5%, Steel: 3–5%, Bricks: 5–8%, Sand: 10%, Tiles: 5%\n\n"
             "**Additional per floor:** Multiply quantities by 0.85–0.90× for upper floors (less foundation)\n\n"
             "💡 **Tip:** Use Nirmaan AI Estimator for exact project-specific BOQ.\n\n"
-            "📋 *SETU AI — Rates per Telangana DSR 2025-26. Subject to market variation.*"
+            "📋 *Nirmaan AI — Rates per Telangana DSR 2025-26. Subject to market variation.*"
         )
 
     # ── 3D VISUALIZATION & BIM ──
     if any(k in q for k in ["3d", "bim", "revit", "visualization", "render", "3d image", "3d model", "digital twin", "three dimensional", "image", "picture", "photo", "visual", "drawing", "sketch", "illustration", "architect"]):
         return (
-            "## 🖥️ SETU — 3D Visualization & Building Images\n\n"
+            "## 🖥️ Nirmaan AI — 3D Visualization & Building Images\n\n"
             "I can guide you on generating professional building images and 3D models.\n\n"
             "### How to Get Building Images & 3D Renders\n\n"
             "**Quick Options:**\n"
@@ -1136,14 +1138,14 @@ def _build_setu_response(question: str, context: Optional[str], tier: str) -> st
             "For photorealistic renders, pair Revit with Lumion or Enscape.\n\n"
             "💡 **On Nirmaan:** Use our **Digital Twin** module for real-time 3D structural monitoring "
             "and our **Architecture & Design Studio** for connecting with professional architects.\n\n"
-            "📋 *SETU AI — For professional building images, use the rendering tools listed above. "
-            "SETU provides engineering guidance — for generated images, use AI image tools like Midjourney or DALL-E.*"
+            "📋 *Nirmaan AI — For professional building images, use the rendering tools listed above. "
+            "Nirmaan AI provides engineering guidance — for generated images, use AI image tools like Midjourney or DALL-E.*"
         )
 
     # ── SOFTWARE TOOLS ──
     if any(k in q for k in ["software", "tool", "staad", "etabs", "autocad", "primavera", "revit", "tekla", "sap2000", "safe", "midas", "ansys", "plaxis", "geo5", "prokon"]):
         return (
-            "## 🛠️ SETU — Civil Engineering Software Tools Guide\n\n"
+            "## 🛠️ Nirmaan AI — Civil Engineering Software Tools Guide\n\n"
             "**Industry-Standard Software for Civil Engineers:**\n\n"
             "### Structural Analysis & Design\n"
             "| Software | Use Case | IS Code Support |\n"
@@ -1182,41 +1184,272 @@ def _build_setu_response(question: str, context: Optional[str], tier: str) -> st
             "| **Enscape** | Real-time walkthrough |\n"
             "| **Twinmotion** | Architectural visualization |\n\n"
             "💡 Ask me about any specific software workflow or how to set up an analysis.\n\n"
-            "📋 *SETU AI — Software recommendations based on industry best practices.*"
+            "📋 *Nirmaan AI — Software recommendations based on industry best practices.*"
+        )
+
+    # ── INTERIOR DESIGN ──
+    if any(k in q for k in ["interior", "room design", "living room", "bedroom", "kitchen design", "bathroom design",
+                             "interior design", "home decor", "wall color", "furniture", "flooring design",
+                             "modular kitchen", "false ceiling", "wardrobe", "interior material"]):
+        return (
+            "## 🛋️ [INTERIOR DESIGN] — Nirmaan AI Interior Design Expert\n\n"
+            "I can help you design beautiful, functional interiors that match your style and budget.\n\n"
+            "**To give you the perfect design, I need to know:**\n"
+            "1. Which room/space? (living room, bedroom, kitchen, bathroom, full home)\n"
+            "2. Room dimensions (length × width × height)\n"
+            "3. Style preference: Modern, Traditional, Minimalist, Industrial, Rustic, Colonial?\n"
+            "4. Budget range (Economy / Standard / Premium / Luxury)\n"
+            "5. Any special requirements? (Vastu, storage needs, accessibility)\n\n"
+            "**Popular Interior Styles & Their Characteristics:**\n"
+            "| Style | Key Elements | Cost Range |\n"
+            "|-------|-------------|------------|\n"
+            "| Modern Minimalist | Clean lines, neutral tones, hidden storage | ₹800–1,500/sqft |\n"
+            "| Contemporary | Mix of materials, accent walls, bold art | ₹1,000–2,000/sqft |\n"
+            "| Traditional Indian | Warm wood, terracotta, handloom textiles | ₹700–1,200/sqft |\n"
+            "| Industrial | Exposed brick, metal, raw concrete | ₹900–1,800/sqft |\n"
+            "| Luxury/Modern | Marble, glass, designer fixtures | ₹2,500–5,000+/sqft |\n\n"
+            "**Material Cost Reference (2025-26, Telangana):**\n"
+            "| Material | Rate |\n"
+            "|----------|------|\n"
+            "| Vitrified tiles (800×800mm) | ₹50–120/sqft |\n"
+            "| Italian marble | ₹200–800/sqft |\n"
+            "| Engineered wood flooring | ₹80–200/sqft |\n"
+            "| False ceiling (POP) | ₹60–90/sqft |\n"
+            "| False ceiling (Gypsum) | ₹80–120/sqft |\n"
+            "| Modular kitchen (basic) | ₹1,200–2,500/sqft |\n"
+            "| Modular kitchen (premium) | ₹2,500–5,000/sqft |\n"
+            "| Wardrobe (laminate) | ₹800–1,500/sqft |\n"
+            "| Wardrobe (acrylic) | ₹1,500–3,000/sqft |\n\n"
+            "**Color Palette Tips for Indian Homes:**\n"
+            "- Living Room: Warm whites (Apricot Crush, Ivory) with accent wall in earthy tones\n"
+            "- Bedroom: Pastel greens, lilac, or warm beige for calm\n"
+            "- Kitchen: White + grey for timeless look; blues for modern feel\n"
+            "- Bathroom: Light tiles + contrast grout for premium effect\n\n"
+            "**Vastu Principles for Interiors:**\n"
+            "- Main door: North or East, avoid South facing\n"
+            "- Master bedroom: South-west corner\n"
+            "- Kitchen: South-east (fire zone)\n"
+            "- Pooja room: North-east (Ishaan corner)\n"
+            "- Study: North or East facing\n\n"
+            "💡 **Pro Tip:** Invest 60% of your interior budget in the kitchen and master bedroom — "
+            "these give the highest ROI and quality-of-life improvement. Spending on false ceilings "
+            "and lighting (₹25–35% of interior budget) transforms the perceived space dramatically.\n\n"
+            "📋 *Nirmaan AI — Share your room dimensions and I'll create a detailed design concept for you.*"
+        )
+
+    # ── EXTERIOR DESIGN ──
+    if any(k in q for k in ["exterior", "facade", "elevation", "building elevation", "outside design",
+                             "exterior design", "cladding", "entrance design", "landscaping", "front elevation",
+                             "building front", "exterior material", "boundary wall design", "garden design"]):
+        return (
+            "## 🏠 [EXTERIOR DESIGN] — Nirmaan AI Exterior & Facade Expert\n\n"
+            "A well-designed exterior is the first impression of your home. Let me help you create a "
+            "stunning, durable facade.\n\n"
+            "**Popular Facade Styles:**\n"
+            "| Style | Key Features | Cost Range |\n"
+            "|-------|-------------|------------|\n"
+            "| Modern Minimalist | Flat roof, clean lines, glass panels | ₹400–700/sqft |\n"
+            "| Contemporary | Mix of textures, cantilevered elements | ₹500–900/sqft |\n"
+            "| Traditional/Colonial | Arches, columns, classical mouldings | ₹350–600/sqft |\n"
+            "| Mediterranean | Terracotta tiles, stucco, warm colors | ₹450–800/sqft |\n"
+            "| Industrial Modern | Exposed brick, metal cladding, dark tones | ₹500–1,000/sqft |\n\n"
+            "**Exterior Cladding Materials:**\n"
+            "| Material | Rate | Durability | Maintenance |\n"
+            "|----------|------|-----------|-------------|\n"
+            "| Textured paint | ₹15–40/sqft | 7–10 years | Low |\n"
+            "| Cement board cladding | ₹80–150/sqft | 20+ years | Very Low |\n"
+            "| Stone cladding (Kota/Kadapa) | ₹120–250/sqft | 30+ years | Very Low |\n"
+            "| ACP (Aluminium Composite) | ₹100–200/sqft | 15–20 years | Low |\n"
+            "| Brick cladding | ₹90–180/sqft | 30+ years | Very Low |\n"
+            "| Glass curtain wall | ₹300–800/sqft | 20+ years | Medium |\n"
+            "| UPVC windows | ₹350–600/sqft (window) | 20+ years | Very Low |\n\n"
+            "**Landscaping Essentials:**\n"
+            "- Front lawn: 60/40 mix of hardscape and soft landscape\n"
+            "- Driveway: Concrete, cobblestone, or stamped concrete\n"
+            "- Trees: Neem, Peepal (shade), Arjuna, Palms (aesthetic)\n"
+            "- Ground cover: Durva grass (low maintenance), mondo grass\n"
+            "- Lighting: Path lights (0.5W LED), up-lights for trees, facade wall lights\n\n"
+            "**Rain Protection & Waterproofing:**\n"
+            "- Chhajja (sunshade) projection: min 600mm over all openings\n"
+            "- Parapet height: min 900mm\n"
+            "- External wall waterproofing: Dr. Fixit Raincoat, Dulux WeatherShield\n"
+            "- Roof waterproofing: IWB + APP membrane system\n\n"
+            "💡 **Pro Tip:** In Telangana's climate, choose light exterior colors (Cream, Off-white, "
+            "Light grey) to reflect heat and keep interiors 3–5°C cooler, reducing AC costs by 10–15%.\n\n"
+            "📋 *Nirmaan AI — Tell me your plot dimensions, number of floors, and style preference for a detailed elevation concept.*"
+        )
+
+    # ── VASTU SHASTRA ──
+    if any(k in q for k in ["vastu", "vaastu", "feng shui", "direction", "vastu shastra", "vastu for house",
+                             "north facing", "south facing", "east facing", "west facing", "vastu tips"]):
+        return (
+            "## 🧭 [VASTU] — Vastu Shastra Guidance\n\n"
+            "Vastu Shastra is the ancient Indian science of spatial arrangement for harmony and well-being. "
+            "Here's a practical guide based on classical principles:\n\n"
+            "**Plot Orientation Recommendations:**\n"
+            "| Facing | Assessment | Key Notes |\n"
+            "|--------|-----------|----------|\n"
+            "| North (Uttara) | ✅ Excellent | Best for wealth, prosperity |\n"
+            "| East (Purva) | ✅ Excellent | Health, spiritual growth |\n"
+            "| North-East (Ishaan) | ✅✅ Best | Supreme for all purposes |\n"
+            "| West (Paschim) | ⚡ Moderate | Good for professionals |\n"
+            "| South (Dakshina) | ⚠️ Caution | Manageable with remedies |\n"
+            "| South-West (Nairitya) | ⚠️ Caution | Power, stability when corrected |\n\n"
+            "**Room Placement Guide:**\n"
+            "| Room | Ideal Direction | Why |\n"
+            "|------|----------------|-----|\n"
+            "| Master Bedroom | South-West | Stability, authority |\n"
+            "| Children's Room | North-West or West | Growth, creativity |\n"
+            "| Kitchen | South-East (fire zone) | Agni corner |\n"
+            "| Pooja Room | North-East (Ishaan) | Sacred, spiritual zone |\n"
+            "| Study/Office | North or East | Concentration, prosperity |\n"
+            "| Guest Room | North-West | Short stays, movement |\n"
+            "| Living Room | North-East or North | Social harmony |\n"
+            "| Toilet/Bathroom | North-West or West | Avoid North-East |\n"
+            "| Staircase | South or West | Avoid North-East |\n"
+            "| Main Door | North, East, or North-East | Welcoming energy |\n\n"
+            "**Key Vastu Rules:**\n"
+            "1. The Brahmasthana (centre of the house) should be open/courtyard — never place heavy pillars\n"
+            "2. Overhead water tank: South-West corner\n"
+            "3. Underground sump: North-East corner\n"
+            "4. Generator/Electrical panel: South-East\n"
+            "5. Slope of plot: North-East should be lower than South-West\n"
+            "6. Maximum windows: North and East walls\n"
+            "7. No toilet in North-East quadrant\n\n"
+            "**Vastu + Engineering Compatibility:**\n"
+            "Most Vastu principles align well with good engineering — North/East main entrance "
+            "maximizes natural light and ventilation. South-West master bedroom is structurally sound "
+            "as it's the most shaded. North-East Pooja/open space allows cross-ventilation.\n\n"
+            "💡 **Pro Tip:** If your plot doesn't allow ideal Vastu layout, focus on the 5 most impactful "
+            "elements: main door direction, kitchen location, master bedroom position, pooja room, "
+            "and ensuring no toilet in North-East. These cover 80% of Vastu benefits.\n\n"
+            "📋 *Nirmaan AI — For a complete Vastu-compliant floor plan, share your plot dimensions and orientation.*"
+        )
+
+    # ── URBAN PLANNING ──
+    if any(k in q for k in ["urban planning", "city planning", "zoning", "land use", "smart city",
+                             "township", "layout", "master plan", "far", "fsi", "floor area ratio",
+                             "building regulations", "town planning", "panchayat", "municipality"]):
+        return (
+            "## 🌆 [URBAN PLANNING] — Nirmaan AI Smart City & Planning Expert\n\n"
+            "**FAR / FSI Quick Reference (India):**\n"
+            "| Zone | Typical FAR | Built-up Allowed |\n"
+            "|------|------------|------------------|\n"
+            "| Residential (urban) | 1.5–2.5 | 1.5–2.5× plot area |\n"
+            "| Commercial | 2.0–4.0 | 2–4× plot area |\n"
+            "| Mixed use | 2.0–3.5 | 2–3.5× plot area |\n"
+            "| Industrial | 1.0–1.5 | 1–1.5× plot area |\n\n"
+            "**HMDA/GHMC Building Regulations (Hyderabad/Telangana):**\n"
+            "- Building permit required: plot area > 75 sqm OR building height > 10m\n"
+            "- Setbacks (10m road): Front 3m, Rear 3m, Side 1.5m\n"
+            "- Setbacks (18m road): Front 6m, Rear 3m, Side 2m\n"
+            "- Maximum height without NOC: 15m\n"
+            "- High-rise (>15m): Airport NOC, Fire NOC, Environment clearance\n"
+            "- Parking requirement: 1 ECS per 100sqm for commercial\n\n"
+            "**Smart City Infrastructure Components:**\n"
+            "1. **Mobility:** Integrated public transport, EV charging, cycling paths\n"
+            "2. **Water:** Smart meters, leak detection, rainwater harvesting\n"
+            "3. **Energy:** Solar street lights, smart grid, building energy management\n"
+            "4. **Waste:** Segregation at source, GPS-tracked collection vehicles\n"
+            "5. **Connectivity:** Wi-Fi zones, CCTV surveillance, command control centre\n"
+            "6. **Green:** Urban forests, green corridors, parks (min 15% of area)\n\n"
+            "**Drainage & Infrastructure Standards:**\n"
+            "- Storm drain design: 25-year return period\n"
+            "- Water supply: 135 lpcd (IS 1172:1993)\n"
+            "- Road hierarchy: Primary 12m, Secondary 9m, Internal 6m\n"
+            "- Open space norms: 10–15% of total layout area\n\n"
+            "💡 **Pro Tip:** In HMDA jurisdiction, layouts under 2 hectares in non-LPA zones don't need "
+            "layout approval — only building permission. Always verify with the concerned municipal body "
+            "as regulations vary by local authority and are frequently updated.\n\n"
+            "📋 *Nirmaan AI — For layout planning, share the total plot area, location, and intended use.*"
+        )
+
+    # ── CONSTRUCTION SAFETY ──
+    if any(k in q for k in ["safety", "site safety", "ppe", "accident", "scaffolding",
+                             "fall protection", "fire safety", "safety officer", "is 7969",
+                             "risk assessment", "osha", "safety checklist", "construction safety"]):
+        return (
+            "## ⛑️ [SAFETY] — Nirmaan AI Construction Safety Officer\n\n"
+            "**Safety is non-negotiable. Here's your essential site safety guide:**\n\n"
+            "**Mandatory PPE on Construction Sites (IS 7969):**\n"
+            "| PPE Item | When Required | Standard |\n"
+            "|----------|--------------|----------|\n"
+            "| Safety helmet (hard hat) | Always on site | IS 2925 |\n"
+            "| Safety shoes (steel toe) | Always on site | IS 5852 |\n"
+            "| High-visibility vest | Near vehicles/machinery | — |\n"
+            "| Safety harness/belt | Work at height > 2m | IS 3521 |\n"
+            "| Safety goggles | Cutting, grinding, welding | IS 5983 |\n"
+            "| Ear protection | Jackhammering, loud machinery | IS 9167 |\n"
+            "| Dust mask/respirator | Concrete cutting, painting | IS 9473 |\n"
+            "| Welding shield | All welding operations | IS 1179 |\n\n"
+            "**Working at Height — Critical Rules:**\n"
+            "1. Safety nets below all elevated work areas (IS 11057)\n"
+            "2. Full-body harness anchored to independent structure\n"
+            "3. Scaffolding: Max load 250 kg/m² for light duty; inspect daily\n"
+            "4. Edge protection: Guardrail at 1.0m + mid-rail at 0.5m + toe board\n"
+            "5. No working at height during lightning or wind > 45 km/h\n\n"
+            "**Excavation Safety:**\n"
+            "- Depth > 1.5m: Shore or slope sides at 45° in ordinary soil\n"
+            "- Depth > 2m: Mandatory shoring/strutting\n"
+            "- Adjacent structures within 3× depth: Underpinning required\n"
+            "- Watchman required at night; barricade with red lights\n\n"
+            "**Crane & Lifting Safety:**\n"
+            "- Never stand under suspended load\n"
+            "- SWL (Safe Working Load) clearly marked on all cranes\n"
+            "- Minimum 2× safety factor for lifting tackles\n"
+            "- Daily pre-start inspection of ropes, hooks, and blocks\n\n"
+            "**Fire Safety on Sites:**\n"
+            "- Fire extinguisher (ABC type) every 15m on site\n"
+            "- No welding near stored materials without fire watch\n"
+            "- Emergency assembly point clearly marked\n"
+            "- First aid box at every floor under construction\n\n"
+            "**Risk Assessment Matrix:**\n"
+            "| Risk Level | Likelihood × Severity | Action |\n"
+            "|------------|----------------------|--------|\n"
+            "| Low | 1–4 | Monitor, no immediate action |\n"
+            "| Medium | 5–9 | Control measures required |\n"
+            "| High | 10–16 | Stop work until mitigated |\n"
+            "| Critical | 17–25 | Immediate stop, evacuate |\n\n"
+            "💡 **Pro Tip:** Conduct a 'Tool Box Talk' (5-minute safety briefing) every morning before "
+            "work begins. This reduces accidents by up to 70% and builds a safety culture on site. "
+            "Document every briefing with attendee signatures.\n\n"
+            "📋 *Nirmaan AI — Safety saves lives and prevents project delays. Never compromise.*"
         )
 
     # ── DEFAULT / CAPABILITIES ──
     return (
-        "## 🏗️ SETU — Structural Engineering & Technical Utility\n\n"
-        "I am your **AI Civil Engineering Consultant** with expertise spanning all major disciplines.\n\n"
-        "**What I can do:**\n\n"
-        "📐 **Structural Design** — Beam, column, slab, footing, retaining wall calculations with IS 456\n"
-        "🪨 **Geotechnical** — Soil classification, bearing capacity, foundation selection, pile design\n"
-        "🌍 **Seismic Design** — IS 1893 zone data, base shear, ductile detailing (IS 13920)\n"
-        "🔩 **Steel Structures** — IS 800, tension/compression members, connections\n"
-        "🛣️ **Transportation** — Road design (IRC:37/58), pavement, bridge engineering\n"
-        "💧 **Hydraulics** — Pipe flow, open channels, drains, water/sewage treatment\n"
-        "🔧 **Prestressed Concrete** — IS 1343, losses, tendon design\n"
-        "📋 **BBS / BOQ** — Bar bending schedules, bill of quantities, cost estimation\n"
-        "🔬 **Concrete Mix Design** — IS 10262 with proportions for M15–M50\n"
-        "🔍 **Failure Analysis** — Crack diagnosis, remediation, retrofitting\n"
-        "📊 **Project Management** — CPM, Gantt, EVA, scheduling\n"
-        "🌱 **Sustainability** — Carbon tracking, green building ratings\n"
-        "📏 **Surveying** — Setting out, levelling, GPS, contour mapping\n"
-        "🖥️ **3D Visualization & BIM** — Revit, STAAD, ETABS, Tekla, SketchUp guidance\n"
-        "🛠️ **Software Tools** — STAAD.Pro, ETABS, AutoCAD, Primavera, PLAXIS, SAP2000\n\n"
+        "## 🏗️ NIRMAAN AI — The Ultimate Civil Engineering Assistant\n\n"
+        "Welcome! I am **Nirmaan AI** — your dedicated civil engineering expert with the combined "
+        "knowledge of 100+ years of field experience across every discipline.\n\n"
+        "**My 16 Specialist Domains:**\n\n"
+        "📐 **[STRUCTURAL]** — Beam, column, slab, footing, retaining wall calculations (IS 456)\n"
+        "🪨 **[GEOTECHNICAL]** — Soil classification, bearing capacity, foundation selection, pile design\n"
+        "🌍 **[SEISMIC]** — IS 1893 zone data, base shear, ductile detailing (IS 13920)\n"
+        "🔩 **[MATERIALS]** — Steel structures (IS 800), concrete mix design (IS 10262), BBS\n"
+        "🛣️ **[TRANSPORTATION]** — Road design (IRC:37/58), pavement, bridge engineering\n"
+        "💧 **[HYDRAULICS]** — Pipe flow, open channels, drains, water/sewage treatment\n"
+        "🔧 **[CONSTRUCTION MGMT]** — CPM, Gantt, BOQ, cost estimation, project planning\n"
+        "🌱 **[ENVIRONMENTAL]** — Carbon tracking, green building (IGBC/GRIHA/LEED), EIA\n"
+        "📏 **[SURVEYING]** — Setting out, levelling, GPS, contour mapping\n"
+        "🖥️ **[3D VISUALIZATION]** — Revit, STAAD, ETABS, Tekla, rendering tools guidance\n"
+        "🛋️ **[INTERIOR DESIGN]** — Room concepts, materials, color palettes, Vastu compliance\n"
+        "🏠 **[EXTERIOR DESIGN]** — Facade design, cladding, landscaping, elevation concepts\n"
+        "🧭 **[VASTU]** — Plot orientation, room placement, Vastu Shastra principles, Feng Shui\n"
+        "🏗️ **[ARCHITECTURE]** — Floor plans, FAR/FSI, building bylaws, NBC compliance\n"
+        "🌆 **[URBAN PLANNING]** — Smart city, FAR/FSI, township planning, HMDA regulations\n"
+        "⛑️ **[SAFETY]** — PPE, scaffolding, fall protection, fire safety, risk assessment\n\n"
         "**Try asking:**\n"
-        "- \"Design a beam for 6m span\"\n"
-        "- \"Column for 800kN load, 3.5m height\"\n"
-        "- \"Foundation for soft clay with 100kN/m² SBC\"\n"
-        "- \"Mix design for M30 concrete\"\n"
-        "- \"Retaining wall 4m high in medium soil\"\n"
-        "- \"Seismic zone and base shear for Hyderabad\"\n"
-        "- \"Which software for multi-story building analysis?\"\n"
-        "- \"How to create 3D model of a building?\"\n"
-        "- \"Compare STAAD.Pro vs ETABS\"\n"
-        "- \"Diagnose diagonal cracks in beam\"\n\n"
-        "📋 *SETU AI v2.0 — Powered by Nirmaan's construction intelligence platform.*"
+        "- \"Design a beam for 6m span with M25 concrete\"\n"
+        "- \"Foundation for soft clay soil — what type?\"\n"
+        "- \"Mix design for M30 concrete (IS 10262)\"\n"
+        "- \"Interior design for 15×12ft living room, modern style\"\n"
+        "- \"Vastu tips for south-facing plot\"\n"
+        "- \"Seismic zone for Hyderabad and base shear calculation\"\n"
+        "- \"Safety requirements for working at height\"\n"
+        "- \"Cost estimate for 2000 sqft house in Hyderabad\"\n"
+        "- \"Exterior design ideas for 3-story house\"\n"
+        "- \"Compare STAAD.Pro vs ETABS for multi-story analysis\"\n\n"
+        "📋 *Nirmaan AI v3.0 — Powered by Nirmaan's construction intelligence platform.*"
     )
 
 
@@ -1251,7 +1484,7 @@ class SetuCapabilities(BaseModel):
 
 @router.get("/capabilities")
 async def get_capabilities():
-    """Return SETU system capabilities."""
+    """Return Nirmaan AI system capabilities."""
     return SetuCapabilities(
         domains=[
             "Structural Engineering (RCC + Steel)",
@@ -1266,6 +1499,12 @@ async def get_capabilities():
             "Prestressed Concrete",
             "Forensic Failure Analysis",
             "Sustainability & Carbon Tracking",
+            "Interior Design",
+            "Exterior Design & Facades",
+            "Architecture & Building Bylaws",
+            "Vastu Shastra & Feng Shui",
+            "Urban Planning & Smart Cities",
+            "Construction Safety",
             "3D Visualization & BIM",
             "Civil Engineering Software Tools",
         ],
@@ -1289,7 +1528,7 @@ async def consult(
     current_user: dict = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """SETU — Premium AI civil engineering consultation."""
+    """Nirmaan AI — Premium civil engineering consultation."""
     question = req.question.strip()
     if not question:
         raise HTTPException(status_code=400, detail="Question cannot be empty")
@@ -1353,8 +1592,8 @@ async def consult(
             ),
         )
 
-    # Generate SETU response
-    answer = _build_setu_response(question, req.context, tier.value)
+    # Generate Nirmaan AI response
+    answer = _build_nirmaan_response(question, req.context, tier.value)
 
     # Premium header
     if is_premium:
@@ -1363,7 +1602,7 @@ async def consult(
             "platinum": "Premium", "enterprise": "Enterprise",
         }
         label = tier_labels.get(tier.value, tier.value.capitalize())
-        answer = f"🏗️ **SETU** — {label} Tier Consultation\n\n" + answer
+        answer = f"🏗️ **Nirmaan AI** — {label} Tier Consultation\n\n" + answer
 
     # Increment counter
     membership.ai_queries_today += 1
