@@ -65,7 +65,7 @@ def _respond_construction_stages() -> str:
         "by 20–30%. These timelines assume normal conditions without rain delays.\n\n"
         "### Next Step\n"
         "Share your plot size and number of floors for a project-specific timeline.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence. Reference: IS 456:2000 (Cl. 11, 13), NBC 2016.*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence. Reference: IS 456:2000 (Cl. 11, 13), NBC 2016.*"
     )
 
 
@@ -99,5 +99,5 @@ def _respond_project_timeline(params: dict) -> str:
         f"- Not scheduling inspections at each stage\n\n"
         f"### Next Step\n"
         f"Create a detailed Gantt chart with your contractor for week-by-week tracking.\n\n"
-        f"📋 *Veda — Nirmaan Civil Engineering Intelligence.*"
+        f"📋 *SETU — Nirmaan Civil Engineering Intelligence.*"
     )

@@ -60,5 +60,5 @@ def _respond_building_planning() -> str:
         "### Next Step\n"
         "Share your plot dimensions, setback requirements, and room count "
         "for a layout optimization suggestion.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence. Reference: NBC 2016 Part 4, local DCR.*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence. Reference: NBC 2016 Part 4, local DCR.*"
     )

@@ -36,8 +36,8 @@ def handle_engagement(intent: str, params: dict) -> str:
     if "thank" in q:
         return _respond_thanks()
     if any(w in q for w in ("who are you", "what are you", "your name",
-                             "veda", "about you")):
-        return _respond_about_veda()
+                             "setu", "about you")):
+        return _respond_about_setu()
 
     return _respond_general_help()
 
@@ -47,7 +47,7 @@ def handle_engagement(intent: str, params: dict) -> str:
 def _respond_greeting() -> str:
     return (
         "## Namaste! 🏗️\n\n"
-        "I'm **Veda**, Nirmaan's AI Civil Engineering Intelligence.\n\n"
+        "I'm **SETU**, Nirmaan's AI Civil Engineering Intelligence.\n\n"
         "I can help you with:\n"
         "- 🧮 **Structural Calculations** — beam, column, slab, footing design\n"
         "- 📐 **Building Planning** — room sizes, layout, ventilation as per NBC 2016\n"
@@ -59,14 +59,14 @@ def _respond_greeting() -> str:
         "- *\"Design a beam for 5m span with 20 kN/m load\"*\n"
         "- *\"Cost estimate for 1200 sqft house\"*\n"
         "- *\"What cement is best for foundation?\"*\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence*"
     )
 
 
-def _respond_about_veda() -> str:
+def _respond_about_setu() -> str:
     return (
-        "## About Veda 🧠\n\n"
-        "I'm **Veda** — Nirmaan's AI-powered Civil Engineering Intelligence.\n\n"
+        "## About SETU 🧠\n\n"
+        "I'm **SETU** — Nirmaan's AI-powered Civil Engineering Intelligence.\n\n"
         "### What I Do\n"
         "- Structural design calculations (IS 456, IS 1893 compliant)\n"
         "- Material selection and comparison\n"
@@ -81,7 +81,7 @@ def _respond_about_veda() -> str:
         "### Important\n"
         "My calculations are for **preliminary reference**. Always get final designs "
         "verified by a licensed Structural Engineer.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence*"
     )
 
 
@@ -97,7 +97,7 @@ def _respond_about_nirmaan() -> str:
         "| Service | Description |\n"
         "|---------|-------------|\n"
         "| 🧱 Materials Marketplace | 50,000+ construction products at competitive prices |\n"
-        "| 🤖 Veda AI Consultant | Engineering calculations, cost estimation, expert guidance |\n"
+        "| 🤖 SETU AI Consultant | Engineering calculations, cost estimation, expert guidance |\n"
         "| 🏠 Design Studio | Browse and customize home designs |\n"
         "| 📦 Doorstep Delivery | Materials delivered to your construction site |\n"
         "| 💳 Construction Credit | Flexible financing for material purchases |\n"
@@ -106,7 +106,7 @@ def _respond_about_nirmaan() -> str:
         "| 🌐 Digital Twin | 3D visualization for your project |\n\n"
         "### Next Step\n"
         "Explore our products at **nirmaan.com** or ask me any construction question!\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence*"
     )
 
 
@@ -121,13 +121,13 @@ def _respond_why_nirmaan() -> str:
         "|---------|-----|\n"
         "| 💰 Cost Savings | Direct from manufacturer, no middlemen |\n"
         "| ✅ Quality Assured | All suppliers verified, materials tested |\n"
-        "| 🤖 AI Guidance | Veda AI for instant engineering support |\n"
+        "| 🤖 AI Guidance | SETU AI for instant engineering support |\n"
         "| 📦 Doorstep Delivery | Hassle-free logistics to your site |\n"
         "| 💳 Easy Credit | Buy now, pay later for materials |\n"
         "| 📊 Transparent Pricing | Real-time market rates, no hidden costs |\n\n"
         "### Next Step\n"
         "Browse products or ask me about materials for your project!\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence*"
     )
 
 
@@ -137,15 +137,15 @@ def _respond_how_to_use() -> str:
         "### Quick Start\n"
         "1. **Register** — Create your account on nirmaan.com\n"
         "2. **Browse Products** — Search 50,000+ construction materials\n"
-        "3. **Get AI Help** — Ask Veda for engineering guidance\n"
+        "3. **Get AI Help** — Ask SETU for engineering guidance\n"
         "4. **Place Orders** — Add to cart, checkout with delivery\n"
         "5. **Track Delivery** — Real-time tracking to your site\n\n"
         "### Pro Tips\n"
-        "- Use **Veda AI** for cost estimates before purchasing\n"
+        "- Use **SETU AI** for cost estimates before purchasing\n"
         "- Compare suppliers for best rates\n"
         "- Upgrade to **Premium** for unlimited AI consultations\n"
         "- Apply for **Construction Credit** for flexible payments\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence*"
     )
 
 
@@ -153,12 +153,12 @@ def _respond_premium() -> str:
     return (
         "## Nirmaan Premium Plans 👑\n\n"
         "### Quick Answer\n"
-        "Premium gives you **unlimited Veda AI consultations**, priority delivery, "
+        "Premium gives you **unlimited SETU AI consultations**, priority delivery, "
         "and exclusive discounts.\n\n"
         "### Plans Comparison\n"
         "| Feature | Free | Premium |\n"
         "|---------|------|--------|\n"
-        "| Veda AI Queries | 10/day | Unlimited |\n"
+        "| SETU AI Queries | 10/day | Unlimited |\n"
         "| Engineering Calculations | Basic | Advanced |\n"
         "| Material Discounts | — | Up to 5% |\n"
         "| Priority Delivery | — | ✅ |\n"
@@ -167,7 +167,7 @@ def _respond_premium() -> str:
         "| BOQ Generator | — | ✅ |\n\n"
         "### Next Step\n"
         "Visit the **Premium** section in your account to upgrade.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence*"
     )
 
 
@@ -188,7 +188,7 @@ def _respond_workforce() -> str:
         "2. Get quotes from verified professionals\n"
         "3. Review ratings and past work\n"
         "4. Hire and track through the platform\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence*"
     )
 
 
@@ -206,7 +206,7 @@ def _respond_equipment() -> str:
         "- Bar bending and cutting machines\n\n"
         "### Next Step\n"
         "Check the **Equipment** section for availability in your area.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence*"
     )
 
 
@@ -222,7 +222,7 @@ def _respond_delivery() -> str:
         "Currently serving major cities in Telangana and Andhra Pradesh.\n\n"
         "### Next Step\n"
         "Place an order and select your delivery slot at checkout.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence*"
     )
 
 
@@ -243,7 +243,7 @@ def _respond_credit() -> str:
         "2. Submit basic documents (PAN, Aadhaar, bank statement)\n"
         "3. Get instant approval decision\n"
         "4. Start purchasing on credit immediately\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence*"
     )
 
 
@@ -259,7 +259,7 @@ def _respond_digital_twin() -> str:
         "- Progress tracking against 3D model\n\n"
         "### Next Step\n"
         "Upload your floor plan to get started with Digital Twin.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence*"
     )
 
 
@@ -274,7 +274,7 @@ def _respond_design_studio() -> str:
         "- Direct cost estimation integration\n\n"
         "### Next Step\n"
         "Visit the **Design Studio** section to explore designs for your plot.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence*"
     )
 
 
@@ -294,7 +294,7 @@ def _respond_supplier() -> str:
         "- Digital catalog management\n"
         "- Automated order processing\n"
         "- Timely payments\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence*"
     )
 
 
@@ -304,14 +304,14 @@ def _respond_thanks() -> str:
         "Feel free to ask any other construction-related questions. "
         "I'm here to help with calculations, material selection, cost estimates, "
         "and more.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence*"
     )
 
 
 def _respond_general_help() -> str:
     return (
         "## How Can I Help? 🏗️\n\n"
-        "I'm **Veda**, your AI Civil Engineering consultant. Here's what I can assist with:\n\n"
+        "I'm **SETU**, your AI Civil Engineering consultant. Here's what I can assist with:\n\n"
         "### Engineering\n"
         "- 🧮 Structural calculations (beam, column, slab, footing)\n"
         "- 📐 Building layout planning (NBC 2016 compliant)\n"
@@ -328,5 +328,5 @@ def _respond_general_help() -> str:
         "- 📦 Delivery and logistics\n"
         "- 💳 Construction credit\n\n"
         "**Try asking:** *\"Design a beam for 6m span\"* or *\"Cost for 1500 sqft house\"*\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence*"
     )

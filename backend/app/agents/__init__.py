@@ -1,1 +1,1 @@
-"""Veda AI — Multi-agent construction intelligence system."""
+"""SETU AI — Multi-agent construction intelligence system."""

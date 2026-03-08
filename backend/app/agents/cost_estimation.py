@@ -47,7 +47,7 @@ def _respond_cost_for_area(sqft: float, params: dict) -> str:
         f"### Next Step\n"
         f"Share your specific requirements (no. of rooms, quality preferences) "
         f"for a detailed room-wise estimate.\n\n"
-        f"📋 *Veda — Nirmaan Civil Engineering Intelligence. Rates: Telangana 2025-26.*"
+        f"📋 *SETU — Nirmaan Civil Engineering Intelligence. Rates: Telangana 2025-26.*"
     )
 
 
@@ -97,5 +97,5 @@ def _respond_cost_general() -> str:
         "### Next Step\n"
         "Tell me your total built-up area and quality preference "
         "for a project-specific cost breakdown.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence. Rates are indicative.*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence. Rates are indicative.*"
     )

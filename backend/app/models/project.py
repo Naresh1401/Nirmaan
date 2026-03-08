@@ -1,4 +1,4 @@
-"""Project, Conversation, and Estimate models for Veda AI memory system."""
+"""Project, Conversation, and Estimate models for SETU AI memory system."""
 
 import uuid
 from datetime import datetime, timezone
@@ -14,7 +14,7 @@ from app.core.database import Base
 
 
 class Project(Base):
-    """User construction project — stores context for Veda consultations."""
+    """User construction project — stores context for SETU consultations."""
     __tablename__ = "projects"
 
     id: Mapped[uuid.UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -64,7 +64,7 @@ class Project(Base):
 
 
 class Conversation(Base):
-    """Chat conversation session for Veda AI."""
+    """Chat conversation session for SETU AI."""
     __tablename__ = "conversations"
 
     id: Mapped[uuid.UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -82,7 +82,7 @@ class Conversation(Base):
 
 
 class Message(Base):
-    """Individual message in a Veda conversation."""
+    """Individual message in a SETU conversation."""
     __tablename__ = "messages"
 
     id: Mapped[uuid.UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid.uuid4)

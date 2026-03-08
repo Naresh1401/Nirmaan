@@ -1,4 +1,4 @@
-"""Veda — AI Civil Engineering Consultant.
+"""SETU — AI Civil Engineering Consultant.
 
 Premium AI Civil Engineering Consultant for the Nirmaan platform.
 Routes queries through the multi-agent pipeline for expert-level consultation.
@@ -17,7 +17,7 @@ from app.core.security import get_current_user
 from app.models.premium import PremiumMembership, MembershipTier, TIER_BENEFITS
 from app.agents.orchestrator import process_query
 
-router = APIRouter(prefix="/api/v1/ai-consultant", tags=["Veda AI Consultant"])
+router = APIRouter(prefix="/api/v1/ai-consultant", tags=["SETU AI Consultant"])
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # IS CODE REFERENCE DATABASE
@@ -162,10 +162,10 @@ class ConsultResponse(BaseModel):
     is_premium: bool
     tier: str
     queries_remaining: int
-    mode: str = "veda"
+    mode: str = "setu"
 
 
-class VedaCapabilities(BaseModel):
+class SETUCapabilities(BaseModel):
     domains: List[str]
     is_codes_count: int
     foundation_types: int
@@ -178,8 +178,8 @@ class VedaCapabilities(BaseModel):
 
 @router.get("/capabilities")
 async def get_capabilities():
-    """Return Veda system capabilities."""
-    return VedaCapabilities(
+    """Return SETU system capabilities."""
+    return SETUCapabilities(
         domains=[
             "Structural Engineering (RCC + Steel)",
             "Geotechnical Engineering",
@@ -216,7 +216,7 @@ async def consult(
     current_user: dict = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
 ):
-    """Veda — Premium AI civil engineering consultation."""
+    """SETU — Premium AI civil engineering consultation."""
     question = req.question.strip()
     if not question:
         raise HTTPException(status_code=400, detail="Question cannot be empty")
@@ -280,7 +280,7 @@ async def consult(
             ),
         )
 
-    # Generate Veda response (multi-agent pipeline)
+    # Generate SETU response (multi-agent pipeline)
     answer = process_query(question, req.context, tier.value)
 
     # Premium header
@@ -290,7 +290,7 @@ async def consult(
             "platinum": "Premium", "enterprise": "Enterprise",
         }
         label = tier_labels.get(tier.value, tier.value.capitalize())
-        answer = f"🏗️ **Veda** — {label} Tier Consultation\n\n" + answer
+        answer = f"🏗️ **SETU** — {label} Tier Consultation\n\n" + answer
 
     # Increment counter
     membership.ai_queries_today += 1
@@ -303,5 +303,5 @@ async def consult(
         is_premium=is_premium,
         tier=tier.value,
         queries_remaining=remaining,
-        mode="veda",
+        mode="setu",
     )

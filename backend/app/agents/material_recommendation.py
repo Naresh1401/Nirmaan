@@ -58,7 +58,7 @@ def _respond_cement() -> str:
         "### Next Step\n"
         "Specify your application (RCC/plastering/foundation) and soil conditions "
         "for a precise cement recommendation.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence. Reference: IS 269, IS 8112, IS 12269, IS 1489.*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence. Reference: IS 269, IS 8112, IS 12269, IS 1489.*"
     )
 
 
@@ -99,7 +99,7 @@ def _respond_brick() -> str:
         "### Next Step\n"
         "Specify your building type (load-bearing vs RCC frame) and climate "
         "for the best walling recommendation.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence. Reference: IS 1077, IS 12894, IS 2185.*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence. Reference: IS 1077, IS 12894, IS 2185.*"
     )
 
 
@@ -139,5 +139,5 @@ def _respond_steel_tmt() -> str:
         "### Next Step\n"
         "Specify your seismic zone and structural member type for "
         "precise grade recommendation.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence. Reference: IS 1786:2008, IS 13920.*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence. Reference: IS 1786:2008, IS 13920.*"
     )

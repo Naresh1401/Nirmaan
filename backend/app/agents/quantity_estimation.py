@@ -54,7 +54,7 @@ def _respond_quantity_for_area(sqft: float) -> str:
         f"- Using per-sqft rates without adjusting for floors (upper floors need less foundation)\n\n"
         f"### Next Step\n"
         f"Use the Nirmaan AI Estimator for an exact project-specific BOQ with current market rates.\n\n"
-        f"📋 *Veda — Nirmaan Civil Engineering Intelligence. Rates per Telangana DSR 2025-26.*"
+        f"📋 *SETU — Nirmaan Civil Engineering Intelligence. Rates per Telangana DSR 2025-26.*"
     )
 
 
@@ -86,5 +86,5 @@ def _respond_quantity_general() -> str:
         "### Next Step\n"
         "Tell me your total built-up area (e.g., \"1500 sqft\") for a "
         "project-specific quantity breakdown.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence. Rates per Telangana DSR 2025-26.*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence. Rates per Telangana DSR 2025-26.*"
     )

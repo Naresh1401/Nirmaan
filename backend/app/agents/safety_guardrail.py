@@ -60,7 +60,7 @@ def _wrap_critical(response: str, intent: str) -> str:
         "\n\n---\n"
         "🚨 *This is a reference calculation only. Actual structural design must be done by "
         "a licensed Structural Engineer per IS 456:2000, IS 1893:2016, and applicable codes. "
-        "Nirmaan and Veda AI are not liable for design decisions.*\n"
+        "Nirmaan and SETU AI are not liable for design decisions.*\n"
         "---"
     )
     return banner + response + footer

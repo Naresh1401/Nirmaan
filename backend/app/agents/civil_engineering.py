@@ -2,7 +2,7 @@
 
 Contains calculators (beam, column, slab, footing, retaining wall, mix design, BBS)
 and reference data (IS codes, foundation guide, seismic zones).
-Extracted from the original monolithic _build_veda_response().
+Extracted from the original monolithic _build_setu_response().
 """
 
 import math
@@ -192,7 +192,7 @@ def calc_beam(span_m: float, support: str = "simply_supported") -> str:
         f"### Next Step\n"
         f"Provide the actual loading (dead + live + wall load) for a detailed "
         f"design with reinforcement schedule and stirrup spacing.\n\n"
-        f"📋 *Veda — Nirmaan Civil Engineering Intelligence. Reference: IS 456:2000.*"
+        f"📋 *SETU — Nirmaan Civil Engineering Intelligence. Reference: IS 456:2000.*"
     )
 
 
@@ -257,7 +257,7 @@ def calc_column(load_kn: float, height_m: float = 3.0, fck: int = 20, fy: int = 
         f"Preliminary design only. Must be verified by a licensed Professional Engineer.\n\n"
         f"### Next Step\n"
         f"Provide beam layout and actual loads from each floor for combined axial + moment design.\n\n"
-        f"📋 *Veda — Nirmaan Civil Engineering Intelligence. Reference: IS 456:2000.*"
+        f"📋 *SETU — Nirmaan Civil Engineering Intelligence. Reference: IS 456:2000.*"
     )
 
 
@@ -324,7 +324,7 @@ def calc_slab(span_m: float, slab_type: str = "two_way", fck: int = 20, fy: int 
         f"Must be designed by a licensed Professional Engineer.\n\n"
         f"### Next Step\n"
         f"Specify support conditions (simply supported vs continuous) and actual live loads.\n\n"
-        f"📋 *Veda — Nirmaan Civil Engineering Intelligence. Reference: IS 456:2000.*"
+        f"📋 *SETU — Nirmaan Civil Engineering Intelligence. Reference: IS 456:2000.*"
     )
 
 
@@ -378,7 +378,7 @@ def calc_footing(load_kn: float, sbc_kn_m2: float = 150, fck: int = 20, fy: int 
         f"Must be designed by a licensed Professional Engineer.\n\n"
         f"### Next Step\n"
         f"Provide soil test report (SPT N-value) for accurate SBC determination.\n\n"
-        f"📋 *Veda — Nirmaan Civil Engineering Intelligence. Reference: IS 456, IS 6403.*"
+        f"📋 *SETU — Nirmaan Civil Engineering Intelligence. Reference: IS 456, IS 6403.*"
     )
 
 
@@ -434,7 +434,7 @@ def calc_retaining_wall(height_m: float, soil_type: str = "medium") -> str:
         f"Must be designed by a licensed Professional Engineer.\n\n"
         f"### Next Step\n"
         f"Provide soil test data and surcharge loads for complete design.\n\n"
-        f"📋 *Veda — Nirmaan Civil Engineering Intelligence. Reference: IS 456, IS 6403.*"
+        f"📋 *SETU — Nirmaan Civil Engineering Intelligence. Reference: IS 456, IS 6403.*"
     )
 
 
@@ -497,7 +497,7 @@ def calc_mix_design(grade: str = "M25") -> str:
         f"### Next Step\n"
         f"Specify exposure condition (mild/moderate/severe) and required workability for "
         f"a design mix with admixture recommendations.\n\n"
-        f"📋 *Veda — Nirmaan Civil Engineering Intelligence. Reference: IS 10262:2019, IS 456.*"
+        f"📋 *SETU — Nirmaan Civil Engineering Intelligence. Reference: IS 10262:2019, IS 456.*"
     )
 
 
@@ -533,7 +533,7 @@ def calc_bbs(member: str = "beam", b: int = 230, d: int = 450, span_m: float = 4
         f"**{(weight_main + weight_stirrups + weight_hanger) * 1.05:.1f} kg**\n\n"
         f"### Next Step\n"
         f"Provide beam layout drawing for complete project BBS.\n\n"
-        f"📋 *Veda — Nirmaan Civil Engineering Intelligence. Reference: IS 2502, SP:34.*"
+        f"📋 *SETU — Nirmaan Civil Engineering Intelligence. Reference: IS 2502, SP:34.*"
     )
 
 
@@ -577,7 +577,7 @@ def respond_soil_geotechnical() -> str:
         "### Next Step\n"
         "Get a soil investigation report (2 boreholes minimum for residential) "
         "for accurate foundation design.\n",
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence. Reference: IS 1904, IS 6403.*",
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence. Reference: IS 1904, IS 6403.*",
     ]
     return "\n".join(lines)
 
@@ -622,7 +622,7 @@ def respond_seismic() -> str:
         "Must be designed by a licensed Structural Engineer.\n",
         "### Next Step\n"
         "Provide building location and configuration for zone-specific seismic design.\n",
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence. Reference: IS 1893, IS 13920.*",
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence. Reference: IS 1893, IS 13920.*",
     ]
     return "\n".join(lines)
 
@@ -668,7 +668,7 @@ def respond_loads() -> str:
         "```\n\n"
         "### Next Step\n"
         "Specify building type and location for wind and seismic load calculation.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence. Reference: IS 875, IS 456.*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence. Reference: IS 875, IS 456.*"
     )
 
 
@@ -703,7 +703,7 @@ def respond_road_engineering() -> str:
         "| NH 4-lane (rigid/CC) | ₹12–20 crore |\n\n"
         "### Next Step\n"
         "Provide traffic data (CVPD) and subgrade CBR for pavement thickness design.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence. Reference: IRC:37, IRC:58.*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence. Reference: IRC:37, IRC:58.*"
     )
 
 
@@ -729,7 +729,7 @@ def respond_bridge() -> str:
         "### Safety Note\n"
         "⚠️ Bridge design requires detailed site investigation, scour analysis, "
         "and hydraulic study. Must be designed by a licensed Structural Engineer.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence. Reference: IRC:6, IRC:78.*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence. Reference: IRC:6, IRC:78.*"
     )
 
 
@@ -761,7 +761,7 @@ def respond_hydraulic() -> str:
         "```\n"
         "  Q = C × I × A / 360 (m³/s)\n"
         "```\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence. Reference: IS 1172, Manning.*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence. Reference: IS 1172, Manning.*"
     )
 
 
@@ -786,7 +786,7 @@ def respond_steel_structure() -> str:
         "**Connection Design:**\n"
         "- Bolt strength: Vdsb = fu/(√3 × γmb) × Anb\n"
         "- Min 2 bolts per connection\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence. Reference: IS 800:2007.*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence. Reference: IS 800:2007.*"
     )
 
 
@@ -804,7 +804,7 @@ def respond_is_codes() -> str:
     lines += [
         "\n### Next Step\n"
         "Ask about any specific clause or topic for detailed guidance.\n",
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence. IS Codes available at bis.gov.in*",
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence. IS Codes available at bis.gov.in*",
     ]
     return "\n".join(lines)
 
@@ -829,7 +829,7 @@ def respond_prestressed() -> str:
         "### Safety Note\n"
         "⚠️ PSC design is complex. Requires detailed tendon profile & loss calculations. "
         "Min concrete: M35 (pre-T), M30 (post-T).\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence. Reference: IS 1343:2012.*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence. Reference: IS 1343:2012.*"
     )
 
 
@@ -858,7 +858,7 @@ def respond_environment() -> str:
         "| Virgin steel | Recycled steel | 60–75% |\n\n"
         "### Next Step\n"
         "Use Nirmaan's carbon tracking tools for project-level analysis.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence.*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence.*"
     )
 
 
@@ -888,7 +888,7 @@ def respond_ndt_quality() -> str:
         "**Acceptance (IS 456 Cl.16):**\n"
         "- Individual cube: ≥ fck - 3 N/mm²\n"
         "- Mean of 3 cubes: ≥ fck + 0.825s\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence. Reference: IS 516, IS 13311.*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence. Reference: IS 516, IS 13311.*"
     )
 
 
@@ -908,7 +908,7 @@ def respond_survey() -> str:
         "5. Transfer levels from benchmark\n\n"
         "**Volume Calculation:**\n"
         "- Prismoidal formula: V = (L/6)(A₁ + 4Am + A₂)\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence.*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence.*"
     )
 
 
@@ -934,7 +934,7 @@ def respond_project_management() -> str:
         "| EAC | BAC/CPI | Estimated final cost |\n\n"
         "### Next Step\n"
         "Use proper scheduling software (Primavera P6 / MS Project) for complex projects.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence.*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence.*"
     )
 
 
@@ -964,7 +964,7 @@ def respond_3d_bim() -> str:
         "For concept images → SketchUp Free. For photorealistic renders → Lumion + Revit. "
         "For engineering analysis → STAAD.Pro or ETABS.\n\n"
         "💡 Use Nirmaan's Digital Twin module for real-time 3D structural monitoring.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence.*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence.*"
     )
 
 
@@ -986,7 +986,7 @@ def respond_software_tools() -> str:
         "**Geotechnical:** PLAXIS 2D/3D, GEO5, SLIDE\n"
         "**Drafting:** AutoCAD, Revit, Tekla\n"
         "**Project Mgmt:** Primavera P6, MS Project\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence.*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence.*"
     )
 
 

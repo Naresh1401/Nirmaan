@@ -29,7 +29,7 @@ _AGENT_DISPATCH = {
 
 
 def process_query(question: str, context: str | None = None, tier: str = "free") -> str:
-    """Main entry point for Veda AI query processing.
+    """Main entry point for SETU AI query processing.
 
     Args:
         question: The user's question text.

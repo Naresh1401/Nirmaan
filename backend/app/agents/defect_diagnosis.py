@@ -72,7 +72,7 @@ def _respond_cracks() -> str:
         "### Next Step\n"
         "Describe the crack location, width, and pattern — "
         "I can provide a specific diagnosis.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence*"
     )
 
 
@@ -113,7 +113,7 @@ def _respond_waterproofing() -> str:
         "### Next Step\n"
         "Tell me the area to waterproof (terrace/basement/bathroom) and I'll suggest "
         "the best system with material quantities.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence*"
     )
 
 
@@ -155,7 +155,7 @@ def _respond_concrete_defects() -> str:
         "### Next Step\n"
         "Share a photo or describe the defect location — I'll recommend the "
         "specific repair method.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence*"
     )
 
 
@@ -188,7 +188,7 @@ def _respond_plastering_defects() -> str:
         "| Peeling | Moisture behind plaster | Fix source of dampness first |\n\n"
         "### Next Step\n"
         "Tell me the area and surface type for plastering quantity calculation.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence*"
     )
 
 
@@ -226,7 +226,7 @@ def _respond_failure_analysis() -> str:
         "### Next Step\n"
         "Describe the distress signs — cracks, settlement, or deflection — "
         "and I'll guide the investigation approach.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence*"
     )
 
 
@@ -260,7 +260,7 @@ def _respond_ndt() -> str:
         "| < 3.0 | Doubtful |\n\n"
         "### Next Step\n"
         "Tell me the structure type and concern — I'll recommend the right NDT combination.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence*"
     )
 
 
@@ -299,5 +299,5 @@ def _respond_corrosion() -> str:
         "7. Apply migrating corrosion inhibitor to surface\n\n"
         "### Next Step\n"
         "Describe the corrosion signs — I'll assess severity and recommend repair.\n\n"
-        "📋 *Veda — Nirmaan Civil Engineering Intelligence*"
+        "📋 *SETU — Nirmaan Civil Engineering Intelligence*"
     )
