@@ -17,8 +17,8 @@ Here is what is live today:
 🛒 Materials Marketplace
 A searchable catalog of 50,000+ construction products across categories — cement, steel, bricks, sand, aggregates, tiles, paints, electrical, plumbing and more. Builders can browse, compare and order materials from verified suppliers in one place.
 
-🤖 Veda – AI Civil Engineering Consultant
-This is something I am personally excited about. Veda is our AI-powered construction intelligence system. It can:
+🤖 SETU – AI Civil Engineering Consultant
+This is something I am personally excited about. SETU is our AI-powered construction intelligence system. It can:
 • Design beams, columns, slabs and footings using IS 456 calculations
 • Recommend the right cement, steel grade or brick type for your project
 • Estimate construction costs per sqft with stage-wise breakdowns
@@ -26,7 +26,7 @@ This is something I am personally excited about. Veda is our AI-powered construc
 • Plan project timelines with milestone tracking
 • Answer technical questions with references to Indian Standard codes
 
-Veda is not a generic chatbot. It is built specifically for Indian construction — with knowledge of IS codes, NBC 2016, Telangana rates and practical site experience.
+SETU is not a generic chatbot. It is built specifically for Indian construction — with knowledge of IS codes, NBC 2016, Telangana rates and practical site experience.
 
 📐 AI Cost Estimator
 Enter your plot size and building type, and the estimator generates a detailed material quantity breakdown with cost estimates — for houses, roads, bridges, compound walls, water tanks and more.

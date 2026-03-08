@@ -165,7 +165,7 @@ class ConsultResponse(BaseModel):
     mode: str = "setu"
 
 
-class SETUCapabilities(BaseModel):
+class SetuCapabilities(BaseModel):
     domains: List[str]
     is_codes_count: int
     foundation_types: int
@@ -179,7 +179,7 @@ class SETUCapabilities(BaseModel):
 @router.get("/capabilities")
 async def get_capabilities():
     """Return SETU system capabilities."""
-    return SETUCapabilities(
+    return SetuCapabilities(
         domains=[
             "Structural Engineering (RCC + Steel)",
             "Geotechnical Engineering",
