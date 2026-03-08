@@ -84,14 +84,14 @@ const QUICK_PROMPTS = [
 ];
 
 const PREMIUM_QUICK_PROMPTS = [
-  { icon: '🏗️', label: 'Beam size for 6m span', category: 'consultant' },
-  { icon: '🪨', label: 'Foundation for soft clay soil', category: 'consultant' },
-  { icon: '⚡', label: 'Seismic design requirements', category: 'consultant' },
-  { icon: '📏', label: 'Column design for 600kN load', category: 'consultant' },
-  { icon: '💰', label: 'Cost of 2000 sqft house', category: 'consultant' },
-  { icon: '🛣️', label: 'Road construction guide', category: 'consultant' },
-  { icon: '📋', label: 'IS code references', category: 'consultant' },
-  { icon: '🌉', label: 'Bridge type for 45m span', category: 'consultant' },
+  { icon: '📦', label: 'Materials for 1500 sqft house', category: 'nirmaan-ai' },
+  { icon: '💰', label: 'Current cement & steel prices', category: 'nirmaan-ai' },
+  { icon: '🛒', label: 'How to place an order', category: 'nirmaan-ai' },
+  { icon: '💳', label: 'Nirmaan Credit eligibility', category: 'nirmaan-ai' },
+  { icon: '🪨', label: 'Foundation for soft clay soil', category: 'nirmaan-ai' },
+  { icon: '⚖️', label: 'Compare AAC blocks vs bricks', category: 'nirmaan-ai' },
+  { icon: '🌱', label: 'Sustainable material options', category: 'nirmaan-ai' },
+  { icon: '📋', label: 'IS code references', category: 'nirmaan-ai' },
 ];
 
 // ── Static responses ──
@@ -587,7 +587,7 @@ export default function ChatBot() {
 
   const isPremium = !!(user?.membership_tier && user.membership_tier !== 'free');
 
-  const premiumGreeting = "## 🏗️ SETU — AI Civil Engineering Consultant\n\nHello! I'm **SETU**, your premium civil engineering expert powered by Nirmaan.\n\nI can help with:\n\n**📐 Structural Design** — Beam, column, slab, footing, retaining wall (IS 456)\n**🪨 Geotechnical** — Soil classification, bearing capacity, foundation selection\n**🌍 Seismic Design** — IS 1893 zone data, base shear, ductile detailing\n**🔧 Mix Design** — IS 10262 concrete proportions (M15–M50)\n**📋 BBS / BOQ** — Bar bending schedules, quantity estimation\n**🔍 Failure Analysis** — Crack diagnosis, remediation, retrofitting\n**🛣️ Transportation** — Road/bridge design per IRC standards\n**💰 Cost Estimation** — Telangana market rates & budget breakdowns\n**🖥️ 3D Visualization & BIM** — Revit, STAAD, ETABS, Tekla guidance\n**🛠️ Software Tools** — STAAD.Pro, ETABS, AutoCAD, Primavera, PLAXIS\n\nFor the **full-page experience**, visit the [SETU page](/civitas).\n\nAsk me anything like:\n- \"Design a beam for 6m span\"\n- \"Mix design for M30 concrete\"\n- \"Foundation for soft clay soil?\"\n- \"Which software for multi-story analysis?\"";
+  const premiumGreeting = "## 🤖 Nirmaan AI — Your Construction Companion\n\nHello! I'm **Nirmaan AI**, your intelligent assistant for all things construction.\n\nI can help with:\n\n**🏗️ Materials & Prices** — Cement, steel, sand, bricks, tiles, pipes and current market rates\n**💰 Cost Estimation** — Budgets for houses, commercial buildings, roads & infrastructure\n**🛒 Orders & Delivery** — How to order, track shipments, delivery charges\n**💳 Nirmaan Credit** — Construction finance, eligibility, repayment terms\n**🏭 Suppliers** — Find verified suppliers near you, compare prices\n**📐 Engineering Guidance** — Structural sizing, foundation types, IS code references\n**🌱 Sustainability** — Green materials, carbon reduction, IGBC ratings\n\nFor **deep civil engineering calculations**, visit the [SETU Engineering Consultant](/civitas).\nFor the **full Nirmaan AI experience**, visit [Nirmaan AI](/nirmaan-ai).\n\nAsk me anything like:\n- \"Materials needed for a 1500 sqft house\"\n- \"Current prices for cement and steel\"\n- \"How to apply for Nirmaan Credit\"\n- \"Foundation for soft clay soil\"";
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -626,13 +626,13 @@ export default function ChatBot() {
   const sendPremiumMessage = useCallback(async (text: string) => {
     if (!token) return false;
     try {
-      const res = await fetch(`${API_URL}/api/v1/ai-consultant/consult`, {
+      const res = await fetch(`${API_URL}/api/v1/nirmaan-ai/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ question: text }),
+        body: JSON.stringify({ message: text }),
       });
       if (!res.ok) {
         const err = await res.json();
@@ -655,12 +655,12 @@ export default function ChatBot() {
       const botMsg: ChatMessage = {
         id: Date.now() + 1,
         role: 'bot',
-        content: data.answer,
+        content: data.reply,
         timestamp: new Date(),
         isPremiumResponse: true,
         links: [
           { label: 'Materials', href: '/products' },
-          { label: 'AI Estimator', href: '/estimator' },
+          { label: 'Nirmaan AI', href: '/nirmaan-ai' },
         ],
       };
       setMessages(prev => [...prev, botMsg]);
@@ -776,7 +776,7 @@ export default function ChatBot() {
         <button
           onClick={openChat}
           className="fixed bottom-6 right-6 z-50 group"
-          aria-label={isPremium ? 'Open SETU AI Consultant' : 'Open Civil Engineering Estimator'}
+          aria-label={isPremium ? 'Open Nirmaan AI' : 'Open Civil Engineering Estimator'}
         >
           <div className={`absolute inset-0 rounded-full ${isPremium ? 'bg-violet-500' : 'bg-orange-500'} animate-ping opacity-20`} />
           <div className={`absolute inset-0 rounded-full ${isPremium ? 'bg-violet-400' : 'bg-orange-400'} opacity-30 transition-transform duration-1000 ${pulseCount % 2 === 0 ? 'scale-125' : 'scale-100'}`} />
@@ -801,7 +801,7 @@ export default function ChatBot() {
           <div className="absolute bottom-full right-0 mb-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 pointer-events-none">
             <div className="bg-gray-900 text-white text-sm font-medium px-4 py-2 rounded-xl shadow-xl whitespace-nowrap flex items-center gap-2">
               {isPremium ? (
-                <><Crown className="w-4 h-4 text-amber-400" /> SETU AI Consultant</>
+                <><Crown className="w-4 h-4 text-amber-400" /> Nirmaan AI</>
               ) : (
                 <><Sparkles className="w-4 h-4 text-yellow-300" /> Civil Engineering Estimator</>
               )}
@@ -827,7 +827,7 @@ export default function ChatBot() {
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="text-white font-bold text-sm">
-                      {isPremium ? 'SETU AI' : 'Nirmaan Estimator'}
+                      {isPremium ? 'Nirmaan AI' : 'Nirmaan Estimator'}
                     </h3>
                     {isPremium && (
                       <span className="flex items-center gap-0.5 bg-amber-400/30 text-amber-100 text-[10px] font-bold px-1.5 py-0.5 rounded-full">
@@ -838,7 +838,7 @@ export default function ChatBot() {
                   <div className="flex items-center gap-1.5">
                     <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
                     <span className={`${isPremium ? 'text-violet-100' : 'text-orange-100'} text-xs`}>
-                      {isPremium ? 'Civil Intelligence & Technical Advisory' : 'Buildings • Roads • Bridges • More'}
+                      {isPremium ? 'Materials • Prices • Orders • Engineering' : 'Buildings • Roads • Bridges • More'}
                     </span>
                   </div>
                 </div>

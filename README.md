@@ -122,7 +122,8 @@ NIRMAN/
 │       │   ├── prices.py         # Price history & trends
 │       │   ├── credit.py         # Business credit system
 │       │   ├── premium.py        # Premium tier subscription management
-│       │   ├── ai_consultant.py  # CIVITAS AI civil engineering consultant
+│       │   ├── ai_consultant.py  # CIVITAS/SETU AI civil engineering consultant
+│       │   ├── nirmaan_ai.py     # Nirmaan AI — premium construction chatbot
 │       │   └── inventory.py      # Stock & price management
 │       └── services/
 │           ├── otp.py            # OTP generation, Twilio SMS, verification
@@ -164,6 +165,7 @@ NIRMAN/
 │           ├── credit/           # Business credit dashboard
 │           ├── premium/          # 5-tier subscription plans (Starter → Enterprise)
 │           ├── civitas/          # CIVITAS — AI Civil Engineering Consultant
+│           ├── nirmaan-ai/       # Nirmaan AI — Premium construction chatbot
 │           ├── design-studio/    # Architecture & Design Studio (6 AI tools)
 │           ├── equipment/        # Equipment rental marketplace
 │           ├── workforce/        # Workforce hiring marketplace
@@ -634,6 +636,13 @@ Apply ──▶ Auto-Approved ──▶ Use for Orders ──▶ Repay ──▶
 | POST | `/chat` | — | Chat with CIVITAS AI consultant |
 | GET | `/domains` | — | List available engineering domains |
 
+### Nirmaan AI — `/api/v1/nirmaan-ai`
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| POST | `/chat` | ✅ Premium | Chat with Nirmaan AI (materials, prices, orders, engineering) |
+| GET | `/capabilities` | — | List Nirmaan AI capabilities and domains |
+
 ### Admin — `/api/v1/admin` (Admin role required)
 
 | Method | Endpoint | Description |
@@ -780,6 +789,21 @@ Premium features are enforced across the platform — higher tiers unlock access
 
 ## AI & Smart Features
 
+### Nirmaan AI — Intelligent Construction Assistant (Premium)
+
+The main AI chatbot for premium subscribers (`/nirmaan-ai`). Covers the full spectrum of
+construction needs on the Nirmaan platform:
+
+- **Materials & Prices** — Real-time guidance on cement, steel, sand, bricks, tiles, pipes, paint
+- **Cost Estimation** — Indicative budgets for residential, commercial, and infrastructure projects
+- **Platform Help** — Step-by-step ordering, delivery info, supplier discovery, Nirmaan Credit
+- **Engineering Guidance** — Foundation types, structural sizing rules, seismic zones (IS codes)
+- **Sustainability** — Green material alternatives, carbon reduction tips, IGBC/GRIHA ratings
+- **Material Comparisons** — OPC vs PPC cement, AAC blocks vs red bricks, steel grades
+
+Available to all paid tiers (Silver, Gold, Platinum, Enterprise). The floating chatbot widget
+on every page also uses Nirmaan AI for premium users. Daily query limits apply per tier.
+
 ### SETU — AI Construction Cost Estimator
 
 A chatbot-style material estimator accessible from any page. Supports 6 project types:
@@ -839,6 +863,7 @@ Find and hire skilled construction labor and contractors. Search by skill type (
 | `/supplier` | Supplier dashboard (manage products/orders) | ✅ Supplier |
 | `/delivery` | Delivery partner dashboard | ✅ Delivery Partner |
 | `/estimator` | AI material estimator (SETU) | — |
+| `/nirmaan-ai` | Nirmaan AI — Intelligent construction chatbot | ✅ Premium |
 | `/credit` | Business credit dashboard | ✅ |
 | `/premium` | 5-tier subscription plans (Starter/Silver/Gold/Platinum/Enterprise) | — |
 | `/civitas` | CIVITAS — AI Civil Engineering Consultant (8 domains) | — |
