@@ -22,7 +22,7 @@ from app.core.middleware import (
 from app.routers import auth, suppliers, products, orders, delivery, search
 from app.routers import estimator, reviews, prices, credit, inventory
 from app.routers import admin_auth, admin_dashboard
-from app.routers import premium, ai_consultant
+from app.routers import premium, ai_consultant, nirmaan_ai
 
 # Import all models so tables are created
 import app.models  # noqa: F401
@@ -86,6 +86,7 @@ app.include_router(credit.router)  # prefix in router
 app.include_router(inventory.router)  # prefix in router
 app.include_router(premium.router)  # prefix in router
 app.include_router(ai_consultant.router)  # prefix in router
+app.include_router(nirmaan_ai.router)  # prefix in router
 
 
 @app.get("/", tags=["Health"])
