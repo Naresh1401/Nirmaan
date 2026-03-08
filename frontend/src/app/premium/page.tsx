@@ -166,7 +166,7 @@ const PLATFORM_FEATURES = [
   {
     icon: Brain, title: 'AI Civil Engineering Intelligence',
     desc: 'Expert-level structural calculations, IS code guidance, load analysis, material estimation, foundation recommendations, soil suitability, cost prediction, and risk detection — all powered by AI.',
-    minTier: 'silver', link: '/estimator',
+    minTier: 'silver', link: '/ai-consultant',
   },
   {
     icon: Landmark, title: 'Infrastructure Project Marketplace',
@@ -191,7 +191,7 @@ const PLATFORM_FEATURES = [
   {
     icon: Cpu, title: 'AI Construction Planning Engine',
     desc: 'Auto-generate construction timelines, budget forecasts, resource allocation plans, and risk alerts. Input your project specs and get a complete execution plan.',
-    minTier: 'gold', link: '/estimator',
+    minTier: 'gold', link: '/ai-consultant',
   },
   {
     icon: Globe, title: 'Digital Twin Technology',
@@ -752,7 +752,7 @@ export default function PremiumPage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[
             { icon: '🏗️', label: 'Materials Marketplace', href: '/products' },
-            { icon: '🤖', label: 'AI Engineering Consultant', href: '/estimator' },
+            { icon: '🤖', label: 'SETU AI Consultant', href: '/ai-consultant' },
             { icon: '📋', label: 'Project Marketplace', href: '/projects' },
             { icon: '👷', label: 'Hire Workforce', href: '/workforce' },
             { icon: '🚜', label: 'Equipment Rental', href: '/equipment' },

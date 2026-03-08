@@ -2,7 +2,7 @@
 
 **Digital Infrastructure for Construction Material Supply**
 
-Nirmaan is a full-stack construction materials marketplace platform connecting builders, suppliers, and delivery partners. It features real-time pricing, AI-powered material estimation, business credit, OTP authentication, a 5-tier premium membership system, AI civil engineering consultant (CIVITAS), Architecture & Design Studio, equipment rental & workforce hiring marketplaces, and a comprehensive admin dashboard with 2FA & RBAC.
+Nirmaan is a full-stack construction materials marketplace platform connecting builders, suppliers, and delivery partners. It features real-time pricing, AI-powered material estimation, business credit, OTP authentication, a 5-tier premium membership system, AI civil engineering consultant (SETU), Architecture & Design Studio, equipment rental & workforce hiring marketplaces, and a comprehensive admin dashboard with 2FA & RBAC.
 
 ---
 
@@ -122,7 +122,7 @@ NIRMAN/
 │       │   ├── prices.py         # Price history & trends
 │       │   ├── credit.py         # Business credit system
 │       │   ├── premium.py        # Premium tier subscription management
-│       │   ├── ai_consultant.py  # CIVITAS AI civil engineering consultant
+│       │   ├── ai_consultant.py  # SETU AI civil engineering consultant
 │       │   └── inventory.py      # Stock & price management
 │       └── services/
 │           ├── otp.py            # OTP generation, Twilio SMS, verification
@@ -163,7 +163,7 @@ NIRMAN/
 │           ├── estimator/        # AI material estimator
 │           ├── credit/           # Business credit dashboard
 │           ├── premium/          # 5-tier subscription plans (Starter → Enterprise)
-│           ├── civitas/          # CIVITAS — AI Civil Engineering Consultant
+│           ├── ai-consultant/          # SETU — AI Civil Engineering Consultant
 │           ├── design-studio/    # Architecture & Design Studio (6 AI tools)
 │           ├── equipment/        # Equipment rental marketplace
 │           ├── workforce/        # Workforce hiring marketplace
@@ -631,7 +631,7 @@ Apply ──▶ Auto-Approved ──▶ Use for Orders ──▶ Repay ──▶
 
 | Method | Endpoint | Auth | Description |
 |---|---|---|---|
-| POST | `/chat` | — | Chat with CIVITAS AI consultant |
+| POST | `/chat` | — | Chat with SETU AI consultant |
 | GET | `/domains` | — | List available engineering domains |
 
 ### Admin — `/api/v1/admin` (Admin role required)
@@ -774,7 +774,7 @@ Nirmaan offers a 5-tier subscription system with progressive feature unlocks:
 | **Platinum** | ₹4,999/mo | Custom pricing, 20% discount, API access, white-label options |
 | **Enterprise** | Custom | Full platform access, SLA guarantees, on-site support, custom integrations |
 
-Premium features are enforced across the platform — higher tiers unlock access to CIVITAS AI domains, Design Studio tools, advanced analytics, and priority delivery.
+Premium features are enforced across the platform — higher tiers unlock access to SETU AI domains, Design Studio tools, advanced analytics, and priority delivery.
 
 ---
 
@@ -792,7 +792,7 @@ A chatbot-style material estimator accessible from any page. Supports 6 project 
 
 Returns itemized material quantities, labor costs, and total estimates with tier-based pricing.
 
-### CIVITAS — AI Civil Engineering Consultant
+### SETU — AI Civil Engineering Consultant
 
 Multi-domain AI consultant covering 8 engineering specializations:
 - Structural Engineering, Geotechnical Engineering, Transportation Engineering
@@ -841,7 +841,7 @@ Find and hire skilled construction labor and contractors. Search by skill type (
 | `/estimator` | AI material estimator (SETU) | — |
 | `/credit` | Business credit dashboard | ✅ |
 | `/premium` | 5-tier subscription plans (Starter/Silver/Gold/Platinum/Enterprise) | — |
-| `/civitas` | CIVITAS — AI Civil Engineering Consultant (8 domains) | — |
+| `/ai-consultant` | SETU — AI Civil Engineering Consultant | ✅ Silver+ |
 | `/design-studio` | Architecture & Design Studio (6 AI tools, Gold+ tier) | ✅ Gold+ |
 | `/equipment` | Equipment rental marketplace | — |
 | `/workforce` | Workforce hiring marketplace | — |

@@ -13,7 +13,7 @@ const NAV_LINKS = [
   { label: "Workforce", href: "/workforce" },
   { label: "Equipment", href: "/equipment" },
   { label: "AI Estimator", href: "/estimator" },
-  { label: "SETU AI", href: "/civitas" },
+  { label: "SETU AI", href: "/ai-consultant" },
   { label: "Credit", href: "/credit" },
 ];
 

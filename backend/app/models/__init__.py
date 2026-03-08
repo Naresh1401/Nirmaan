@@ -14,6 +14,7 @@ from app.models.admin import (
     AuditLog, Dispute, SystemAlert, ForecastResult,
 )
 from app.models.premium import PremiumMembership, LoyaltyTransaction
+from app.models.project import Project, Conversation, Message, Estimate
 
 __all__ = [
     "User",
@@ -41,4 +42,8 @@ __all__ = [
     "ForecastResult",
     "PremiumMembership",
     "LoyaltyTransaction",
+    "Project",
+    "Conversation",
+    "Message",
+    "Estimate",
 ]
