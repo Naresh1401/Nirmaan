@@ -88,10 +88,10 @@ const PREMIUM_QUICK_PROMPTS = [
   { icon: '🪨', label: 'Foundation for soft clay soil', category: 'consultant' },
   { icon: '⚡', label: 'Seismic design requirements', category: 'consultant' },
   { icon: '📏', label: 'Column design for 600kN load', category: 'consultant' },
-  { icon: '💰', label: 'Cost of 2000 sqft house', category: 'consultant' },
-  { icon: '🛣️', label: 'Road construction guide', category: 'consultant' },
-  { icon: '📋', label: 'IS code references', category: 'consultant' },
-  { icon: '🌉', label: 'Bridge type for 45m span', category: 'consultant' },
+  { icon: '🛋️', label: 'Living room interior design ideas', category: 'consultant' },
+  { icon: '🏠', label: 'Exterior facade design for house', category: 'consultant' },
+  { icon: '🧭', label: 'Vastu tips for south facing plot', category: 'consultant' },
+  { icon: '⛑️', label: 'Construction site safety checklist', category: 'consultant' },
 ];
 
 // ── Static responses ──
@@ -587,7 +587,7 @@ export default function ChatBot() {
 
   const isPremium = !!(user?.membership_tier && user.membership_tier !== 'free');
 
-  const premiumGreeting = "## 🏗️ SETU — AI Civil Engineering Consultant\n\nHello! I'm **SETU**, your premium civil engineering expert powered by Nirmaan.\n\nI can help with:\n\n**📐 Structural Design** — Beam, column, slab, footing, retaining wall (IS 456)\n**🪨 Geotechnical** — Soil classification, bearing capacity, foundation selection\n**🌍 Seismic Design** — IS 1893 zone data, base shear, ductile detailing\n**🔧 Mix Design** — IS 10262 concrete proportions (M15–M50)\n**📋 BBS / BOQ** — Bar bending schedules, quantity estimation\n**🔍 Failure Analysis** — Crack diagnosis, remediation, retrofitting\n**🛣️ Transportation** — Road/bridge design per IRC standards\n**💰 Cost Estimation** — Telangana market rates & budget breakdowns\n**🖥️ 3D Visualization & BIM** — Revit, STAAD, ETABS, Tekla guidance\n**🛠️ Software Tools** — STAAD.Pro, ETABS, AutoCAD, Primavera, PLAXIS\n\nFor the **full-page experience**, visit the [SETU page](/civitas).\n\nAsk me anything like:\n- \"Design a beam for 6m span\"\n- \"Mix design for M30 concrete\"\n- \"Foundation for soft clay soil?\"\n- \"Which software for multi-story analysis?\"";
+  const premiumGreeting = "## 🏗️ Welcome to Nirmaan AI!\n\nI'm your dedicated **civil engineering expert** — think of me as a senior engineer with decades of experience across structural design, construction, interiors, and everything in between.\n\nI'm here to help you design, plan, estimate, and build with confidence.\n\n**My 15 Specialist Domains:**\n\n📐 **Structural Design** — Beam, column, slab, footing (IS 456)\n🪨 **Geotechnical** — Soil, bearing capacity, foundations\n🌍 **Seismic Design** — IS 1893 zones, base shear, ductile detailing\n🔩 **Materials** — Concrete mix design, steel, BBS (IS 10262)\n🛣️ **Transportation** — Road, bridge, pavement (IRC codes)\n💧 **Hydraulics** — Drainage, water supply, Manning's equation\n🌱 **Environmental** — Green building, IGBC/GRIHA/LEED, EIA\n📏 **Surveying** — Setting out, levelling, GPS, mapping\n🖥️ **3D Visualization** — BIM, Revit, STAAD, rendering tools\n🔍 **Forensic Analysis** — Crack diagnosis, remediation, retrofitting\n🛋️ **Interior Design** — Room concepts, materials, Vastu\n🏠 **Exterior Design** — Facade, cladding, landscaping\n🧭 **Vastu Shastra** — Plot orientation, room placement, Vastu tips\n⛑️ **Safety** — PPE, scaffolding, risk assessment\n🌆 **Urban Planning** — FAR/FSI, HMDA rules, smart cities\n\nWhat are you working on today?";
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -776,7 +776,7 @@ export default function ChatBot() {
         <button
           onClick={openChat}
           className="fixed bottom-6 right-6 z-50 group"
-          aria-label={isPremium ? 'Open SETU AI Consultant' : 'Open Civil Engineering Estimator'}
+          aria-label={isPremium ? 'Open Nirmaan AI Consultant' : 'Open Civil Engineering Estimator'}
         >
           <div className={`absolute inset-0 rounded-full ${isPremium ? 'bg-violet-500' : 'bg-orange-500'} animate-ping opacity-20`} />
           <div className={`absolute inset-0 rounded-full ${isPremium ? 'bg-violet-400' : 'bg-orange-400'} opacity-30 transition-transform duration-1000 ${pulseCount % 2 === 0 ? 'scale-125' : 'scale-100'}`} />
@@ -801,7 +801,7 @@ export default function ChatBot() {
           <div className="absolute bottom-full right-0 mb-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 pointer-events-none">
             <div className="bg-gray-900 text-white text-sm font-medium px-4 py-2 rounded-xl shadow-xl whitespace-nowrap flex items-center gap-2">
               {isPremium ? (
-                <><Crown className="w-4 h-4 text-amber-400" /> SETU AI Consultant</>
+                <><Crown className="w-4 h-4 text-amber-400" /> Nirmaan AI Consultant</>
               ) : (
                 <><Sparkles className="w-4 h-4 text-yellow-300" /> Civil Engineering Estimator</>
               )}
@@ -827,7 +827,7 @@ export default function ChatBot() {
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="text-white font-bold text-sm">
-                      {isPremium ? 'SETU AI' : 'Nirmaan Estimator'}
+                      {isPremium ? 'Nirmaan AI' : 'Nirmaan Estimator'}
                     </h3>
                     {isPremium && (
                       <span className="flex items-center gap-0.5 bg-amber-400/30 text-amber-100 text-[10px] font-bold px-1.5 py-0.5 rounded-full">
@@ -838,7 +838,7 @@ export default function ChatBot() {
                   <div className="flex items-center gap-1.5">
                     <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
                     <span className={`${isPremium ? 'text-violet-100' : 'text-orange-100'} text-xs`}>
-                      {isPremium ? 'Civil Intelligence & Technical Advisory' : 'Buildings • Roads • Bridges • More'}
+                      {isPremium ? 'Civil Engineering Expert — 15 Specialist Domains' : 'Buildings • Roads • Bridges • More'}
                     </span>
                   </div>
                 </div>
@@ -961,7 +961,7 @@ export default function ChatBot() {
                             <span className={`w-2 h-2 ${isPremium ? 'bg-violet-400' : 'bg-orange-400'} rounded-full animate-bounce`} style={{ animationDelay: '150ms' }} />
                             <span className={`w-2 h-2 ${isPremium ? 'bg-violet-400' : 'bg-orange-400'} rounded-full animate-bounce`} style={{ animationDelay: '300ms' }} />
                           </div>
-                          <span className="text-[10px] text-gray-400">{isPremium ? 'SETU analyzing…' : 'Calculating...'}</span>
+                          <span className="text-[10px] text-gray-400">{isPremium ? 'Nirmaan AI analyzing…' : 'Calculating...'}</span>
                         </div>
                       </div>
                     </div>
@@ -972,7 +972,7 @@ export default function ChatBot() {
                     <div className="bg-gradient-to-r from-violet-50 to-purple-50 border border-violet-200 rounded-xl px-3 py-2.5 text-xs text-violet-800">
                       <div className="flex items-center gap-2">
                         <Crown className="w-4 h-4 text-amber-500 flex-shrink-0" />
-                        <p><strong>Upgrade to Premium</strong> for expert structural design, IS code guidance, foundation recommendations, and advanced civil engineering consultation.</p>
+                        <p><strong>Upgrade to Nirmaan AI Premium</strong> for expert structural design, interior/exterior design, IS code guidance, foundation recommendations, Vastu analysis, safety guidance, and full civil engineering consultation.</p>
                       </div>
                       <Link href="/premium" className="mt-2 inline-flex items-center gap-1 font-bold text-violet-700 hover:underline">
                         See Premium Plans <ArrowRight className="w-3 h-3" />
@@ -1036,7 +1036,7 @@ export default function ChatBot() {
                   </div>
                   <p className="text-[10px] text-center text-gray-400 mt-2">
                     {isPremium
-                      ? '�️ SETU AI v2.0 • Powered by Nirmaan Premium'
+                      ? '🏗️ Nirmaan AI v3.0 • Powered by Nirmaan Premium'
                       : 'Estimates are approximate • Actual costs may vary ±10-15%'}
                   </p>
                 </form>
